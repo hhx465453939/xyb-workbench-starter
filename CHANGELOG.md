@@ -1031,6 +1031,11 @@ LESSONS 追加 2 条：`ctx.<any> = …` 必须 provide（否则插件不激活�
 - docs/LESSONS.md 新增 L90（骨架与自家链自洽）、L91（定点移植 OLD 常量静默失配 → ui-parity 双假绿；修法=「命中数=预期数」断言）、L92（perl @ 插值静默吞 pattern）。
 - 回收自：cidp-workbench（小髓宝 MyelinPal）M0/M5。
 
+## 1.10.0-rc.54 — 2026-11-16（自 neuroblastoma-workbench 夜班回收）
+
+- docs/LESSONS.md 新增 L117（改名脚本键标签错位 → 全量探针必须带内容对位断言）、L118（placeholder-free 与 version-literal 双闸打架 → 新仓走字面量约定 B，migrate-public 从 VERSION 直接取值）、L119（相关条数先计数后截断）、L120（子代理限额下的夜间降级路径）。
+- 回收自：neuroblastoma-workbench M2（错位）、M4（口径）、M5（双闸冲突）、开工（降级）。
+
 ## 1.10.0-rc.32 — 2026-11-11（自 pemphigus-workbench 夜班回收）
 
 - check-probe-coverage 模板：全量探针名按目标仓 slug 自动探测（probe-<slug>-m2.mjs），不再硬编码 aml；两者皆缺报红并给出应建文件名（L86）。
