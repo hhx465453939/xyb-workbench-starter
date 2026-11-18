@@ -1,3 +1,10 @@
+## 未发布（2026-11-18，TRAPS 复盘＋用户定版：L119 + 证据要求与测试用例硬闸）
+
+- **lessons L119**（来源 TRAPS 工作台 2026-11-17 sam/Codex 轮）：单会话一次跑完 M0–M9 实测 580,744 token 的可复用做法——派单一次写全、有同框架参考实现、验证全走检查链脚本、里程碑小步提交、边界预裁、诚实停损；对照睾丸癌 713,320 token 未完成，差在外部阻塞而非模型效率。
+- **AGENTS.md 新增硬闸「证据要求与测试用例」**（用户 2026-11-18 定版）：没有证据不算完成，M0–M9 逐里程碑落 `docs/MILESTONE-EVIDENCE.md`，DAY-REPORT 结论必须回指证据；禁止猜想与幻觉，没跑过/没打开/没装过一律如实标未验证；M9 前必备 ≤2 个测试用例（`docs/TEST-CASES.md`），应该 vs 现实对照，偏差必须有返工决定。
+- **新模板**：`templates/MILESTONE-EVIDENCE.md`、`templates/TEST-CASES.md`；`docs/22-PHASES-AND-GATES.md` 同步增补证据闸口径（V1 组成部分）。
+- 回流来源：用户 2026-11-18 指令（TRAPS 复盘总结入脚手架 + 两项强化）。
+
 ## 未发布（2026-11-14，gca-workbench 首夜回流：L116–L118 + 待实施⑩）
 
 - **lessons L116–L118**（来源 gca-workbench M4/移植轮）：快照对账表 source_statuses 必须由 fetch 模板同轮落库（L116）；快照到位后必须摘除 --if-present（L117）；跨仓机械改名三坑——BSD sed \b、cp -R 嵌套、事件通道字面量（L118）。
