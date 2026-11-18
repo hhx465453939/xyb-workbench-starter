@@ -877,6 +877,13 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **坑与修法**：① BSD sed 不支持 `\b`（静默不替换），跨仓改名用 `perl -pi -e 's/\bpsc\b/gca/g'`；② `cp -R src dst/src` 在 dst/src 已存在时会复制成 `dst/src/src/` 嵌套并漏拷冲突文件——目标目录已存在一律 `rsync -a src/ dst/`；③ 事件通道等拼出的字面量（`<slug>:agent-draft`）分散在 bridge/app/client 三处，改名后必须 `grep -o "[a-z]*:agent-draft" | uniq -c` 验证唯一值，不一致=草稿桥静默断链。
 - **通用教训**：机械移植的收尾不是"没报错"，是"成对锚点 grep=0 且 uniq=1"。
 
+### L120 · 断点续跑三层教训：仓库断点实测过关、会话续传此前从未接、正常退出未完成无接续（2026-11-18）
+
+- MPN（2026-11-15）被 magpie 宕机打断时只推了 M0，靠逐里程碑 commit+push＋PROGRESS.md 换路续派后完成 v0.2.0——仓库层断点是实测有效的真断点。
+- Codex 自带 `codex exec resume <session-id|--last>` 原生会话续传（zhuanz 0.162.0 与 sam 0.160.0 均实测有此子命令；codex.log 头部有 session id 行可抓取落盘），但全部 runner 此前一律新开会话＋续跑提示词重建上下文，从不保存 session ID：能用但更费 token，且跨工具才成立。定版：runner 落盘 session.id、续跑优先 resume、失败再退回提示词续跑。
+- 睾丸癌（2026-11-17）Codex 以 EXITCODE=0 正常退出但任务未完成（G2 待确认＋快照未入仓），看守的自动续跑只管「进程异常死亡」，这类「活着退出但没干完」无人接续、无限期等人工。定版：未完成先分类——纯未完成自动续跑，人工决定类（缺仓外产物、待确认闸口）停住报用户。
+- zhuanz NLRP3 第二轮（2026-11-15）：包装脚本随远程会话一起死，EXITCODE 未落盘、无心跳、无人接，整轮丢失。定版：长任务一律走带心跳＋EXITCODE 落盘＋可重拉的包装（zhuanz D:\dev\longtask\run-task.ps1）。
+
 ### L119 · 单会话一次跑完 M0–M9 只花 58 万 token：省的不是模型，是派单与脚手架
 
 - **来源**：2026-11-17 sam 上 Codex 跑 TRAPS 工作台（罕见病 R2 #81，认领 Issue #85）：06:39 启动、07:27 收尾，48 分钟、11 个提交（M0–M9 逐里程碑一个）、306 个文件、五项门禁全绿，codex.log 实测 tokens used 580,744。对照：睾丸癌同日同机 713,320 token 未完成——差的不是模型效率，是 M4 快照文件缺失、原型 G2 待人确认两个外部阻塞在烧上下文。
