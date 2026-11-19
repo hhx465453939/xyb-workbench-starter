@@ -960,3 +960,21 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-19 cancer-policy-workbench。先写成 `window.__API_BASE__`（注入后 `window.` 语法错），又只对 .html 注入（app.js 永远带占位符）；两次都是 dev 在跑旧进程时看不出，重启后才暴露。
 - **修法**：`var apiBase = "__API_BASE__"`；服务端对 `.html` 与 `.js` 都调用注入；`check-public-tokens` + `check-static-token-inject` 双闸。
 - **通用教训**：改服务端注入逻辑后必须**重启 dev server** 再验；dev 全绿可能只是进程没换代码（本夜实际踩到）。
+
+### L133 · CloudBase 默认域名会强制 attachment，demo 公网链接要走 `tcb app deploy` + 中间页/自定义域名
+
+- **来源**：2026-11-19 cancer-policy-workbench 发布 demo。`tcb hosting deploy` 与 `tcb app deploy` 都成功、`curl -I` 200，但浏览器打开默认域名（`*.tcloudbaseapp.com` / `*.webapps.tcloudbase.com`）时：navigate 请求落到「风险提醒」中间页（等待 3 秒点“确定访问”后才能进），非 navigate 请求被强制加 `Content-Disposition: attachment` 直接下载；把对象元数据改成 `Content-Disposition: inline` 也被网关覆盖。
+- **修法**：默认域名只做开发自测；对外 demo 用 `tcb app deploy --framework static` 发布并接受首访中间页，或绑已备案且有有效证书的自定义域名（`tcb domains add --certid`）。子路径挂静态托管时优先做**单文件 HTML**（内联 CSS/JS，`</script` 转义为 `<\/script`），再用 `tcb routes add` 挂 `STATIC_STORE` 路由，避免子路径资源 404。
+- **通用教训**：发布前用无头浏览器 `goto` + 等待 + 断言 h1，而不是只 `curl -I`；curl 200 不等于浏览器能渲染。检查器：无（平台行为，需人工/浏览器验证）。
+
+### L134 · 新增一级页必须“六处同步”，且逐路由探针要断言页面专属内容
+
+- **来源**：2026-11-20 cancer-policy-workbench 新增「费用与报销」页：NAV/ROUTES/VIEW_META/探针都同步了，render map 漏了 `expenses: renderExpenses` —— `check-probe-coverage` 全绿、逐路由探针也全绿，因为路由映射错误时 `#view=expenses` 渲染的是 home 的内容，而探针只断言“有 h1 / 内容够长”。
+- **修法**：新增一级页同步六处（NAV / ROUTES / VIEW_META / render map / probe ROUTES / 文档计数），并把同步做成检查器：`templates/check-route-map.mjs`（断言四处键集合一致 + probe 覆盖，带 self-test）。逐路由探针在通用断言外，必须补一条**页面专属 selector** 断言（如费用页 `.stat` 汇总卡数量、病友社区页 `.community-card` 数量）。
+- **通用教训**：路由级探针只断言“h1/长度”会假绿；“页面能打开”不等于“打开的是这一页”。
+
+### L135 · 集合类测试断言用下限 + 关键项，不写精确总数
+
+- **来源**：cancer-policy-workbench `test/handling` 写死 `>=40` 条，随后基金会在同一轮里增删条目，测试连环红；`test/psych-support` 的 `>=13` 同样在补条目后失效。
+- **修法**：数据会持续增补的集合（政策库/基金会/病友社区/热线），断言写成 `>= N` 并点名必须存在的关键项（如“红十字/白求恩/荣基金/9958”“熊猫/086/四叶草/肺腾/妍康”）；精确计数只用于“防多/防漏”语义必要的场景。
+- **通用教训**：测试跟随语义（这些必须存在），不要跟随当天的条数。
