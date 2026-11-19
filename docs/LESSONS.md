@@ -989,3 +989,10 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - 可断言化：`templates/check-route-prefix.mjs` 新增断言④——client.js 里 `fetch('…/health')` 的 URL 必须含 `/api/<API_PREFIX>/`，写死旧 slug 直接红。
 - 安装配方同步修：`project-template/scripts/check-install.mjs` 的 pnpm 示例从 `./release/…` 改为「仓库绝对路径」（pnpm `--dir` 的相对路径以 profile 目录解析，相对写法 ENOENT，本夜实测两次）。
 - 回收自：traps-workbench M5/M6。
+
+### L137 · 续跑第一动作 = fetch 远端并对齐，再读本地 PROGRESS（traps 双线教训）
+
+- 现场（traps-workbench 2026-11-20 夜班）：本地克隆停在 M0（11-16 早上），但同一认领线的 11-16 深夜 runner 已把 M0–M9 推上 origin/main。夜班只读了本地 PROGRESS/git log，未 `git fetch`，在过期断点上独立重建了 M2–M5，结果 origin/main 与本地出现两条完整实现线。
+- 规则：被续跑时第一步 `git fetch origin && git log HEAD..origin/main --oneline`；远端领先即按其 PROGRESS/MILESTONE-EVIDENCE 对齐，禁止在旧基线上重做已完成里程碑。本地与远端分叉已发生时：不 force-push、不互相覆盖——本地线推成命名分支（如 night-<日期>），报告里并排写清两线差异，合并决策交用户。
+- 断言化建议：init/续跑提示词第 0 步固定为 fetch 对齐；`PROGRESS.md` 头部加「最近一次 origin/main 对齐时间」字段，检查器可断言该时间不晚于最近 fetch。
+- 回收自：traps-workbench 收尾（night-20261120 分支 vs origin/main）。
