@@ -445,6 +445,7 @@ README.md / CHANGELOG.md / VERSION / package.json
    **没跑过就写"未验证"，不许写"装机通过"。**
 7. 装完要**重启宿主**（Desktop / 菜单 Harness → 重启）才生效；重启前只能写"已安装，待重启确认"。
    重启后**新建会话**再验证（宿主按会话授权，旧会话可能仍持旧 bundle）。
+   外壳 iframe sandbox 白名单必须含 `allow-popups allow-popups-to-escape-sandbox`，业务页外链走「window.open → 返回空 postMessage `<pkg>:open-external` → 壳层代开」兜底；真机点一次外链验证（L129，40 号 §1.4）。
    装机验证是三级漏斗，**前级绿 ≠ 后级绿**，各留各的证据：① 静态桩/单测（smoke:activate 等）；
    ② 宿主侧（verify:desktop：本次段日志 0 报错、数据目录生成、工作台清单含本包）；
    ③ 真机新会话点开页面走通 bootstrap。mpn 曾死于宿主 duplicate exact route、small-bowel 曾死于

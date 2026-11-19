@@ -38,6 +38,7 @@
 7. `Workbench.trialMatch(keyword)`：只做关键词 `LIKE` 过滤 + 登记字段透传，**返回 `honestyNote`（含「未核实」「需人工核对」「快照会过期」）**；`total` 用全表计数（不是过滤后条数）。
 8. 路由 `GET <apiPrefix>/trials?keyword=`，失败返回 500 + detail，不裸崩。
 9. 演示数据的 `trials` 只放**明示虚构**的 2 条（`fictional: true`、不含可用登记号）；真实快照另放 `realSample`，两者不混。
+10. 详情浮窗「打开官方登记页 ↗」外链三步兜底（L129）：外壳 iframe sandbox 白名单含 `allow-popups allow-popups-to-escape-sandbox`；业务页点击先 `window.open`，返回空就 `parent.postMessage({type:'<pkg>:open-external', url})`；壳层监听后代开。真机必须点一次验证——沙箱拦截是静默的，控制台无报错。
 
 ### 1.3 界面（必须三子页，不许单页塞检索框+结果表）
 10. `clinical` 子页 = `match` / `search` / `saved`，一级菜单名「临床研究」。

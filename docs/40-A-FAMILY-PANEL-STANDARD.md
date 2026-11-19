@@ -109,7 +109,7 @@ h('div', { style: businessStyle },
     key: generation, ref: frameRef, src: UI_ENTRY,
     title: `${TITLE} · ${SUBTITLE}`,
     style: frameStyle,
-    sandbox: 'allow-scripts allow-same-origin allow-forms allow-downloads',
+    sandbox: 'allow-scripts allow-same-origin allow-forms allow-downloads allow-popups allow-popups-to-escape-sandbox',
     onLoad: () => { setBroken(false); clearTimeout(brokenTimer.current) },
   }),
 )
@@ -118,6 +118,7 @@ h('div', { style: businessStyle },
 - `src` 必须是 `/api/<pkg>/ui/`，与独立 dev-server 同一份前端；不要在壳层里再写一套业务 DOM。
 - `key: generation` 只用于「重新加载」按钮；业务内导航不能触发 iframe 重挂（会丢筛选与滚动位置）。
 - 8 秒兜底：挂载后起定时器，`onLoad` 必须清掉；否则页面加载完 8 秒后整个面板会被换成兜底页（真机踩过）。
+- **外链白名单必须含 `allow-popups`**：沙箱 iframe 里 `target=_blank` 没有它会被**静默拦截**（mpn / small-bowel 0.2.3→0.2.4 真机踩过——「打开官方登记页 ↗」点了没反应）。双保险：① 业务页外链点击先 `window.open`，返回空就 `parent.postMessage({type:'<pkg>:open-external', url})`；② 壳层监听同一消息并 `window.open(url, '_blank', 'noopener')` 代开（宿主 setWindowOpenHandler 仍把关）。
 
 ### 1.5 aside
 

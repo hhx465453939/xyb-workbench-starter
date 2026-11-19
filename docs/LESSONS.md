@@ -936,3 +936,9 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-19 用户验收反馈（small-bowel 顶栏档案下拉只有切换；mpn 建档藏在档案管理弹窗两层跳）。
 - **修法**：头部/侧栏档案区旁常驻「＋ 新建档案」按钮，复用同一建档弹窗；small-bowel 0.2.2 / mpn 0.2.2 均已落。
 - **通用教训**：患者高频动作（建档案）不许只存在于某个次级页面里；入口常驻、两跳以内。
+
+### L129 · 沙箱 iframe 外链白名单必须含 allow-popups，且壳层要有 open-external 兜底
+
+- **来源**：2026-11-19 small-bowel / mpn Desktop 真机验收。试验详情「打开官方登记页 ↗」（target=_blank）点击无反应：A 家族外壳 iframe 的 sandbox 白名单只有 allow-scripts/same-origin/forms/downloads，**沙箱 iframe 里弹窗被静默拦截**，宿主与页面都无报错。
+- **修法**：① 外壳 iframe sandbox 补 `allow-popups allow-popups-to-escape-sandbox`；② 业务页外链点击先 `window.open`，返回空就 `parent.postMessage({type:'<pkg>:open-external', url})`；③ 壳层监听同一消息 `window.open(url,'_blank','noopener')` 代开（宿主 setWindowOpenHandler 仍把关）。small-bowel 0.2.4 / mpn 0.2.3 均已落。
+- **通用教训**：sandbox 白名单按「页面实际要做的动作」列全，弹窗能力缺失不报错——外链、下载、表单逐一真机点一遍；规范见 docs/40-A-FAMILY-PANEL-STANDARD.md §1.4。

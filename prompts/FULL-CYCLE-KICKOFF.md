@@ -95,6 +95,7 @@ M3–M6：G2 后冻结数据合同与迁移，标明字段语境、私密策略�
 - 数据层：ORDER BY rowid、显式 null、in_use、分节 `*_title`、分类不进趋势、演示唯一源。
 - 前端：页脚贴底、`[hidden]`、字号 12.5–15、面板 25–45% 可拖可收、无判读列、private 三出口代码级过滤。
 - 工程：改包必升版；public 与原型逐字符（ui-parity）；并行写同仓以 check 链为准合流并立即提交；BACKLOG 改前先 pull。
+- 宿主面板：A 家族外壳 iframe 的 sandbox 白名单必须含 `allow-popups allow-popups-to-escape-sandbox`（缺它 target=_blank 被静默拦截，外链点不开）；业务页外链走「window.open → 返回空 postMessage <pkg>:open-external → 壳层代开」三步兜底，规范见 docs/40-A-FAMILY-PANEL-STANDARD.md §1.4（L129）。
 - 测试：结果分通过、失败、跳过、待人工；检查器不支持的形态记未检查，不把 SKIP 计为覆盖；测试等实际加载与事件就绪，避免快照竞态，并用失败反例证明检查器有效；实测内容、命令、环境、版本、限制一并留痕。
 - 汇报：实际成果、文件、测得数字、未完成项、下一步；患者与临床审核、真实宿主、外部服务、签认状态分别说明。
 
