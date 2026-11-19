@@ -57,3 +57,18 @@ npm 包名、patch 插件条目 ID、从 GitHub repository 推导的 `owner/repo
 ## 接入失败的上下文陷阱
 
 项目实践中，Desktop 0.11.1 / Harness 0.2.0-rc.2 上出现注册代理与 props.service 的 fiber 上下文不同，渲染调用 ownsSession 才触发包身份错误。不要把所有 registration 文案都归因于包名；服务端无日志也不证明客户端正常。集中适配，区分 owned/not-owned/unavailable；特定版本状态回退不能当通用授权合同。见 [开发典型错误和修复经验](LESSONS.md)。
+
+## exact route 按路径去重（2026-11-19 装机实测）
+
+宿主 webserver 的 `kind:'exact'` 路由以**路径**为唯一键，不区分 method：同一路径的 GET 与 POST 各注册一次会报 `webserver: duplicate exact route "<path>"`，整包激活失败。规则：
+
+- 同一路径只注册一次；多方法在 handler 内按 `req.method` 分发，未匹配方法回 405。
+- `kind:'prefix'` 同理：每个基础路径只注册一次，路径内部分发（参照 psc-workbench 的单前缀范式）。
+- 静态桩与单测测不到此错误——只有宿主真注册才触发，属装机级 bug。检查器：`templates/check-host-route-dedupe.mjs`（`path` 变量简写形态取不到字面量，输出「待人工」，不许静默计 0）。
+
+## 静态占位符注入覆盖 JS（2026-11-19 装机实测）
+
+占位符（`__API_BASE__` / `__VERSION__` 等）若被外链 JS（如 `public/app.js`）携带，静态服务只对 `.html` 注入是不够的——外链 JS 永远带占位符，请求打到宿主 SPA fallback 返回 200 HTML，前端拿到 null 静默崩（表症是「Cannot read properties of null」而非 404）。规则：
+
+- 列全携带占位符的文件类型，再写注入条件；`.js` 与 `.html` 一并注入。
+- SPA fallback 使坏路径 200 化，错误后移到 JSON 解析层——排查时先看请求 URL 是不是占位符字面量。检查器：`templates/check-static-token-inject.mjs`。

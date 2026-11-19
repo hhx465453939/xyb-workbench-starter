@@ -912,3 +912,27 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-14 neuroblastoma-workbench 开工。后台子代理连续 2 次（并发限额 / 套餐 busy）失败。
 - **修法**：按额度类错误纪律立即停用子代理、主线自写；体检轮用「静态断言 + 探针 + 四态报告」替代第二 Agent 独立审查，并在报告注明替代方式。
 - **通用教训**：无人值守任务的降级路径要事先写死，不临场试错。
+
+### L125 · 宿主 exact route 按「路径」去重，不区分 method
+
+- **来源**：2026-11-19 mpn-workbench Desktop 装机实测。`/api/mpn/root` 的 GET 与 POST 各注册一次 `kind:'exact'`，宿主报 `webserver: duplicate exact route "/api/mpn/root"`，整包激活失败。
+- **修法**：同路径多方法合并注册一次，handler 内按 `req.method` 分发（小脑补 405）。
+- **通用教训**：宿主路由契约以路径为唯一键；`kind:'prefix'` 每基础路径也只注册一次、内部分发（psc 范式）。静态桩与单测都测不到——只有宿主真注册才触发。检查器：`templates/check-host-route-dedupe.mjs`（变量简写 path 记待人工）。
+
+### L126 · 静态占位符注入必须覆盖外链 JS，不只 .html
+
+- **来源**：2026-11-19 small-bowel-workbench Desktop 装机实测。页面报「Cannot read properties of null (reading 'currentProfileKey')」：`public/app.js` 携带 `__API_BASE__`，注入只对 .html 做，app.js 永远带占位符 → `fetch('__API_BASE__/bootstrap')` 打到宿主 SPA fallback 返回 200 HTML → 前端 `boot=null` 静默崩。
+- **修法**：静态服务对 `.js` 与 `.html` 同样调用 injectTokens。
+- **通用教训**：SPA fallback 让错误路径返回 200，坏在「JSON 解析失败」而非 404——凡占位符替换，先列全携带占位符的文件类型再写注入条件。检查器：`templates/check-static-token-inject.mjs`。
+
+### L127 · 装机验证是三级漏斗，前级绿 ≠ 后级绿
+
+- **来源**：2026-11-19 mpn / small-bowel 双仓实测。`smoke:activate`（静态桩）全过 ≠ 宿主激活（mpn 死于 duplicate route）；宿主日志 0 报错 ≠ 页面可用（small-bowel 死于占位符，宿主根本不知道）。
+- **修法**：三级各自跑：① 静态桩/单测；② `verify:desktop` 宿主侧（本次段日志、数据目录、清单）；③ 真机新会话点开页面走 bootstrap。V2 写「通过」必须三级都有证据。
+- **通用教训**：每一级只能证明它自己那一层；跨层推断按虚报处理。
+
+### L128 · 头部档案菜单必须同步含「创建新档案」直达入口
+
+- **来源**：2026-11-19 用户验收反馈（small-bowel 顶栏档案下拉只有切换；mpn 建档藏在档案管理弹窗两层跳）。
+- **修法**：头部/侧栏档案区旁常驻「＋ 新建档案」按钮，复用同一建档弹窗；small-bowel 0.2.2 / mpn 0.2.2 均已落。
+- **通用教训**：患者高频动作（建档案）不许只存在于某个次级页面里；入口常驻、两跳以内。

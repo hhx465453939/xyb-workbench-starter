@@ -160,6 +160,13 @@
 
 # CHANGELOG
 
+## 未发布（2026-11-19，mpn / small-bowel Desktop 装机回流：L125–L128）
+
+- **lessons L125–L128**（来源 mpn-workbench / small-bowel-workbench 装机实测）：宿主 exact route 按路径去重（L121）；静态占位符注入必须覆盖外链 JS（L122）；装机验证三级漏斗——静态桩 ≠ 宿主激活 ≠ 页面可用（L123）；头部档案菜单须常驻「＋ 新建档案」直达入口（L124，用户验收反馈）。
+- **新检查器**：`templates/check-host-route-dedupe.mjs`（exact 注册路径去重，变量简写记待人工）、`templates/check-static-token-inject.mjs`（占位符注入覆盖 JS 判定），均带 --self-test 反例。
+- **文档**：02 号新增「exact route 按路径去重」「静态占位符注入覆盖 JS」两节；ZERO-TO-DEV 装机段补三级漏斗与新会话要求。
+- 回收自：mpn-workbench 0.2.1→0.2.2、small-bowel-workbench 0.2.1→0.2.2（均装机实测通过）。
+
 ## 1.10.0-rc.21（2026-11-12，自 mds-workbench 0.2.1 重装机回收）
 
 > ### 1.10.0-rc.52 — 撤掉 check-data-dir 的 ⑤（不可靠的端点判据），改为修补器提示人工核对

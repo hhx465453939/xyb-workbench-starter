@@ -444,6 +444,12 @@ README.md / CHANGELOG.md / VERSION / package.json
    重开资料还在、版本号首屏可见、**面板默认在右且首屏比例 65/35**。  
    **没跑过就写"未验证"，不许写"装机通过"。**
 7. 装完要**重启宿主**（Desktop / 菜单 Harness → 重启）才生效；重启前只能写"已安装，待重启确认"。
+   重启后**新建会话**再验证（宿主按会话授权，旧会话可能仍持旧 bundle）。
+   装机验证是三级漏斗，**前级绿 ≠ 后级绿**，各留各的证据：① 静态桩/单测（smoke:activate 等）；
+   ② 宿主侧（verify:desktop：本次段日志 0 报错、数据目录生成、工作台清单含本包）；
+   ③ 真机新会话点开页面走通 bootstrap。mpn 曾死于宿主 duplicate exact route、small-bowel 曾死于
+   外链 JS 占位符未注入——两级静态全绿都没拦住（出处 LESSONS L125–L127）。
+   头部档案菜单须常驻「＋ 新建档案」直达入口，不许只藏在某个次级页里（LESSONS L128）。
 8. 逐项截图归档到 `docs/release/<版本>/`，写清宿主版本、profile 路径、tgz sha256。
 9. **装机面静态检查要绿**：`npm run check` 里的 `check-workbench-package` 已含四条装机面规则
    （`Config.root` ↔ patch `dshHomePath`、运行期相对 import 必须被 `files` 覆盖、`public/` 必须进包、
