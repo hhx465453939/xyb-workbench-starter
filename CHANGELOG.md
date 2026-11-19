@@ -1,3 +1,9 @@
+## 未发布（2026-11-20，traps-workbench 回流：L136 模板分叉对账 + 路由前缀断言④ + 安装配方绝对路径）
+
+- **lessons L136**（来源 traps-workbench M5/M6）：init 交付物与 starter templates 分叉（占位符白名单互斥红 / 健康检查 URL 写死旧 slug / 消息命名空间 `<pkg>:*` vs `<prefix>:*`）；续跑仓开工先做模板差异对账。
+- `templates/check-route-prefix.mjs` 新增断言④：client.js 健康检查 fetch URL 必须与 API_PREFIX 同源（`/api/<prefix>/health`），写死 `<slug>-workbench/health` 报红。
+- `project-template/scripts/check-install.mjs` 安装配方：pnpm tgz 路径改绝对路径写法（`--dir` 相对路径以 profile 目录解析，`./release/…` 实测 ENOENT）。
+
 ## 未发布（2026-11-18，断点续跑定版：L120 + runner 记录会话 ID + 看守未完成分类）
 
 断点续跑定版（用户 2026-11-18 批准「续传与断点」三条优化）：AGENTS.md 新增「断点与续跑」一节——断点＝仓库状态（逐里程碑 commit+push＋PROGRESS.md＋MILESTONE-EVIDENCE 三样对齐）、被续跑先对齐断点再动手（禁重做已完成里程碑、禁改已有证据）、收尾未完成必须写阻塞分类（纯未完成可自动续跑／人工决定类逐项列明所待决定）。配套：流水线 runner 记录 codex 会话 ID、续跑优先 codex exec resume；看守对「正常退出但未完成」按阻塞分类处置。

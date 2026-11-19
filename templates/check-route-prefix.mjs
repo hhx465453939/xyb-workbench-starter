@@ -32,5 +32,12 @@ const hard = [...index.matchAll(/path:\s*'\/([a-z0-9-]+)'/g)].map((m) => m[1]).f
 if (hard.length) fails.push(`dsh/index.js 写死路由前缀：${hard.join(', ')}（应只用 '/' + API_PREFIX 与 API_BASE_HOSTED）`);
 if (!/path:\s*'\/'\s*\+\s*API_PREFIX/.test(index)) fails.push("dsh/index.js 未使用 '/' + API_PREFIX 注册 UI 路由");
 if (!new RegExp(`UI_ENTRY\\s*=\\s*'/${prefix}/'`).test(client)) fails.push(`src/client.js UI_ENTRY 不等于 /${prefix}/`);
+/* L136（traps-workbench 2026-11-20 夜班）：init 骨架把健康检查 fetch 写死成
+   `/api/<包名 slug>-workbench/health`，与 identity 的 API_PREFIX 漂移后装机即 404
+   （版本 chip 永远「连接中」）。健康检查路由必须与 API_PREFIX 同源。 */
+const healthHard = [...client.matchAll(/fetch\(\s*['\"]([^'\"]*\/health)['\"]/g)]
+  .map((m) => m[1])
+  .filter((u) => !u.includes(`/api/${prefix}/`) && !u.includes('${API_BASE}'));
+if (healthHard.length) fails.push(`client.js 健康检查 URL 与 API_PREFIX 不同源：${healthHard.join(', ')}（应为 /api/${prefix}/health）`);
 if (fails.length) { console.error('✗ 路由前缀同源断言失败：\n- ' + fails.join('\n- ')); process.exit(1); }
 console.log(`✓ 路由前缀同源（slug=${slug} · API_PREFIX=${prefix} · UI=/${prefix}/）`);

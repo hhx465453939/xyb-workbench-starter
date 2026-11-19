@@ -978,3 +978,14 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：cancer-policy-workbench `test/handling` 写死 `>=40` 条，随后基金会在同一轮里增删条目，测试连环红；`test/psych-support` 的 `>=13` 同样在补条目后失效。
 - **修法**：数据会持续增补的集合（政策库/基金会/病友社区/热线），断言写成 `>= N` 并点名必须存在的关键项（如“红十字/白求恩/荣基金/9958”“熊猫/086/四叶草/肺腾/妍康”）；精确计数只用于“防多/防漏”语义必要的场景。
 - **通用教训**：测试跟随语义（这些必须存在），不要跟随当天的条数。
+
+### L136 · init 交付物与 starter templates 已分叉：续跑仓开工先做「模板差异对账」，健康检查 URL 纳入路由前缀断言
+
+- 现场（traps-workbench 2026-11-20 夜班续跑轮）：2026-11-16 init 下发的骨架与 starter templates 最新版已有三处漂移——
+  ① `check-placeholder-free.mjs` 无 `FAMILY_TOKENS` 白名单，而 `check-version-literal` 约定 A 要求页面必须含 `__VERSION_DISPLAY__`，两闸门互斥红；
+  ② init 的 client.js 健康检查 fetch 写死 `/api/<slug>-workbench/health`，与 `lib/identity.js` 的 `API_PREFIX`（`/api/traps`）漂移，装机后版本 chip 永远「连接中」；
+  ③ 壳层消息命名空间用 `<pkg>:agent-draft`，业务页发的是 `<prefix>:*`，双方监听不到对方的 postMessage。
+- 规则：续跑仓（init 后隔夜再开工的仓）动手前先 diff 仓内 `scripts/*.mjs`、`lib/client.js` 与 starter `templates/` 对应文件；分叉处按模板最新版对齐，不许按旧骨架续写。
+- 可断言化：`templates/check-route-prefix.mjs` 新增断言④——client.js 里 `fetch('…/health')` 的 URL 必须含 `/api/<API_PREFIX>/`，写死旧 slug 直接红。
+- 安装配方同步修：`project-template/scripts/check-install.mjs` 的 pnpm 示例从 `./release/…` 改为「仓库绝对路径」（pnpm `--dir` 的相对路径以 profile 目录解析，相对写法 ENOENT，本夜实测两次）。
+- 回收自：traps-workbench M5/M6。

@@ -269,7 +269,9 @@ function installHint(live) {
     '装包命令（macOS / Linux，bash 或 zsh；目标版本明确支持本地 tgz 时才用，先查 `dsh plugin add --help`）：',
     `  export DSH_HOME="${live.home}"`,
     `  export PATH="$DSH_HOME/.desktop-bin:$PATH"   # macOS：用 app 自带的 pnpm / node`,
-    `  NODE_OPTIONS= npx --yes pnpm@10.15.0 --dir "$DSH_HOME/profiles/${live.profile}" add -w ./release/<包名>-<版本>.tgz`,
+    `  NODE_OPTIONS= npx --yes pnpm@10.15.0 --dir "$DSH_HOME/profiles/${live.profile}" add -w <仓库绝对路径>/release/<包名>-<版本>.tgz`,
+    `  # L136：tgz 路径必须写绝对路径——pnpm --dir 的相对路径以 profile 目录为基准解析，`,
+    `  # 写 ./release/… 会 ENOENT（traps-workbench 2026-11-20 夜班实测两次）。`,
     `  再把 ${NAME} 加进 "$DSH_HOME/profiles/${live.profile}/package.json" 的 dsh.profile.bundles，重启 Harness。`,
     '不要装到 ~/.dsh/profiles/*——Desktop 不读那里，装上也只是「配置层有了」。',
   ];
