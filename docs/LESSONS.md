@@ -942,3 +942,21 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-19 small-bowel / mpn Desktop 真机验收。试验详情「打开官方登记页 ↗」（target=_blank）点击无反应：A 家族外壳 iframe 的 sandbox 白名单只有 allow-scripts/same-origin/forms/downloads，**沙箱 iframe 里弹窗被静默拦截**，宿主与页面都无报错。
 - **修法**：① 外壳 iframe sandbox 补 `allow-popups allow-popups-to-escape-sandbox`；② 业务页外链点击先 `window.open`，返回空就 `parent.postMessage({type:'<pkg>:open-external', url})`；③ 壳层监听同一消息 `window.open(url,'_blank','noopener')` 代开（宿主 setWindowOpenHandler 仍把关）。small-bowel 0.2.4 / mpn 0.2.3 均已落。
 - **通用教训**：sandbox 白名单按「页面实际要做的动作」列全，弹窗能力缺失不报错——外链、下载、表单逐一真机点一遍；规范见 docs/40-A-FAMILY-PANEL-STANDARD.md §1.4。
+
+### L130 · 带 scope 的包名在 build-client 里必须 JSON.stringify，不能裸插值
+
+- **来源**：2026-11-19 cancer-policy-workbench（本夜）首次 `node --check lib/client.js` 直接 SyntaxError：模板 `templates/build-client.mjs` 写的是 `id: ${pkg.name},`，包名 `@xyb-community/cancer-policy-workbench` 被插成 `id: @xyb-community/...`，宿主加载必然失败。
+- **修法**：`id: ${JSON.stringify(pkg.name)},`；本夜已改 templates/build-client.mjs。
+- **通用教训**：任何把 package.json 值插进 JS 源的地方都按字面量编码（JSON.stringify），不要假定包名无 scope；`node --check lib/client.js` 是最便宜的拦截点，新仓第一天必须跑。
+
+### L131 · check-placeholder-free 与家族注入面自相矛盾（L839 的模板落地）
+
+- **来源**：2026-11-19 cancer-policy-workbench。L839 已记录“设计注入令牌被当漏替换”，但 starter 的 `templates/check-placeholder-free.mjs` 仍无白名单：`public/app.js` 的 `"__API_BASE__"`、`lib/client.js` 的 `__PANEL_LAYOUT__` 全被报红，而 `check-public-tokens` 又要求这些令牌必须存在。
+- **修法**：模板加 `FAMILY_TOKENS`（`__API_BASE__/__VERSION__/__VERSION_DISPLAY__/__BUILD_DATE__/__PANEL_LAYOUT__/__AGENT_PANE__`）扫描前剔除；白名单外 `__NAME__` 仍红，`--self-test` 仍红。
+- **通用教训**：两条门禁互相矛盾时，先按已登记口径修检查器（并补 self-test），不要删门禁或改断言；本夜已回流 templates/check-placeholder-free.mjs。
+
+### L132 · 业务页 API 令牌的注入面：字符串字面量 + 外链 JS 都要覆盖
+
+- **来源**：2026-11-19 cancer-policy-workbench。先写成 `window.__API_BASE__`（注入后 `window.` 语法错），又只对 .html 注入（app.js 永远带占位符）；两次都是 dev 在跑旧进程时看不出，重启后才暴露。
+- **修法**：`var apiBase = "__API_BASE__"`；服务端对 `.html` 与 `.js` 都调用注入；`check-public-tokens` + `check-static-token-inject` 双闸。
+- **通用教训**：改服务端注入逻辑后必须**重启 dev server** 再验；dev 全绿可能只是进程没换代码（本夜实际踩到）。

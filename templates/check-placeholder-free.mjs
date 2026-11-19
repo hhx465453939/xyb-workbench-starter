@@ -28,6 +28,10 @@ const PATTERNS = [
   [/TODO\s*[:：]\s*(项目|病种|替换|填)/g, '未落地的 TODO'],
 ]
 
+/* 家族注入面白名单（L839 / gpp-workbench 2026-11-14）：这些是设计上由构建/服务端注入的令牌，
+   不是初始化漏替换；白名单外的 __NAME__ 仍报红。 */
+const FAMILY_TOKENS = new Set(['__API_BASE__', '__VERSION__', '__VERSION_DISPLAY__', '__BUILD_DATE__', '__PANEL_LAYOUT__', '__AGENT_PANE__'])
+
 const TEXT_EXT = new Set(['.js', '.mjs', '.cjs', '.ts', '.json', '.html', '.css', '.yml', '.yaml', '.md', '.txt', '.patch'])
 
 function walk(dir, out = []) {
@@ -66,8 +70,10 @@ const hits = []
 for (const file of files) {
   let body
   try { body = readFileSync(file, 'utf8') } catch { continue }
+  let scannable = body
+  for (const token of FAMILY_TOKENS) scannable = scannable.split(token).join('')
   for (const [re, label] of PATTERNS) {
-    const m = body.match(re)
+    const m = scannable.match(re)
     if (m) hits.push(`${file.replace(ROOT + '/', '')}: ${label} → ${m[0].slice(0, 40)}`)
   }
 }
