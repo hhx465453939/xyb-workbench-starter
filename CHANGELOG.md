@@ -1,3 +1,7 @@
+## 未发布（2026-11-20，traps-workbench 续跑轮回流：L138 缩写词大小写陷阱 + L139 接线层死注入）
+
+- 从 traps-workbench 0.2.0 回收两条：L138 相关计数/匹配判据的缩写词必须大小写敏感+词边界（TRAPS 被字面 traps 污染 78→9，TRAPS/i 仍会命中小写）；L139 server.js UI 分支必须真调 static.js 注入（api-ready+版本占位），否则装机后业务区永远停在降级稿。
+- 下一轮直接受益：templates/check-trial-matching.mjs 已含三态/未核实断言；快照 source_statuses 表结构以 traps fetch 脚本为参照（query×source 终态，manifest.sourceStatusRows 对账）。
 ## 未发布（2026-11-20，traps-workbench 回流：L136 模板分叉对账 + 路由前缀断言④ + 安装配方绝对路径）
 
 - **lessons L136**（来源 traps-workbench M5/M6）：init 交付物与 starter templates 分叉（占位符白名单互斥红 / 健康检查 URL 写死旧 slug / 消息命名空间 `<pkg>:*` vs `<prefix>:*`）；续跑仓开工先做模板差异对账。

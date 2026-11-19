@@ -996,3 +996,17 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - 规则：被续跑时第一步 `git fetch origin && git log HEAD..origin/main --oneline`；远端领先即按其 PROGRESS/MILESTONE-EVIDENCE 对齐，禁止在旧基线上重做已完成里程碑。本地与远端分叉已发生时：不 force-push、不互相覆盖——本地线推成命名分支（如 night-<日期>），报告里并排写清两线差异，合并决策交用户。
 - 断言化建议：init/续跑提示词第 0 步固定为 fetch 对齐；`PROGRESS.md` 头部加「最近一次 origin/main 对齐时间」字段，检查器可断言该时间不晚于最近 fetch。
 - 回收自：traps-workbench 收尾（night-20261120 分支 vs origin/main）。
+
+
+### L138 · 相关计数与匹配判据里，缩写词必须大小写敏感+词边界（TRAPS→extracellular traps 两连坑）
+
+- **现场**（traps-workbench 2026-11-20 续跑轮）：快照「相关条数」用 /(TRAPS|…)/i 按标题统计得 78 条，实际相关仅 9 条——「Targeting neutrophil extracellular traps」的字面 traps 被命中；同日改判据时又把 TRAPS 整体加了 /i，小写 traps 再次命中非本病登记并产出「诊断」判据（单测抓出）。
+- **修法**：缩写词（TRAPS/TNFRSF1A 等全大写缩写）单独一组**大小写敏感**正则（TRAPS，不加 /i），英文短语与中文才用 /i；相关数、匹配判据、池过滤三处同规则，并在 manifest.relevantRule 里写明词边界口径。相关数虚高会写进界面「相关 Y 条」，是患者可见的假话。
+- **回收自**：traps-workbench M4/M5（check-trial-matching 自测 + test/trial-line）。
+
+### L139 · 「模块写好了没人调用」：server.js UI 分支必须真调静态注入（api-ready + 版本占位）
+
+- **现场**（traps-workbench 2026-11-20 续跑轮）：dsh/static.js 里 createStaticHandler（含 api-ready 注入与 __VERSION_DISPLAY__ 替换）已写好，但 server.js 的 UI 分支自己 readFileSync 裸发文件——静态检查全绿，装机后 host-bridge 永远拿不到 api-ready 标志，业务区永远停在「原型预览 · 未连接本机资料库」降级稿，读写全挂且无报错。
+- **修法**：注入逻辑抽成 static.js 的 injectHtmlFlags(html, uiVersion) 单一来源，server.js UI 分支对 .html 统一调用；验收不是「函数存在」而是「服务出来的 HTML 里真的有注入物」（curl UI 入口 grep 注入标志 + 版本号）。
+- **通用教训**：接线层的「 import 了但没用」不会红任何闸门；服务端形态验收必须打到 HTTP 响应体。
+- **回收自**：traps-workbench 装机副本实测（0.2.0）。
