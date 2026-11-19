@@ -160,6 +160,12 @@
 
 # CHANGELOG
 
+## 未发布（2026-11-19，mpn / small-bowel 外链验收回流：L129）
+
+- **L129**：A 家族外壳 iframe sandbox 白名单必须含 allow-popups allow-popups-to-escape-sandbox（缺它 target=_blank 被静默拦截）；业务页外链三步兜底 window.open → postMessage <pkg>:open-external → 壳层代开。
+- **规范**：40 号 §1.4 示例与要点、FULL-CYCLE-KICKOFF 工程纪律、PATIENT-DATA-AND-TRIALS-ONESHOT 试验线第 10 条、WORKBENCH-DEV-CHECKLIST §11 Q34b、PATIENT-WORKBENCH-IMPLEMENTATION-STANDARD 宿主段、AGENTS A 家族条目、ZERO-TO-DEV 装机段同步。
+- 回收自：small-bowel-workbench 0.2.4 / mpn-workbench 0.2.3（Desktop 真机验收反馈「打开官方登记页」点不开）。
+
 ## 未发布（2026-11-19，mpn / small-bowel Desktop 装机回流：L125–L128）
 
 - **lessons L125–L128**（来源 mpn-workbench / small-bowel-workbench 装机实测）：宿主 exact route 按路径去重（L121）；静态占位符注入必须覆盖外链 JS（L122）；装机验证三级漏斗——静态桩 ≠ 宿主激活 ≠ 页面可用（L123）；头部档案菜单须常驻「＋ 新建档案」直达入口（L124，用户验收反馈）。
