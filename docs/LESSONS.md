@@ -1010,3 +1010,47 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **修法**：注入逻辑抽成 static.js 的 injectHtmlFlags(html, uiVersion) 单一来源，server.js UI 分支对 .html 统一调用；验收不是「函数存在」而是「服务出来的 HTML 里真的有注入物」（curl UI 入口 grep 注入标志 + 版本号）。
 - **通用教训**：接线层的「 import 了但没用」不会红任何闸门；服务端形态验收必须打到 HTTP 响应体。
 - **回收自**：traps-workbench 装机副本实测（0.2.0）。
+
+### L136 · 升级重装前，profile 的 file: 依赖钉着旧 tgz——删旧 tgz 会让 pnpm add 整体 ENOENT
+
+- **来源**：2026-11-20 cancer-policy-workbench 0.2.2 重装。profile `package.json` 的依赖是 `file:…/…-0.2.1.tgz`；打包新版前 `rm` 掉旧 tgz，`pnpm add <新版.tgz>` 在解析既有依赖时就 ENOENT 失败，且 node_modules 里的包目录被留成缺失——工作台直接从 Desktop 消失（用户感知即"没有安装成功"）。
+- **修法**：先改 profile 依赖指向新 tgz（或保留旧 tgz 文件），再 `pnpm install`；`pnpm add` 用 `set -o pipefail` 看真实退出码。
+- **通用教训**：file: 依赖与磁盘文件是硬绑定；"装机 OK"的判断必须落到 `node_modules/<pkg>/package.json` 的 version，而不是 pnpm 的成功输出。
+
+### L137 · 客户端 INJECT 必须声明 `sessions`——currentSession 回退路径读 ctx.sessions 会炸激活
+
+- **来源**：2026-11-20 cancer-policy-workbench 装机。INJECT 只声明 desktopWorkbenches；Panel 渲染时 `currentSession()` 回退路径读 `host.sessions.list.getSnapshot()`，Cordis 守卫对未声明服务抛错 → "web boot: 1 entry did not activate"（且日志无插件名归属行，只有恢复循环里反复 "loading"）。Node 桩件（smoke-activate）用普通对象复现不出来。
+- **修法**：`INJECT = ['desktopWorkbenches', 'sessions']`（与 cervical/takayasu/cidp 家族基线一致）；新检查器 `templates/check-inject.mjs`（含 self-test）断言"读了 ctx.sessions 就必须声明"。
+- **通用教训**：Cordis 守卫在属性**访问**时即抛错，懒调用只在"不在激活路径上"时才安全；凡 Panel 渲染路径能触达的 ctx 服务，必须进 INJECT。
+
+### L140 · 跨仓同机续跑：shell cwd 会被重置——无 `cd` 的 ls/grep/wc 落在错误仓，会"看到"另一个仓的文件并误判质量
+
+- **现场**（gastrointestinal-bleeding-workbench 2026-11-20 晨间续跑）：会话在 myeloma-workbench 里启动，续跑另一仓时部分验证命令没带 `cd`，`ls prototypes/v0.2/`、`wc -c`、`grep <title>` 全部落回 myeloma 目录——于是"读出" myeloma 的原型（小浆宝标题、骨髓瘤 demo 数据、14/14 测试），据此判定续跑仓原型是"跨仓复制、缺三件套、check 全绿"，险些整页重写一份本来合格的产物。
+- **修法**：① 跨仓每条验证命令显式 `cd <目标仓绝对路径>`（或全部用绝对路径参数）；② 续跑第一动作先打「目标仓绝对路径 + git log -1 + 文件清单」三件套，结论挂在这三件上，不以单条命令输出为准；③ 判断"原型是否跨仓复制"前，用 `grep -c <本病种专名>` 与 `grep -c <其他病种专名>` 在**确认路径**下各跑一遍再下结论。
+- **通用教训**：目录推断类证据（ls/相对路径 grep）在多仓环境里是易错的；检查器与探针应打印自己的作用绝对路径，让"验的是哪个仓"永远可见。
+- **回收自**：gastrointestinal-bleeding-workbench 续跑轮（误判被复核纠正，未产生错误改动）。
+
+### L141 · 初始化器下发的 `serve-artifact.mjs` / `check-install.mjs` 可能停留在旧 server 签名——M5 换服务层后必须同批重写
+
+- **现场**（gastrointestinal-bleeding-workbench 2026-11-20）：家族新架构是 `createHandler({apiBase, publicDir, services}) + Workbench`，但 init 下发的 `scripts/serve-artifact.mjs` 仍按 `createHandler(store, {version, uiPrefix})` 与 `openStore({path})` 调用——按原样跑直接报错/白屏。它是「装机副本验收」的唯一入口，坏了就只剩源码树自测。
+- **修法**：M5 完成服务层时同批重写 `serve-artifact.mjs`：从包目录 import `createHandler`/`Workbench`/`lib/identity.js`，起 127.0.0.1 服务器；验收时必须用它服务**装机副本**再跑探针（源码树 13/13 不能替代）。
+- **通用教训**：模板脚本与服务层是同一批产物；换架构却不换验收脚本，等于把最关键的证据口关掉了。
+
+### L142 · 试验详情补全：只补相关记录、逐条 10s 超时、失败记账而不是猜
+
+- **现场**（同仓 M4）：`search_trials` 只回登记摘要，匹配要的年龄/性别/适应症在 `get_trial_detail`；对 250 条全量拉详情既慢又多无关记录。实测 61 条相关里 55 条成功、6 条 `ictrp` 超时——若把超时当空值继续算，会把「不知道」伪装成「不符合」。
+- **修法**：`scripts/enrich-*-trials-detail.mjs`：只遍历相关记录（与 manifest 同一 `lib/relevance.js`），逐条 `Promise.race` 10s，失败写 `manifest.detail.failedRecords`，字段留 NULL；计数不变、只回填哈希。重跑幂等。
+- **通用教训**：外部详情接口是「慢且会失败」的；匹配判据宁可少一项（待确认），不可把超时静默成阴性。
+
+### L143 · hash 路由项目也必须显式声明 ROUTES——否则 check-probe-coverage 判「找不到路由」，新页无人扫
+
+- **现场**（同仓 M5）：app.js 用 `VIEWS` 数组 + `showView()` 切页，没有 `ROUTES` 字面量；`check-probe-coverage.mjs` 解析不到路由直接红，且无法知道「新页有没有被探针覆盖」。
+- **修法**：顶部声明 `var ROUTES = ['home', 'records', 'clinical/match', ...];` 与 `ROUTE_PAGES` 映射，路由切换统一走 `goto()`；探针文件里逐条出现这些字符串并真实渲染断言（R1–R7），再加档案切换/八类/新建/记录/窄宽（R8–R12）。
+- **通用教训**：路由表不是给框架看的，是给闸门看的；没有它，探针全绿只说明它没扫到新页。
+
+### L144 · Cordis 守卫对**未声明服务的读取**也抛错，且发生在 apply 构建期——检查器不得给"懒访问"留豁免
+
+- **现场**（cancer-policy-workbench 0.2.2 → 0.2.3，2026-11-20）：客户端新增"配置目录"后，`buildPanel()` 入口写了 `const uiWorkspace = host?.uiWorkspace`，但 `INJECT = ['desktopWorkbenches','sessions']` 没声明 `uiWorkspace`。Cordis 守卫在 `apply()` 里直接抛 `cannot get property "uiWorkspace" without inject` → 客户端条目**不激活**；宿主 boot 审计只报一行 `web boot: 1 entry did not activate`（后面跟 `包名: loading`），界面照常打开、只有红字，工作台不进 dock。
+- **为什么检查器没拦住**：`check-inject.mjs` 当时把 `uiWorkspace` 未声明判为"懒访问（仅在交互回调读取）可接受"直接放行；而实际是**构建期读取**。同时正则 `(?:host|ctx|bridge)(\?\.)?\.` 抓不到 `host?.uiWorkspace`（`?.` 后没有第二个点）。
+- **修法**：`INJECT` 必须覆盖**实际读取的服务全集**（`desktopWorkbenches` / `sessions` / `uiWorkspace`）；`check-inject` 改为"任何 `host/ctx/bridge.<service>` 读取都必须声明"，修正 `?.` 正则，self-test 增加 `uiWorkspace` 反例并入 check 链。
+- **通用教训**：① 守卫是**读**也炸，不只是写；② 检查器里任何"这个可以豁免"的分支，都要问一句"真机抛错时它会不会放过去"；③ 这类激活失败在宿主侧只留一行 `包名: loading`，定位靠"同构复现"——用 Desktop 同版本 node + 完整 profile 副本 + Desktop 的 `--patch` 起一个无头宿主，把诊断打进 `globalThis` 再读。

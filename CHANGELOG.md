@@ -1,3 +1,16 @@
+## 未发布（2026-11-20，自 cancer-policy-workbench 回流：L144 + check-inject 全服务断言）
+
+- **lessons L144**：Cordis 守卫对**未声明服务的读取**也抛错，且发生在 apply 构建期 → 条目 `loading`、宿主只报一行 `1 entry did not activate`；检查器不得给"懒访问"留豁免。
+- `templates/check-inject.mjs`：改为「任何 `host/ctx/bridge.<service>` 读取都必须在 INJECT 声明」，修 `?.` 形式漏抓正则，self-test 增加 `uiWorkspace` 反例（旧版会把真错判为可接受）。
+
+## 未发布（2026-11-20，自 gastrointestinal-bleeding-workbench 回流：L141–L143 + 相关规则单一来源检查器）
+
+- **lessons L141**：init 下发的 serve-artifact/check-install 可能停留旧 server 签名；M5 换服务层须同批重写并服务装机副本验收。
+- **lessons L142**：试验详情补全只补相关记录、逐条 10s 超时、失败记账（manifest.detail.failedRecords），不把超时静默成阴性。
+- **lessons L143**：hash 路由项目必须显式声明 ROUTES，否则 check-probe-coverage 判无路由、新页无人扫。
+- `templates/check-relevance-single-source.mjs`（含 self-test）：相关正则只能来自 `lib/relevance.js`，fetch 与匹配池都 import，manifest.relevantRule 同批；反例可红。
+- `docs/LESSONS.md` L140（跨仓 cwd 误读）一并随本轮入库。
+
 ## 未发布（2026-11-20，traps-workbench 续跑轮回流：L138 缩写词大小写陷阱 + L139 接线层死注入）
 
 - 从 traps-workbench 0.2.0 回收两条：L138 相关计数/匹配判据的缩写词必须大小写敏感+词边界（TRAPS 被字面 traps 污染 78→9，TRAPS/i 仍会命中小写）；L139 server.js UI 分支必须真调 static.js 注入（api-ready+版本占位），否则装机后业务区永远停在降级稿。

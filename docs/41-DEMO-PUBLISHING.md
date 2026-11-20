@@ -24,3 +24,9 @@
 - 默认域名仅供开发测试，访问量大或内容未审核会被平台风控关停；对外传播请用自定义域名。
 - 临时加的自定义域名路由（如 `/demo`）验证完要 `tcb routes delete <domain> -p <path> --yes` 清理，不留死路由。
 - 费用/政策金额是公开口径整理，demo 页脚与“关于”里必须保留“以经办机构最新答复为准”。
+
+## 升级重装（0.2.2 实测补充）
+
+- profile 依赖钉的是旧 tgz 的 `file:` 路径：**重装新版前不要删旧 tgz 文件**；正确顺序是「打新版 tgz → 改 profile 依赖指向新 tgz（或直接 `pnpm add <新tgz>`）→ `pnpm install` → 校验 `node_modules/<pkg>/package.json` version」。
+- `pnpm add` 的真实退出码必须用 `set -o pipefail` 检查；DSH 的 pnpm runner 在失败时也会打"restored … projection(s)"，不能当成功。
+- 装机成功的判据（verify-desktop-load）：`dshHomePath 数据目录已生成` + 结论"宿主已加载该工作台"；宿主工作台清单不含本包时，以数据目录痕迹为准。
