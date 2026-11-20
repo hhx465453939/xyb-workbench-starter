@@ -1,3 +1,8 @@
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L153–L157）
+
+- `docs/LESSONS.md`：+L153 node:sqlite 与 better-sqlite3 的 API 面差（无 db.transaction 助手、索引列禁 rowid）与冻结 schema 的前向修正姿势；+L154 dev-server 必须按宿主同款全前缀挂 API（裸路径仅 curl 副入口）；+L155 mind/情绪类 kind 的 UI 载荷必须同源携带 type 与「默认私密」（否则服务端校验拒收/refreshBootstrap 覆盖掉私密）；+L156 静态 MIME 表点号统一与宿主 SPA 兜底 content-type 判据；+L157 package.json files 必须点名 public/schema/research 三件（防静默空库）。
+- 回收仓版本：0.2.0-rc.1（五件门禁 + audit 40/40 + HTTP 形态 PR1–PR4 全过）。
+
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
 - `scripts/check-placeholder-free.mjs`：新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发 / 暂未实现），命中即红；降级说明行以 `placeholder-allow` 注释逃生；self-test 注入双夹具（模板占位符 + 功能桩文案）验证两态都能红。背景：用户在真机发现 MinerU tab 只能弹"占位"提示——六部件纯函数齐备但路由/UI 零接线，全家族检查链此前扫不出这类缺口。

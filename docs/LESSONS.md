@@ -1115,3 +1115,33 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-21 用户在真机点「设置 → 文档解析（MinerU）」填 Token，得到 toast「本原型未接入 MinerU，Token 表单为占位」——gpp 时代就把 MinerU 六部件只做成了纯函数（dsh/mineru.js），路由/服务/UI 全没接，还通过了全家族检查链：**检查器只扫"模板占位符"，不扫"功能占位文案"**。
 - **修法**：① 六部件全链接通（token 落盘 ~/.gt-workbench/0600 → 状态掩码回显 → 导入登记 → 本机抽取/云解析 → 候选 in_use=0 → 核对入库 + duplicate 进 conflicts）；② check-placeholder-free 新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发…），命中即红，降级说明行用 `placeholder-allow` 注释逃生；③ 设置三 tab 的探针断言逐 tab 走真实动作（有 API 形态保存成功回显），不许只看 tab 名存在。
 - **回收自**：glanzmann-thrombasthenia-workbench 0.2.0（MinerU 六部件 E2E：本机抽取 3 候选→核对→事实层+1；重复 3 条进 conflicts；云链真实调用 mineru.net 且 401 分类 UNAUTHORIZED）。
+
+### L153 · node:sqlite 与 better-sqlite3 的 API 面差两处：无 db.transaction() 助手、索引列不允许 rowid
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench（CSCC 夜班）——dsh/store.js 用 node:22 内置 `node:sqlite`，`db.transaction(fn)`（better-sqlite3 API）直接 TypeError；0001 迁移里 `CREATE INDEX ... ON entries(profile_key, kind, rowid)` 被 SQLite 拒绝（rowid 不可作索引列），迁移中断导致服务起不来。
+- **修法**：① 事务改 `db.exec('BEGIN') / COMMIT / ROLLBACK` 手工包（catch 里 ROLLBACK）；② schema 审一遍「索引列含 rowid」的写法；③ migrate 的 ledger（name+sha256）继续保留——本次缺陷在**任何装机库应用之前**发现，按「前向透明修正」处理：修 0001 + freeze-contract 补记（未发布、无用户库），另开 0002 补充索引；**发布后**一律只加迁移不改历史。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.1（store.test 断言「改坏 hash 必须拒绝开库」）。
+
+### L154 · dev-server 必须按宿主同款「全前缀」挂 API；裸路径只能当 curl 副入口
+
+- **来源**：CSCC 夜班 PR2：页面 fetch 走全前缀 `/api/<slug>/subjects`（与宿主一致），dev-server 却把 handler 挂在根路径 → 404，浏览器侧表现为「创建失败：HTTP 404」，curl 测裸路径却全绿——两形态不同源，静默分叉。
+- **修法**：同一 services + 同一 handler 双前缀分发：`url.startsWith('/api/<slug>') → prefix 版 handler；否则裸前缀版`。禁止复制一份业务逻辑给 dev-server。
+- **回收自**：squamous-cell-skin-cancer-workbench scripts/dev-server.mjs。
+
+### L155 · mind/情绪类 kind：服务端必填字段（type）必须在 UI 载荷同源携带；「默认私密」必须写进服务端载荷
+
+- **来源**：CSCC 夜班 PR4 两轮返工——感受表单只提交 {mood, detail}，服务端 addEntry 校验 kind=mind 必填 data.type → 400；且本地乐观 push 带 isPrivate:true、服务端载荷没带 → refreshBootstrap 用服务端 is_private=0 覆盖本地，用户看到「没存上」，私密形同虚设。
+- **修法**：① UI 组载荷时补 `data.type='feelings'|'behaviors'`；② 「默认私密」在**载荷层**写 `data.isPrivate=true`（本地 push 与 POST 同一对象）；③ 服务端校验失败必须 400 可读（缺字段报字段名），前端失败分支保留表单并 toast，禁止静默。
+- **回收自**：squamous-cell-skin-cancer-workbench（PR1–PR4 探针抓到）。
+
+### L156 · 静态服务 MIME 表按扩展名查表要点号统一；宿主 SPA 兜底用 content-type 区分
+
+- **来源**：CSCC server.test 抓到：`types[ext]` 查 `.html` 键传了 `'html'` → index.html 以 octet-stream 下发，宿主 HEAD 探活判「非 text/html」直接把界面判死。
+- **修法**：查表前统一 `ext.startsWith('.') ? ext : '.'+ext`；宿主形态 UI 探活 = HEAD 200 且 content-type 含 text/html（SPA 兜底也是 text/html，同族口径：非 text/html 即坏）。
+- **回收自**：squamous-cell-skin-cancer-workbench test/server.test.mjs。
+
+### L157 · pack 三件套（public/schema/research）必须在 package.json `files` 里点名
+
+- **来源**：CSCC pack-contents.test：`files` 数组只有 dsh/lib/assets → public/index.html 没进 tgz，装进去就是「服务活着、业务区空白」的静默空库。
+- **修法**：`files` 点名 public、schema（迁移要在装机库上跑）、research（快照是临床线的包内事实源）；真打一次包断言清单（pack-contents.test 已随 init 下发，别删）。
+- **回收自**：squamous-cell-skin-cancer-workbench（starter check-workbench-package 的源码树规则⑦看不进 tgz）。
