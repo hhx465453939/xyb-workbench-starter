@@ -8,12 +8,12 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { after, test } from 'node:test';
 
 const CHECKER = resolve(import.meta.dirname, '..', 'scripts', 'check-workbench-package.mjs');
-const tmpRoot = mkdtempSync(join(homedir(), '.xyb-starter-checker-'));
+const tmpRoot = mkdtempSync(join(tmpdir(), 'xyb-starter-checker-'));
 after(() => { try { rmSync(tmpRoot, { recursive: true, force: true }); } catch { /* 清理失败不影响结论 */ } });
 
 let seq = 0;

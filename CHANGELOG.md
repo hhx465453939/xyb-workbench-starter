@@ -1,3 +1,9 @@
+## 未发布（2026-11-20，自 factor-vii-deficiency-workbench 回流：L145–L151 + 面板订阅/按钮负控）
+
+- `templates/check-agent-pane-contract.mjs`：会话订阅必须位于 `Panel` 组件体内、主 `return` 之前；无会话时按钮不得因会话真值 disabled。新增订阅错位与 `!hasConversation` 禁用两个可红反例，正例零误报。
+- `docs/LESSONS.md` L145–L151：首启不猜患者目录、realpath/符号链接双检、私密主记录与 source 同步、毫秒备份名、运行期 `demo/` 打包、按能力细分离线禁用、面板订阅位置。
+- 下一轮直接受益：新工作台初始化后即带更强面板检查器；M5/M6 可直接引用首启、目录切换、备份与 tgz 打包反例。
+
 ## 未发布（2026-11-20，自 cancer-policy-workbench 回流：L144 + check-inject 全服务断言）
 
 - **lessons L144**：Cordis 守卫对**未声明服务的读取**也抛错，且发生在 apply 构建期 → 条目 `loading`、宿主只报一行 `1 entry did not activate`；检查器不得给"懒访问"留豁免。

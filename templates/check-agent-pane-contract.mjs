@@ -22,6 +22,8 @@
  *  8 已有会话只开/收不重复创建（ownedSession 早退或 creatingRef 防连点）——2026-11-12 用户点名第 4 条
  *  9 取消提示 + 失败原因反馈（宿主取消 pickDirectory 返回 undefined，已在 asar 源码核对）
  * 10 创建成功后 setPaneOpen(true)（用户点名第 3 条的静态可判部分）
+ * 11 会话订阅必须在 Panel 组件体内、主 return 之前；放在别的组件或 return 之后等于死代码
+ * 12 无会话时按钮不得因 !hasConversation 被 disabled；只允许在宿主无 newSession 能力时禁用
  *
  * 用法：
  *   node scripts/check-agent-pane-contract.mjs [项目目录]
@@ -77,7 +79,7 @@ export function inspect(source, { hasGenerated = true, generatedSource = null } 
      （2026-11-12 用户点名复核第 4 条：重复点击不得重复创建）。 */
   {
     const hasNew = /newSession\s*\(/.test(code)
-    const guardOk = /ownedSession\s*\(\)[\s\S]{0,400}?return/.test(code) || /creatingRef\.(current|value)/.test(code)
+    const guardOk = /ownedSession\s*\([^)]*\)[\s\S]{0,400}?return/.test(code) || /creatingRef\.(current|value)/.test(code)
     if (hasNew && !guardOk) f.push('8 newSession 调用前缺少「已有会话早退/防重复创建」守卫')
     else if (hasNew) o.push('8 已有会话只开/收，不重复创建 ✓')
   }
@@ -96,6 +98,32 @@ export function inspect(source, { hasGenerated = true, generatedSource = null } 
     const opened = /setPaneOpen\s*\(\s*true\s*\)|paneOpen\s*=\s*true|setPaneVisible\s*\(\s*true\s*\)/.test(code)
     if (hasNew && !opened) f.push('10 会话创建成功后未把原生面板置为打开')
     else if (hasNew) o.push('10 创建成功后打开原生面板 ✓')
+  }
+
+  /* 11 订阅位置的静态近似检查：Panel 内必须出现 subscribe，且主 return 之前。
+     2026-11-11 实测：把订阅塞进别的组件或 return 之后，新建/切换会话后界面不刷新，
+     还可能连带破坏原组件的焦点回收与滚动恢复。 */
+  {
+    const panelStart = code.search(/function\s+Panel\s*\(/)
+    const mainReturn = code.search(/return\s+h\s*\(\s*['"]main['"]/)
+    const subscribe = code.search(/\.subscribe(?:\?\.)?\s*\(/)
+    if (panelStart >= 0 && mainReturn >= 0 && subscribe >= 0) {
+      if (!(subscribe > panelStart && subscribe < mainReturn)) {
+        f.push('11 会话订阅不在 Panel 组件体内、主 return 之前（换会话后不会重渲染）')
+      } else o.push('11 会话订阅位于 Panel 组件体内、主 return 之前 ✓')
+    } else if (/newSession\s*\(/.test(code)) {
+      f.push('11 无法定位 Panel 主 return 与会话订阅的相对位置（请按模板保留可静态识别的结构）')
+    }
+  }
+
+  /* 12 无会话时必须允许点击创建。只有服务缺少 newSession 能力时才可禁用。 */
+  {
+    const disabledExpressions = [...code.matchAll(/disabled\s*:\s*([^,\n}]+)/g)].map((m) => m[1])
+    const bad = disabledExpressions.find((expression) =>
+      /!(?:hasConversation|activeSession|ownedSession|conversation)/.test(expression)
+      && !/(?:canOpenSession|canCreateSession|newSession)/.test(expression))
+    if (bad) f.push(`12 无会话时按钮被 disabled（${bad.trim()}），onClick 创建分支永远走不到`)
+    else o.push('12 无会话时按钮未被会话真值 disabled ✓')
   }
 
   /* 7 生成物同步（只在有 lib/client.js 时判；自测用参数注入）
@@ -122,25 +150,68 @@ if (SELF_TEST) {
     "<div onClick={open}>AI 对话</div>",
   ].join('\n')
   const good = [
-    "const session = useSession()",
-    "onClick(() => { if (!session) { const id = service.defaultWorkspace?.()?.workspaceId; service.newSession(id) } })",
-    "service.subscribe(() => rerender())",
-    "postMessage({ type: 'thymic:agent-draft', prompt, send: false })",
-    "if (ownedSession()) { setPaneOpen(true); return }",
-    "const id = await service.newSession(ws); if (!id) { setNote('已取消资料目录选择，没有创建会话。可以再次点击重试。'); return } setPaneOpen(true)",
-    "catch (e) { setNote(`没能调起会话：${e.message}。可以再次点击重试。`) }",
+    "function Panel({ conversation }) {",
+    "  useEffect(() => service?.subscribe?.(() => rerender()), [])",
+    "  if (ownedSession(currentSession())) { setPaneOpen(true); return h('main', null, conversation) }",
+    "  const create = async () => {",
+    "    try {",
+    "      const ws = service.defaultWorkspace?.()?.workspaceId",
+    "      const id = await service.newSession(ws)",
+    "      if (!id) { setNote('已取消资料目录选择，没有创建会话。可以再次点击重试。'); return }",
+    "      setPaneOpen(true)",
+    "      postMessage({ type: 'thymic:agent-draft', prompt, send: false })",
+    "    } catch (e) { setNote(`没能调起会话：${e.message}。可以再次点击重试。`) }",
+    "  }",
+    "  return h('main', null, h('button', { onClick: create, disabled: !canCreateSession }, conversation))",
+    "}",
+  ].join('\n')
+  const placementGood = [
+    "function Panel({ conversation }) {",
+    "  useEffect(() => service?.subscribe?.(() => rerender()), [])",
+    "  if (ownedSession()) { setPaneOpen(true); return h('main', null, conversation) }",
+    "  const id = await service.newSession(defaultWorkspace?.()?.workspaceId)",
+    "  if (!id) { setNote('已取消资料目录选择，没有创建会话。可以再次点击重试。'); return }",
+    "  setPaneOpen(true)",
+    "  postMessage({ type: 'thymic:agent-draft', prompt, send: false })",
+    "  catch (e) { setNote(`没能调起会话：${e.message}。可以再次点击重试。`) }",
+    "  return h('main', null, conversation)",
+    "}",
+  ].join('\n')
+  const placementBad = [
+    "function Other() { service.subscribe(() => rerender()) }",
+    "function Panel({ conversation }) {",
+    "  const id = await service.newSession(defaultWorkspace?.()?.workspaceId)",
+    "  setPaneOpen(true)",
+    "  return h('main', null, conversation)",
+    "  service.subscribe(() => rerender())",
+    "}",
+  ].join('\n')
+  const disabledBad = [
+    "function Panel({ conversation }) {",
+    "  useEffect(() => service?.subscribe?.(() => rerender()), [])",
+    "  const id = await service.newSession(defaultWorkspace?.()?.workspaceId)",
+    "  setPaneOpen(true)",
+    "  return h('main', null, h('button', { onClick: openAgent, disabled: !hasConversation }, 'AI 对话'))",
+    "}",
   ].join('\n')
   const r1 = inspect(bad, { hasGenerated: true, generatedSource: 'const X = __CUSTOM_FRAME__' })
   const r2 = inspect(good, { hasGenerated: true, generatedSource: 'const X = true' })
   const r3 = inspect(good, { hasGenerated: true, generatedSource: 'const __VERSION__ = "0.2.1"\nconst __AGENT_PANE__ = {"default":0.35}\nconst AGENT = __AGENT_PANE__' })
+  const r4 = inspect(placementGood, { hasGenerated: true, generatedSource: 'const X = true' })
+  const r5 = inspect(placementBad, { hasGenerated: true, generatedSource: 'const X = true' })
+  const r6 = inspect(disabledBad, { hasGenerated: true, generatedSource: 'const X = true' })
   const badCaught = r1.fails.length >= 8
-  const goodClean = r2.fails.length === 0
+  const goodClean = r2.fails.length === 0 && r4.fails.length === 0
   const declarationsClean = r3.fails.length === 0
+  const placementCaught = r5.fails.some((x) => x.startsWith('11 '))
+  const disabledCaught = r6.fails.some((x) => x.startsWith('12 '))
   console.log(`${badCaught ? 'PASS' : 'FAIL'}  self-test 反例被抓住（${r1.fails.length} 条）`)
   for (const x of r1.fails) console.log('   · ' + x)
-  console.log(`${goodClean ? 'PASS' : 'FAIL'}  self-test 正例零误报${goodClean ? '' : '：' + r2.fails.join(' | ')}`)
+  console.log(`${placementCaught ? 'PASS' : 'FAIL'}  self-test 订阅放在 return 之后会被抓住`)
+  console.log(`${disabledCaught ? 'PASS' : 'FAIL'}  self-test 无会话按钮 disabled 会被抓住`)
+  console.log(`${goodClean ? 'PASS' : 'FAIL'}  self-test 正例零误报${goodClean ? '' : '：' + JSON.stringify([...r2.fails, ...r4.fails])}`)
   console.log(`${declarationsClean ? 'PASS' : 'FAIL'}  self-test 已声明的注入常量不误报${declarationsClean ? '' : '：' + r3.fails.join(' | ')}`)
-  process.exit(badCaught && goodClean && declarationsClean ? 0 : 2)
+  process.exit(badCaught && goodClean && declarationsClean && placementCaught && disabledCaught ? 0 : 2)
 }
 
 const candidates = ['src/client.js', 'lib/client.js'].map((p) => join(target, p))

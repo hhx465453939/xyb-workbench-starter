@@ -1054,3 +1054,45 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **为什么检查器没拦住**：`check-inject.mjs` 当时把 `uiWorkspace` 未声明判为"懒访问（仅在交互回调读取）可接受"直接放行；而实际是**构建期读取**。同时正则 `(?:host|ctx|bridge)(\?\.)?\.` 抓不到 `host?.uiWorkspace`（`?.` 后没有第二个点）。
 - **修法**：`INJECT` 必须覆盖**实际读取的服务全集**（`desktopWorkbenches` / `sessions` / `uiWorkspace`）；`check-inject` 改为"任何 `host/ctx/bridge.<service>` 读取都必须声明"，修正 `?.` 正则，self-test 增加 `uiWorkspace` 反例并入 check 链。
 - **通用教训**：① 守卫是**读**也炸，不只是写；② 检查器里任何"这个可以豁免"的分支，都要问一句"真机抛错时它会不会放过去"；③ 这类激活失败在宿主侧只留一行 `包名: loading`，定位靠"同构复现"——用 Desktop 同版本 node + 完整 profile 副本 + Desktop 的 `--patch` 起一个无头宿主，把诊断打进 `globalThis` 再读。
+
+### L145 · 首次启动不能替用户猜患者资料目录；选择失败必须保留旧库
+
+- **来源**：factor-vii-deficiency-workbench 0.2.0-rc.2（2026-11-20）。首启若自动创建 `patient-data/`，用户会误以为已经在受保护目录写入；目录切换若先关闭旧库再打开新库，选择失败会把当前工作台一起打空。
+- **修法**：`Workbench.open(configRoot)` 首启只创建 `settings.sqlite`，患者库保持未选择；`setDirectory()` 先打开并迁移候选库，成功后写 `app_setting` 并切引用，失败关闭候选、保留旧库。测试同时断言首启无 `patient-data/`、重开回显、失败后旧根不变。
+- **回收自**：factor-vii-deficiency-workbench `test/write-api.test.mjs`。
+
+### L146 · 路径拒绝要查 realpath 与每一段符号链接，大小写之外的“同目录”绕行
+
+- **来源**：同仓目录闸门。只比较用户输入字符串时，主目录内指向桌面、下载根或 tmp 的符号链接可以绕过拒绝清单。
+- **修法**：先拒绝主目录、桌面、下载根、tmp/系统临时目录，再对输入路径和最近存在祖先做 `realpath`，逐段检查 `lstat().isSymbolicLink()`；客户端与服务端各跑一次。负控必须真注入 symlink 并报红。
+- **回收自**：factor-vii-deficiency-workbench `workspaceProblems()` 与 symlink 单测。
+
+### L147 · 私密出口必须覆盖主记录及其 source 镜像，每次状态变更都留 revision
+
+- **来源**：同仓隐私写库闭环。仅改 `patient_record.is_private` 而漏掉 `source_document`，导出/AI/看板三条出口就可能出现“记录私密、来源公开”的分叉。
+- **修法**：同一事务中同步主记录、来源、专属表的隐私位，递增主记录 revision，并写入 `record_revision` 快照；测试逐表核对，不只断言 API 返回值。
+- **回收自**：factor-vii-deficiency-workbench `setPrivacy()` 与 `privacy updates persist a revision and mirrored source state`。
+
+### L148 · 备份名必须含毫秒并在碰撞时追加序号，不能只信“同一秒不会两次”
+
+- **来源**：同仓备份恢复。秒级时间戳在同一操作链中连续创建两次会得到同名文件，后一次覆盖前一次；恢复入口也可能找不到刚创建的安全副本。
+- **修法**：名称形如 `patient-YYYYMMDD-HHmmssSSS.sqlite`，若仍存在则追加 `-NN`；恢复前再存安全副本，测试创建两次并分别恢复。
+- **回收自**：factor-vii-deficiency-workbench `createBackup()` / `restoreBackup()` 回归。
+
+### L149 · 运行期需要 `demo/` 就必须进 package files；演示数据和真实快照分开
+
+- **来源**：M4/M5 反复出现的“本地能跑、tgz 装了找不到 demo builder”。运行期 import 的 `demo/` 不在 `files` 白名单时，宿主激活阶段才会失败。
+- **修法**：package `files` 显式包含 `dsh`, `lib`, `public`, `schema`, `demo`, `research`, `assets`；pack 内容测试逐项断言。界面中虚构示例、真实快照、自建患者记录分别标注，禁止混表。
+- **通用检查**：tgz 解包后核对且未替换占位符为 0。
+
+### L150 · 离线时禁用范围必须按能力细分：本机读写不应被网络状态一起关掉
+
+- **来源**：同仓临床检索与 MinerU。浏览器 `navigator.onLine=false` 时只应禁用官方外链和云端解析；本机 SQLite 检索、记录、目录和收藏仍应可用，否则离线首先失去患者最需要的回顾能力。
+- **修法**：UI 按动作判定能力来源；在线通道失败返回独立 `FAILED` 对象，不覆盖本地快照结果。探针断言离线文案、禁用控件集合和本机路径仍可达。
+- **回收自**：factor-vii-deficiency-workbench `runTrialSearch()` / 在线通道分离测试。
+
+### L151 · 原生 AI 面板检查要落在 Panel 内且在 return 前；“有 subscribe 字样”不算订阅
+
+- **来源**：同仓面板修复与全家族 2026-11-11 教训。把订阅放进其他组件或主 `return` 之后是死代码，还可能连带破坏原本的焦点/滚动恢复。
+- **修法**：`templates/check-agent-pane-contract.mjs` 增加两项静态反例：订阅位置必须在 `function Panel` 与主 `return h('main'...)` 之间；无会话时按钮只在宿主缺 `newSession` 能力时 disabled。两项都带 `--self-test` 负控。
+- **回收自**：factor-vii-deficiency-workbench 面板修复，已同步 starter 模板。
