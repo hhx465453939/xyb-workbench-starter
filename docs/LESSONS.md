@@ -1108,3 +1108,9 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：gpp-workbench 的 migrate-public.mjs BOOT 块里是 pericarditis 的 `__PERI_APP__`/CRP picked 表（gpp 自己被 guard 掩盖没炸），GT 移植时再被带上。残留在构建注入块里，check-derivative-leftovers 的静态词表扫不到（符号名不在禁词表）。
 - **修法**：移植后 grep 注入块与探针里的 `window.__*_APP__`、picked 表键名，必须与本仓 identity slug 同源；check-derivative-leftovers 建议加规则：BOOT 块内 `__<X>_APP__` 必须匹配 `<slug>_APP__`。
 - **回收自**：glanzmann-thrombasthenia-workbench（M5 修复记录）。
+
+### L152 · 「模块占位」是用户红线：设置页每个 tab 都要真链路，检查器必须能扫出来
+
+- **来源**：2026-11-21 用户在真机点「设置 → 文档解析（MinerU）」填 Token，得到 toast「本原型未接入 MinerU，Token 表单为占位」——gpp 时代就把 MinerU 六部件只做成了纯函数（dsh/mineru.js），路由/服务/UI 全没接，还通过了全家族检查链：**检查器只扫"模板占位符"，不扫"功能占位文案"**。
+- **修法**：① 六部件全链接通（token 落盘 ~/.gt-workbench/0600 → 状态掩码回显 → 导入登记 → 本机抽取/云解析 → 候选 in_use=0 → 核对入库 + duplicate 进 conflicts）；② check-placeholder-free 新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发…），命中即红，降级说明行用 `placeholder-allow` 注释逃生；③ 设置三 tab 的探针断言逐 tab 走真实动作（有 API 形态保存成功回显），不许只看 tab 名存在。
+- **回收自**：glanzmann-thrombasthenia-workbench 0.2.0（MinerU 六部件 E2E：本机抽取 3 候选→核对→事实层+1；重复 3 条进 conflicts；云链真实调用 mineru.net 且 401 分类 UNAUTHORIZED）。
