@@ -118,3 +118,40 @@
 5. demo 与真实档案共用列表但无 `is_demo` 标记 → 导出、统计、切档串数据。
 6. 私密切换只改前端不落库，或落库失败不回退 → 用户点了没反应/以为已私密。
 7. 把「演示态」写成「已保存」——必须逐字区分「已保存到本机数据库」与「演示态，刷新重置」。
+
+---
+
+## 5. MinerU 六部件全链——一次做对（2026-11-21 用户红线回流）
+
+> 背景：有仓把 MinerU 只做成纯函数（路由/服务/UI 零接线），设置页点保存只弹「Token 表单为占位」，用户在真机点破。**所有模块必须完整上线，不允许无特殊原因占位；检查器必须能扫出这类缺口。** 六部件逐部件口径与接线清单见 starter `templates/MINERU-SIXPART.md`；云链 REST 契约见 docs/18 号。
+
+### 5.1 开工自检（缺一项先补再往下）
+
+| # | 自检 | 一眼验证 | 不合格的后果 |
+| --- | --- | --- | --- |
+| 5.1a | Token 只落用户目录密钥文件（0600），env 仅兜底且排在其后；状态回显只出后 4 位 + 来源 + 路径 | `curl <prefix>/mineru/status` | Token 进仓库/日志明文 = 事故 |
+| 5.1b | 六个路由都在：status/token/import/extract-local/cloud/verify，且 `dsh/index.js` 与 `dev-server` services 双形态同源 | grep 双文件 | 装机后写入全挂 |
+| 5.1c | 候选 in_use=0，核对采用才进事实层；重复（同指标同日同值）进 conflicts 不重复写 | `test` 断言 | 解析重复入库污染数据 |
+| 5.1d | UI 无占位：设置 MinerU tab 真表单 + 导入解析子页四步指南 + 知情条款（点"开始解析"才上传） | `check-placeholder-free` 0 命中 | 用户看到「表单为占位」= 返工 |
+
+### 5.2 实现（可复制 starter 模板件）
+
+1. `templates/mineru-cloud-extract.mjs`：云链全函数（病种无关，复制进 `dsh/mineru.js`）。
+2. `templates/mineru-markdown-candidates.mjs`：markdown→候选（**热点：METRIC_ALIASES 按病种重写，metricCode = metric_defs.db 键**；排除项返回 null；具体别名排前面——「糖化血红蛋白」先于「血红蛋白」）。
+3. `templates/mineru-zip.js`：零依赖 ZIP → `lib/zip.js`。
+4. Workbench 构造器收 `tokenFile` 覆盖（测试隔离）；**每一处 resolve 都要传**（漏一处读到别的来源，测试互相污染）。
+5. `readJsonBody` 加上限参数：extract-local ≤8MB、cloud ≤32MB（base64），超限回 413。
+
+### 5.3 测试与报数
+
+- `test/mineru.test.mjs` 四组：token 落盘→掩码回显；导入→本机抽取→核对入库→事实层 +1；重复再核→全进 conflicts；云通道无 token → `NO_TOKEN`（临时清 env 隔离）。
+- 探针：CFG 组逐 tab 走真动作（MinerU tab 断言 Token 输入+保存+四步指南+零桩文案）；MINERU 组断言导入子页四步指南+文件选择+知情条款。
+- 报数模板行：`MinerU：token E2E ✓ · 本机抽取 N 候选→核对入库 N+冲突 N · 云链 kind=…（成功路径实测 ✓/未实测-原因）· 桩文案扫描 0 命中`。
+
+### 5.4 已知反模式（出现即返工）
+
+1. 「本原型未接入 MinerU，Token 表单为占位」类 toast——功能没做完却上线。
+2. 只做纯函数不接路由/services/UI（检查链全绿也是假绿——防漏靠 check-placeholder-free 第二段）。
+3. 云通道没实现或写死"永远不会调"——必须真实实现并如实分类（401→UNAUTHORIZED 不重试；无 token→NO_TOKEN）；云端成功路径未实测要写明原因（Token 无效属账号问题）。
+4. 只改 `dev-server` 不改 `dsh/index.js`（装机后写入全挂）。
+5. Token 回显明文或进日志——只出后 4 位。

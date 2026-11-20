@@ -3,6 +3,14 @@
 - `docs/LESSONS.md`：+L153 node:sqlite 与 better-sqlite3 的 API 面差（无 db.transaction 助手、索引列禁 rowid）与冻结 schema 的前向修正姿势；+L154 dev-server 必须按宿主同款全前缀挂 API（裸路径仅 curl 副入口）；+L155 mind/情绪类 kind 的 UI 载荷必须同源携带 type 与「默认私密」（否则服务端校验拒收/refreshBootstrap 覆盖掉私密）；+L156 静态 MIME 表点号统一与宿主 SPA 兜底 content-type 判据；+L157 package.json files 必须点名 public/schema/research 三件（防静默空库）。
 - 回收仓版本：0.2.0-rc.1（五件门禁 + audit 40/40 + HTTP 形态 PR1–PR4 全过）。
 
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+
+- `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
+- `templates/mineru-cloud-extract.mjs` / `templates/mineru-markdown-candidates.mjs` / `templates/mineru-zip.js`：可复制件（云链全函数病种无关；markdown→候选热点=按病种重写 METRIC_ALIASES；零依赖 ZIP）。
+- `prompts/PATIENT-DATA-AND-TRIALS-ONESHOT.md` §5：MinerU 六部件一次做对（自检 4 条 + 模板件 + 测试/报数 + 反模式 5 条）。
+- `prompts/WORKBENCH-DEV-CHECKLIST.md` §15：MU1–MU7 检查点（占位即返工）。
+- `docs/18-MINERU-PARSING.md`：接线断言节 + 参考实现补 glanzmann-thrombasthenia-workbench 0.2.0。
+
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
 - `scripts/check-placeholder-free.mjs`：新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发 / 暂未实现），命中即红；降级说明行以 `placeholder-allow` 注释逃生；self-test 注入双夹具（模板占位符 + 功能桩文案）验证两态都能红。背景：用户在真机发现 MinerU tab 只能弹"占位"提示——六部件纯函数齐备但路由/UI 零接线，全家族检查链此前扫不出这类缺口。
@@ -21,6 +29,14 @@
 - `docs/LESSONS.md` L145–L151：首启不猜患者目录、realpath/符号链接双检、私密主记录与 source 同步、毫秒备份名、运行期 `demo/` 打包、按能力细分离线禁用、面板订阅位置。
 - 下一轮直接受益：新工作台初始化后即带更强面板检查器；M5/M6 可直接引用首启、目录切换、备份与 tgz 打包反例。
 
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+
+- `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
+- `templates/mineru-cloud-extract.mjs` / `templates/mineru-markdown-candidates.mjs` / `templates/mineru-zip.js`：可复制件（云链全函数病种无关；markdown→候选热点=按病种重写 METRIC_ALIASES；零依赖 ZIP）。
+- `prompts/PATIENT-DATA-AND-TRIALS-ONESHOT.md` §5：MinerU 六部件一次做对（自检 4 条 + 模板件 + 测试/报数 + 反模式 5 条）。
+- `prompts/WORKBENCH-DEV-CHECKLIST.md` §15：MU1–MU7 检查点（占位即返工）。
+- `docs/18-MINERU-PARSING.md`：接线断言节 + 参考实现补 glanzmann-thrombasthenia-workbench 0.2.0。
+
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
 - `scripts/check-placeholder-free.mjs`：新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发 / 暂未实现），命中即红；降级说明行以 `placeholder-allow` 注释逃生；self-test 注入双夹具（模板占位符 + 功能桩文案）验证两态都能红。背景：用户在真机发现 MinerU tab 只能弹"占位"提示——六部件纯函数齐备但路由/UI 零接线，全家族检查链此前扫不出这类缺口。
@@ -37,6 +53,14 @@
 
 - **lessons L144**：Cordis 守卫对**未声明服务的读取**也抛错，且发生在 apply 构建期 → 条目 `loading`、宿主只报一行 `1 entry did not activate`；检查器不得给"懒访问"留豁免。
 - `templates/check-inject.mjs`：改为「任何 `host/ctx/bridge.<service>` 读取都必须在 INJECT 声明」，修 `?.` 形式漏抓正则，self-test 增加 `uiWorkspace` 反例（旧版会把真错判为可接受）。
+
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+
+- `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
+- `templates/mineru-cloud-extract.mjs` / `templates/mineru-markdown-candidates.mjs` / `templates/mineru-zip.js`：可复制件（云链全函数病种无关；markdown→候选热点=按病种重写 METRIC_ALIASES；零依赖 ZIP）。
+- `prompts/PATIENT-DATA-AND-TRIALS-ONESHOT.md` §5：MinerU 六部件一次做对（自检 4 条 + 模板件 + 测试/报数 + 反模式 5 条）。
+- `prompts/WORKBENCH-DEV-CHECKLIST.md` §15：MU1–MU7 检查点（占位即返工）。
+- `docs/18-MINERU-PARSING.md`：接线断言节 + 参考实现补 glanzmann-thrombasthenia-workbench 0.2.0。
 
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
@@ -58,6 +82,14 @@
 - `templates/check-relevance-single-source.mjs`（含 self-test）：相关正则只能来自 `lib/relevance.js`，fetch 与匹配池都 import，manifest.relevantRule 同批；反例可红。
 - `docs/LESSONS.md` L140（跨仓 cwd 误读）一并随本轮入库。
 
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+
+- `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
+- `templates/mineru-cloud-extract.mjs` / `templates/mineru-markdown-candidates.mjs` / `templates/mineru-zip.js`：可复制件（云链全函数病种无关；markdown→候选热点=按病种重写 METRIC_ALIASES；零依赖 ZIP）。
+- `prompts/PATIENT-DATA-AND-TRIALS-ONESHOT.md` §5：MinerU 六部件一次做对（自检 4 条 + 模板件 + 测试/报数 + 反模式 5 条）。
+- `prompts/WORKBENCH-DEV-CHECKLIST.md` §15：MU1–MU7 检查点（占位即返工）。
+- `docs/18-MINERU-PARSING.md`：接线断言节 + 参考实现补 glanzmann-thrombasthenia-workbench 0.2.0。
+
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
 - `scripts/check-placeholder-free.mjs`：新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发 / 暂未实现），命中即红；降级说明行以 `placeholder-allow` 注释逃生；self-test 注入双夹具（模板占位符 + 功能桩文案）验证两态都能红。背景：用户在真机发现 MinerU tab 只能弹"占位"提示——六部件纯函数齐备但路由/UI 零接线，全家族检查链此前扫不出这类缺口。
@@ -74,6 +106,14 @@
 
 - 从 traps-workbench 0.2.0 回收两条：L138 相关计数/匹配判据的缩写词必须大小写敏感+词边界（TRAPS 被字面 traps 污染 78→9，TRAPS/i 仍会命中小写）；L139 server.js UI 分支必须真调 static.js 注入（api-ready+版本占位），否则装机后业务区永远停在降级稿。
 - 下一轮直接受益：templates/check-trial-matching.mjs 已含三态/未核实断言；快照 source_statuses 表结构以 traps fetch 脚本为参照（query×source 终态，manifest.sourceStatusRows 对账）。
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+
+- `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
+- `templates/mineru-cloud-extract.mjs` / `templates/mineru-markdown-candidates.mjs` / `templates/mineru-zip.js`：可复制件（云链全函数病种无关；markdown→候选热点=按病种重写 METRIC_ALIASES；零依赖 ZIP）。
+- `prompts/PATIENT-DATA-AND-TRIALS-ONESHOT.md` §5：MinerU 六部件一次做对（自检 4 条 + 模板件 + 测试/报数 + 反模式 5 条）。
+- `prompts/WORKBENCH-DEV-CHECKLIST.md` §15：MU1–MU7 检查点（占位即返工）。
+- `docs/18-MINERU-PARSING.md`：接线断言节 + 参考实现补 glanzmann-thrombasthenia-workbench 0.2.0。
+
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L152 + 功能桩文案扫描）
 
 - `scripts/check-placeholder-free.mjs`：新增第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发 / 暂未实现），命中即红；降级说明行以 `placeholder-allow` 注释逃生；self-test 注入双夹具（模板占位符 + 功能桩文案）验证两态都能红。背景：用户在真机发现 MinerU tab 只能弹"占位"提示——六部件纯函数齐备但路由/UI 零接线，全家族检查链此前扫不出这类缺口。

@@ -316,3 +316,17 @@
 | PC6 | 新档案从空记录开始也能用（不能"没有 demo 数据就白屏"） | 新建后逐页点一遍 |
 | PC7 | 闸门：`node scripts/check-patient-create.mjs .` 绿，`--self-test` 能红 | 跑一次；删掉新建入口应变红 |
 
+## 15. MinerU（六部件全链，占位即返工 · 2026-11-21 回流）
+
+> 背景：有仓 MinerU 只有纯函数、设置页只能弹「表单为占位」，检查链全绿——假绿。逐部件口径见 starter `templates/MINERU-SIXPART.md`；提示词见 [PATIENT-DATA-AND-TRIALS-ONESHOT §5](PATIENT-DATA-AND-TRIALS-ONESHOT.md)。
+
+| # | 检查点 | 怎么验 |
+| --- | --- | --- |
+| MU1 | Token 只落用户目录密钥文件（0600），env 仅兜底；回显只出后 4 位+来源+路径 | `curl <prefix>/mineru/status`；设置页肉眼核 |
+| MU2 | 六路由齐且双形态 services 同源（status/token/import/extract-local/cloud/verify） | grep `dsh/index.js` 与 `dev-server.mjs` |
+| MU3 | 本机抽取 E2E：txt 报告 → N 候选 → 核对入库 → 事实层 +N（method 标「文档解析」） | `test/mineru.test.mjs` 或 dev-server 冒烟数字 |
+| MU4 | 重复候选 → import_conflicts，事实层不重复 | 同上（二次抽取重核断言） |
+| MU5 | 云链真实实现（申请→上传→轮询→解包），错误分类 NO_TOKEN/UNAUTHORIZED/TIMEOUT/TASK_FAILED/NETWORK | 无 token 断言 NO_TOKEN；401 分类如实；成功路径未实测要写原因 |
+| MU6 | UI：设置 tab 真表单（零占位）+ 导入解析子页四步指南 + 知情条款（点"开始解析"才上传） | 探针 CFG/MINERU 组 + 桩文案扫描 0 命中 |
+| MU7 | 桩文案检查器在链内且 `--self-test` 双夹具能红 | `node scripts/check-placeholder-free.mjs . --self-test` |
+

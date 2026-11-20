@@ -4,7 +4,7 @@
 
 > **v2（2026-10-22）**：v1 把 Token 优先级写成「显式 > 环境变量 > 密钥文件」，这正是后来"换了新 Token 还是 401"的根因，本版纠正为 **文件优先**；同时补入「设置页手工维护 Token」的读写契约、密钥文件落点、Token 失效的出路、LaTeX 单位与 `.html` 拒收。§1 是可以直接照着做的原则清单，后面各节是依据。
 
-参考实现：社区仓库 `xyb-openharness-dsh-plugins/xyb-workbench`（`dsh/mineru.js`、`dsh/settings.js`、`dsh/extract.js`）、`xyb-community/cervical-workbench`（`dsh/settings.js` 的可写版本 + `dsh/routes.js` 的设置接口）、`lib/zip.js`（零依赖 ZIP 读取）。可复用的纯函数示例：[mineru-labparse-align.mjs](../examples/mineru-labparse-align.mjs)。
+参考实现：社区仓库 `xyb-openharness-dsh-plugins/xyb-workbench`（`dsh/mineru.js`、`dsh/settings.js`、`dsh/extract.js`）、`xyb-community/cervical-workbench`（`dsh/settings.js` 的可写版本 + `dsh/routes.js` 的设置接口）、`xyb-community/glanzmann-thrombasthenia-workbench` 0.2.0（**六部件全链实测回流**：token 落盘/状态掩码/本机抽取 E2E/核对入库+冲突清单/云链 401 分类）、`lib/zip.js`（零依赖 ZIP 读取，模板件 `templates/mineru-zip.js`）。六部件接线清单与防占位断言见 `templates/MINERU-SIXPART.md`。可复用的纯函数示例：[mineru-labparse-align.mjs](../examples/mineru-labparse-align.mjs)。
 
 ## 0. 本版改了什么（v1 → v2，先看这张表，别按旧版做）
 
@@ -446,3 +446,13 @@ Token 有三个使用者：解析客户端要读、路由要给状态、设置�
 **跨工作台口径同步（2026-10-22）**：默认模型统一 `pipeline`、flash 作废、Token 文件优先、唯一密钥文件 `mineru.json`。这四条是**家族级决定**，单个工作台不要自行改回，要改先改这里和 CHANGELOG。
 
 **诚实边界**：这一份文档里写"实测"的，都是真跑过的（乳腺癌 2026-10-17、GIST 2026-10-21、宫颈 2026-10-22）；写"未验证"的（扫描件 OCR、双栏、多页、额度限流、断网重试）不要在新项目文档里写成已支持。
+
+
+## 六部件接线断言与防占位（2026-11-21，GT 实测回流）
+
+> 用户红线（2026-11-21）：所有模块必须完整上线，不允许无特殊原因占位。MinerU 只做纯函数（路由/服务/UI 缺层）= 未交付。
+
+1. **六部件全链**：密钥（0600 文件 + env 兜底 + 掩码回显）→ 导入登记 → 抽取（本机必 E2E；云链代码必做，成功路径需有效 Token）→ 候选落库（in_use=0）→ 核对入库（重复进 conflicts）→ 状态回显。逐部件口径与接线清单见 `templates/MINERU-SIXPART.md`。
+2. **占位=返工**：`check-placeholder-free.mjs` 第二段「UI 功能桩文案」扫描（表单为占位 / 本仓未接入 MinerU / 模块没有开发…），`--self-test` 双夹具（模板占位符 + 功能桩文案）必须都能红；降级说明行用 `placeholder-allow` 注释逃生。
+3. **探针逐 tab 走真动作**：设置三 tab 不许只断言 tab 名存在——MinerU tab 必须断言 Token 输入+保存动作+四步指南存在且零桩文案；导入子页断言四步指南+文件选择+知情条款。
+4. **报数模板新增一行**：`MinerU：token E2E ✓/✗ · 本机抽取 N 候选→核对入库 N+冲突 N · 云链 kind=…（成功路径实测 ✓/未实测-原因）· 桩文案扫描 0 命中`。
