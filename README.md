@@ -95,6 +95,16 @@ dsh-wb-cli doctor
 4. **建强约束再动手**：按 `docs/DEV-REQUIREMENTS-<日期>.md` 写一份本癌种的强约束文档（范围、照抄样板的产品要求、硬约束 H1–Hn、本轮明确未做、我替你定的默认值）。**没有这份文档就不写业务代码**，这是最省返工的一步。
 5. **把提示词整段交给 Agent**：[ZERO-TO-DEV](prompts/ZERO-TO-DEV.md) 填四个空（癌种中文名 / 英文名 / 目标目录 / 样板基准），剩下的按闸口推进——3.1 调研 + 患者流程 + schema + 多通道临床库 + **指南与分级（G1 出处 / G2 节奏 / G3 分级）** + HTML 原型，**第一次人工确认**；3.2 开发版，逐页 parity + 面板默认在右可拖 + 顶栏开关；3.3 dsh-desktop 实测；确认后 push + 把踩到的坑回流到脚手架。
 
+### 新领取任务：孵化仓与推送（认领后必读）
+
+认领成功（issue 带 `claimed` 标签）后的仓库动作，按这个顺序：
+
+1. **建孵化仓**：`gh repo create xyb-openharness-dsh-plugins/<英文>-workbench --private`（私有，孵化期不公开）。HTTPS 443 超时就换 SSH 通道 clone——路径类网络问题换路重试，不计入错误上限。
+2. **推送节奏**：逐里程碑 commit + push（断点续跑三件套一起推：git log、`PROGRESS.md`、`docs/MILESTONE-EVIDENCE.md`）；空仓首推用 `git push -u origin main`。推的是**你自己的孵化仓**；脚手架 starter 的回流 commit 只落本地，未经授权不推 starter。
+3. **push ≠ 发布**：push 到孵化私有仓、打 tag、GitHub Release、市场投稿是四件独立的事；M7/M8 只备草稿到 `docs/release-draft/`，没有明确授权不执行。
+4. **推送前自检**：`git status` 不夹带 `.secrets`、`node_modules`、真实病历数据；`release/*.tgz` 按仓内约定决定是否入库；CHANGELOG / 版本四处同源随包一起推。
+5. **推送不是验证**：push 成功 ≠ 装机 ≠ 实机可用；那些仍按 V2/V3 单独取证，未做的写"未验证"。
+
 ### 什么时候跑 `audit`，怎么跑
 
 `check` 与 `audit` 分工不同，跑的时间点也不同。下面这张表就是全部要求：
