@@ -858,6 +858,7 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-14 gpp-workbench 0.2.0→0.2.1 重装。`pnpm add` 只改 lock，`dependencies` 里的 `file:/…0.2.0.tgz` 仍指向已删除的旧包，下次解析直接报 ENOENT。
 - **修法**：重装前先 JSON 改写 profiles/web/package.json 的对应依赖 spec 指向新 tgz，再 pnpm add；或 pnpm add 后立即核对 dependency spec 与磁盘包一致。
 - **通用教训**：file: 依赖是"路径即版本"，删旧包前先检查是否有 profile/lockfile 还引用它。
+- **复发记录**：2026-11-21 neuroblastoma-workbench rc.1→rc.2 重装再次命中（spec 仍指 rc.1 旧 tgz，pnpm add 直接 ENOENT）——重装脚本必须先 JSON 改写 spec。
 
 ### L116 · 快照对账表 source_statuses 必须由 fetch 脚本同轮落库（新库 no such table）
 
