@@ -1145,3 +1145,9 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：CSCC pack-contents.test：`files` 数组只有 dsh/lib/assets → public/index.html 没进 tgz，装进去就是「服务活着、业务区空白」的静默空库。
 - **修法**：`files` 点名 public、schema（迁移要在装机库上跑）、research（快照是临床线的包内事实源）；真打一次包断言清单（pack-contents.test 已随 init 下发，别删）。
 - **回收自**：squamous-cell-skin-cancer-workbench（starter check-workbench-package 的源码树规则⑦看不进 tgz）。
+
+### L158 · apply 的 config 是第二个参数：apply(ctx, config)，不写 ctx.config
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench 真机——DSH Desktop HMR 日志 `Error: cannot get property "config" without inject`，插件激活失败、业务区打不开。修复前装机副本已在 profile 里安静地失败（dshHomePath 目录都不生成）。
+- **修法**：`export function apply(ctx, config = {})`，从第二参读 `config.root`；behcet dsh/index.js 注释里早有此教训（2026-10-25 家族实测），但写新入口时最容易从零手写再踩。verify-desktop-load 的日志判据能抓到这类激活失败——装机后必跑，不能只信 smoke-activate（桩件环境给得了 config）。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.3。

@@ -1,3 +1,7 @@
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L158）
+
+- `docs/LESSONS.md`：+L158 apply 的 config 是第二个参数（apply(ctx, config)，不写 ctx.config）——真机 HMR `cannot get property "config" without inject`；装机核验必须跑 verify-desktop-load 的宿主日志判据，不能只信 smoke-activate 桩件。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L153–L157）
 
 - `docs/LESSONS.md`：+L153 node:sqlite 与 better-sqlite3 的 API 面差（无 db.transaction 助手、索引列禁 rowid）与冻结 schema 的前向修正姿势；+L154 dev-server 必须按宿主同款全前缀挂 API（裸路径仅 curl 副入口）；+L155 mind/情绪类 kind 的 UI 载荷必须同源携带 type 与「默认私密」（否则服务端校验拒收/refreshBootstrap 覆盖掉私密）；+L156 静态 MIME 表点号统一与宿主 SPA 兜底 content-type 判据；+L157 package.json files 必须点名 public/schema/research 三件（防静默空库）。
