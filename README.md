@@ -93,7 +93,10 @@ dsh-wb-cli doctor
 2. **答前置问题**：`dsh-wb-cli init --prepare`，填「服务谁 / 什么场景 / 一次任务怎么完成」。这三个答案会写进生成项目的 SPEC 骨架，后面不再问第二遍。
 3. **生成项目**：`dsh-wb-cli init <english>-workbench`，得到标准目录与文档体系（AGENTS / spec / docs / templates / prompts / 版本与检查脚本）。进目录先 `npm run check`，能在干净状态下全绿才算基线没坏。
 4. **建强约束再动手**：按 `docs/DEV-REQUIREMENTS-<日期>.md` 写一份本癌种的强约束文档（范围、照抄样板的产品要求、硬约束 H1–Hn、本轮明确未做、我替你定的默认值）。**没有这份文档就不写业务代码**，这是最省返工的一步。
-5. **把提示词整段交给 Agent**：[ZERO-TO-DEV](prompts/ZERO-TO-DEV.md) 填四个空（癌种中文名 / 英文名 / 目标目录 / 样板基准），剩下的按闸口推进——3.1 调研 + 患者流程 + schema + 多通道临床库 + **指南与分级（G1 出处 / G2 节奏 / G3 分级）** + HTML 原型，**第一次人工确认**；3.2 开发版，逐页 parity + 面板默认在右可拖 + 顶栏开关；3.3 dsh-desktop 实测；确认后 push + 把踩到的坑回流到脚手架。
+5. **How to start：把基准提示词整段发给 Agent**（两条起跑路径，按是否有人值守选）：
+   - **夜间无人值守 / 从 BACKLOG 自动领取** → 用 [NIGHT-SHIFT-FULLSTACK](prompts/NIGHT-SHIFT-FULLSTACK.md)（**基准提示词，随版本维护**）：整段复制，只改 `【病种】` 与可选的 `【面板修复目标仓】`；含四条不可让步、六件门禁、移植与升版纪律、孵化仓推送、MinerU 六部件要点、面板九条、D1–D4 流水线、八段报告。M0–M9 执行主体见 [FULL-CYCLE-KICKOFF](prompts/FULL-CYCLE-KICKOFF.md)。
+   - **单癌种有人值守、逐步确认** → 用 [ZERO-TO-DEV](prompts/ZERO-TO-DEV.md) 填四个空（癌种中文名 / 英文名 / 目标目录 / 样板基准）：3.1 调研 + 患者流程 + schema + 多通道临床库 + **指南与分级（G1 出处 / G2 节奏 / G3 分级）** + HTML 原型，**第一次人工确认**；3.2 开发版逐页 parity；3.3 dsh-desktop 实测；确认后 push + 把踩到的坑回流到脚手架。
+   - **两条路径共用同一套闸口与门禁**；提示词文档是维护基准——每轮实战踩坑回流进对应文件并递增版本号（变更记 CHANGELOG），不要在会话里口头改。
 
 ### 新领取任务：孵化仓与推送（认领后必读）
 

@@ -8,6 +8,7 @@
 - 回收仓版本：0.2.0-rc.1（五件门禁 + audit 40/40 + HTTP 形态 PR1–PR4 全过）。
 
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+- `prompts/NIGHT-SHIFT-FULLSTACK.md` v1.0→**v2.0**：整段内嵌提示词按 2026-11-20 夜班实测升级（四条不可让步+六件门禁+§3.5 移植与升版纪律+§1.5 孵化仓推送+MinerU 要点+任务 B 先验证后修+八段报告），并定为**夜班基准提示词**（维护规则写入文件头）；README「新手五步」第 5 步改为双路径 how-to-start（夜班基准提示词 / ZERO-TO-DEV 人工确认版）。
 - `README.md` 新增「新领取任务：孵化仓与推送」小节（建私有孵化仓 / 逐里程碑推送三件套 / push≠发布 / 推送前自检），夜间无人值守提示词与之对应。
 
 - `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
@@ -35,6 +36,7 @@
 - 下一轮直接受益：新工作台初始化后即带更强面板检查器；M5/M6 可直接引用首启、目录切换、备份与 tgz 打包反例。
 
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+- `prompts/NIGHT-SHIFT-FULLSTACK.md` v1.0→**v2.0**：整段内嵌提示词按 2026-11-20 夜班实测升级（四条不可让步+六件门禁+§3.5 移植与升版纪律+§1.5 孵化仓推送+MinerU 要点+任务 B 先验证后修+八段报告），并定为**夜班基准提示词**（维护规则写入文件头）；README「新手五步」第 5 步改为双路径 how-to-start（夜班基准提示词 / ZERO-TO-DEV 人工确认版）。
 - `README.md` 新增「新领取任务：孵化仓与推送」小节（建私有孵化仓 / 逐里程碑推送三件套 / push≠发布 / 推送前自检），夜间无人值守提示词与之对应。
 
 - `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
@@ -61,6 +63,7 @@
 - `templates/check-inject.mjs`：改为「任何 `host/ctx/bridge.<service>` 读取都必须在 INJECT 声明」，修 `?.` 形式漏抓正则，self-test 增加 `uiWorkspace` 反例（旧版会把真错判为可接受）。
 
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+- `prompts/NIGHT-SHIFT-FULLSTACK.md` v1.0→**v2.0**：整段内嵌提示词按 2026-11-20 夜班实测升级（四条不可让步+六件门禁+§3.5 移植与升版纪律+§1.5 孵化仓推送+MinerU 要点+任务 B 先验证后修+八段报告），并定为**夜班基准提示词**（维护规则写入文件头）；README「新手五步」第 5 步改为双路径 how-to-start（夜班基准提示词 / ZERO-TO-DEV 人工确认版）。
 - `README.md` 新增「新领取任务：孵化仓与推送」小节（建私有孵化仓 / 逐里程碑推送三件套 / push≠发布 / 推送前自检），夜间无人值守提示词与之对应。
 
 - `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
@@ -90,6 +93,7 @@
 - `docs/LESSONS.md` L140（跨仓 cwd 误读）一并随本轮入库。
 
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+- `prompts/NIGHT-SHIFT-FULLSTACK.md` v1.0→**v2.0**：整段内嵌提示词按 2026-11-20 夜班实测升级（四条不可让步+六件门禁+§3.5 移植与升版纪律+§1.5 孵化仓推送+MinerU 要点+任务 B 先验证后修+八段报告），并定为**夜班基准提示词**（维护规则写入文件头）；README「新手五步」第 5 步改为双路径 how-to-start（夜班基准提示词 / ZERO-TO-DEV 人工确认版）。
 - `README.md` 新增「新领取任务：孵化仓与推送」小节（建私有孵化仓 / 逐里程碑推送三件套 / push≠发布 / 推送前自检），夜间无人值守提示词与之对应。
 
 - `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
@@ -115,6 +119,7 @@
 - 从 traps-workbench 0.2.0 回收两条：L138 相关计数/匹配判据的缩写词必须大小写敏感+词边界（TRAPS 被字面 traps 污染 78→9，TRAPS/i 仍会命中小写）；L139 server.js UI 分支必须真调 static.js 注入（api-ready+版本占位），否则装机后业务区永远停在降级稿。
 - 下一轮直接受益：templates/check-trial-matching.mjs 已含三态/未核实断言；快照 source_statuses 表结构以 traps fetch 脚本为参照（query×source 终态，manifest.sourceStatusRows 对账）。
 ## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：MinerU 六部件模板件 + 提示词/检查点）
+- `prompts/NIGHT-SHIFT-FULLSTACK.md` v1.0→**v2.0**：整段内嵌提示词按 2026-11-20 夜班实测升级（四条不可让步+六件门禁+§3.5 移植与升版纪律+§1.5 孵化仓推送+MinerU 要点+任务 B 先验证后修+八段报告），并定为**夜班基准提示词**（维护规则写入文件头）；README「新手五步」第 5 步改为双路径 how-to-start（夜班基准提示词 / ZERO-TO-DEV 人工确认版）。
 - `README.md` 新增「新领取任务：孵化仓与推送」小节（建私有孵化仓 / 逐里程碑推送三件套 / push≠发布 / 推送前自检），夜间无人值守提示词与之对应。
 
 - `templates/MINERU-SIXPART.md`：六部件接线清单（密钥/导入/抽取/候选/核对/状态回显逐部件口径 + 路由与 services 双形态清单 + 五条实测坑）。
