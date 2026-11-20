@@ -95,9 +95,11 @@ async function main() {
     // 打开第一层。用程序化 click：puppeteer 的 page.click 会先 scrollIntoViewIfNeeded，
     // 那会把主页滚回顶部，A5 就永远测不出真问题（2026-10-25 实测踩到）。
     const clickSel = sel => page.evaluate(s => document.querySelector(s)?.click(), sel)
-    await clickSel('[data-open="pathology"]')
+    /* 2026-11-21 GT 回收：无「病理」报告的仓（如出血病）入口是 data-open="report"；
+       点击入口兼容两种，self-test 夹具仍用 pathology（只验证探针会报红）。 */
+    await page.evaluate(() => (document.querySelector('[data-open="report"]') || document.querySelector('[data-open="pathology"]'))?.click())
     await page.waitForSelector('.pv-overlay:not([hidden])', { timeout: 3000 })
-    await page.waitForFunction(() => document.querySelector('.pv-title')?.textContent?.includes('病理报告'), { timeout: 3000 }).catch(() => {})
+    await page.waitForFunction(() => document.querySelector('.pv-title')?.textContent?.includes('报告'), { timeout: 3000 }).catch(() => {})
 
     // A1 宿主不滚，滚的是 .pv-body
     // 2026-10-25 改严两次，记下来免得以后再踩：
@@ -157,7 +159,7 @@ async function main() {
       open: !document.querySelector('.pv-overlay')?.hidden,
       title: document.querySelector('.pv-title')?.textContent?.trim()
     }))
-    check('A2', 'Esc 只退一层（三层 → 二层，浮层仍开）', afterEsc.open && afterEsc.title === '病理报告', JSON.stringify(afterEsc))
+    check('A2', 'Esc 只退一层（三层 → 二层，浮层仍开）', afterEsc.open && (afterEsc.title === '病理报告' || afterEsc.title === '报告详情'), JSON.stringify(afterEsc))
 
     // A3 浏览器返回键等价 back()
     await page.goBack()

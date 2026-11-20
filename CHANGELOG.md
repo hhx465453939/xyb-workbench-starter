@@ -1,13 +1,34 @@
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L150–L151 + 探针兼容性修复）
+
+- `templates/check-ui-parity.mjs`：补 `existsSync` import（trial-match 条件拼接在缺 import 的仓直接 ReferenceError，检查链整条红）。
+- `scripts/probe-page-view.mjs`：整页视图点击入口兼容 `data-open="report"|"pathology"`——无「病理」报告的病种仓（出血病等）此前探针必超时；A2 断言同时接受「病理报告/报告详情」标题。
+- `scripts/probe-disease-primer.mjs`：`--self-test` 不再被「缺 --url 失败关闭」guard 拦截（guard 本意防拿参考页当原型证据，自测夹具不该被拦）。
+- `docs/LESSONS.md`：L150（BSD sed `\b` 静默漏改与字段/路由键分离修法）、L151（BOOT 块两层身份漂移与 picked 表核对）。
+
 ## 未发布（2026-11-20，自 factor-vii-deficiency-workbench 回流：L145–L151 + 面板订阅/按钮负控）
 
 - `templates/check-agent-pane-contract.mjs`：会话订阅必须位于 `Panel` 组件体内、主 `return` 之前；无会话时按钮不得因会话真值 disabled。新增订阅错位与 `!hasConversation` 禁用两个可红反例，正例零误报。
 - `docs/LESSONS.md` L145–L151：首启不猜患者目录、realpath/符号链接双检、私密主记录与 source 同步、毫秒备份名、运行期 `demo/` 打包、按能力细分离线禁用、面板订阅位置。
 - 下一轮直接受益：新工作台初始化后即带更强面板检查器；M5/M6 可直接引用首启、目录切换、备份与 tgz 打包反例。
 
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L150–L151 + 探针兼容性修复）
+
+- `templates/check-ui-parity.mjs`：补 `existsSync` import（trial-match 条件拼接在缺 import 的仓直接 ReferenceError，检查链整条红）。
+- `scripts/probe-page-view.mjs`：整页视图点击入口兼容 `data-open="report"|"pathology"`——无「病理」报告的病种仓（出血病等）此前探针必超时；A2 断言同时接受「病理报告/报告详情」标题。
+- `scripts/probe-disease-primer.mjs`：`--self-test` 不再被「缺 --url 失败关闭」guard 拦截（guard 本意防拿参考页当原型证据，自测夹具不该被拦）。
+- `docs/LESSONS.md`：L150（BSD sed `\b` 静默漏改与字段/路由键分离修法）、L151（BOOT 块两层身份漂移与 picked 表核对）。
+
 ## 未发布（2026-11-20，自 cancer-policy-workbench 回流：L144 + check-inject 全服务断言）
 
 - **lessons L144**：Cordis 守卫对**未声明服务的读取**也抛错，且发生在 apply 构建期 → 条目 `loading`、宿主只报一行 `1 entry did not activate`；检查器不得给"懒访问"留豁免。
 - `templates/check-inject.mjs`：改为「任何 `host/ctx/bridge.<service>` 读取都必须在 INJECT 声明」，修 `?.` 形式漏抓正则，self-test 增加 `uiWorkspace` 反例（旧版会把真错判为可接受）。
+
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L150–L151 + 探针兼容性修复）
+
+- `templates/check-ui-parity.mjs`：补 `existsSync` import（trial-match 条件拼接在缺 import 的仓直接 ReferenceError，检查链整条红）。
+- `scripts/probe-page-view.mjs`：整页视图点击入口兼容 `data-open="report"|"pathology"`——无「病理」报告的病种仓（出血病等）此前探针必超时；A2 断言同时接受「病理报告/报告详情」标题。
+- `scripts/probe-disease-primer.mjs`：`--self-test` 不再被「缺 --url 失败关闭」guard 拦截（guard 本意防拿参考页当原型证据，自测夹具不该被拦）。
+- `docs/LESSONS.md`：L150（BSD sed `\b` 静默漏改与字段/路由键分离修法）、L151（BOOT 块两层身份漂移与 picked 表核对）。
 
 ## 未发布（2026-11-20，自 gastrointestinal-bleeding-workbench 回流：L141–L143 + 相关规则单一来源检查器）
 
@@ -17,10 +38,24 @@
 - `templates/check-relevance-single-source.mjs`（含 self-test）：相关正则只能来自 `lib/relevance.js`，fetch 与匹配池都 import，manifest.relevantRule 同批；反例可红。
 - `docs/LESSONS.md` L140（跨仓 cwd 误读）一并随本轮入库。
 
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L150–L151 + 探针兼容性修复）
+
+- `templates/check-ui-parity.mjs`：补 `existsSync` import（trial-match 条件拼接在缺 import 的仓直接 ReferenceError，检查链整条红）。
+- `scripts/probe-page-view.mjs`：整页视图点击入口兼容 `data-open="report"|"pathology"`——无「病理」报告的病种仓（出血病等）此前探针必超时；A2 断言同时接受「病理报告/报告详情」标题。
+- `scripts/probe-disease-primer.mjs`：`--self-test` 不再被「缺 --url 失败关闭」guard 拦截（guard 本意防拿参考页当原型证据，自测夹具不该被拦）。
+- `docs/LESSONS.md`：L150（BSD sed `\b` 静默漏改与字段/路由键分离修法）、L151（BOOT 块两层身份漂移与 picked 表核对）。
+
 ## 未发布（2026-11-20，traps-workbench 续跑轮回流：L138 缩写词大小写陷阱 + L139 接线层死注入）
 
 - 从 traps-workbench 0.2.0 回收两条：L138 相关计数/匹配判据的缩写词必须大小写敏感+词边界（TRAPS 被字面 traps 污染 78→9，TRAPS/i 仍会命中小写）；L139 server.js UI 分支必须真调 static.js 注入（api-ready+版本占位），否则装机后业务区永远停在降级稿。
 - 下一轮直接受益：templates/check-trial-matching.mjs 已含三态/未核实断言；快照 source_statuses 表结构以 traps fetch 脚本为参照（query×source 终态，manifest.sourceStatusRows 对账）。
+## 未发布（2026-11-21，自 glanzmann-thrombasthenia-workbench 回流：L150–L151 + 探针兼容性修复）
+
+- `templates/check-ui-parity.mjs`：补 `existsSync` import（trial-match 条件拼接在缺 import 的仓直接 ReferenceError，检查链整条红）。
+- `scripts/probe-page-view.mjs`：整页视图点击入口兼容 `data-open="report"|"pathology"`——无「病理」报告的病种仓（出血病等）此前探针必超时；A2 断言同时接受「病理报告/报告详情」标题。
+- `scripts/probe-disease-primer.mjs`：`--self-test` 不再被「缺 --url 失败关闭」guard 拦截（guard 本意防拿参考页当原型证据，自测夹具不该被拦）。
+- `docs/LESSONS.md`：L150（BSD sed `\b` 静默漏改与字段/路由键分离修法）、L151（BOOT 块两层身份漂移与 picked 表核对）。
+
 ## 未发布（2026-11-20，traps-workbench 回流：L136 模板分叉对账 + 路由前缀断言④ + 安装配方绝对路径）
 
 - **lessons L136**（来源 traps-workbench M5/M6）：init 交付物与 starter templates 分叉（占位符白名单互斥红 / 健康检查 URL 写死旧 slug / 消息命名空间 `<pkg>:*` vs `<prefix>:*`）；续跑仓开工先做模板差异对账。

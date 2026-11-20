@@ -1096,3 +1096,15 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：同仓面板修复与全家族 2026-11-11 教训。把订阅放进其他组件或主 `return` 之后是死代码，还可能连带破坏原本的焦点/滚动恢复。
 - **修法**：`templates/check-agent-pane-contract.mjs` 增加两项静态反例：订阅位置必须在 `function Panel` 与主 `return h('main'...)` 之间；无会话时按钮只在宿主缺 `newSession` 能力时 disabled。两项都带 `--self-test` 负控。
 - **回收自**：factor-vii-deficiency-workbench 面板修复，已同步 starter 模板。
+
+### L150 · BSD sed 不支持 `\b`：跨仓机械改名会静默漏改
+
+- **来源**：glanzmann-thrombasthenia-workbench 2026-11-21 夜班。flare→bleed 机械改名用 `sed -e "s|\bflares\b|bleeds|g"`，macOS BSD sed 把 `\b` 当字面量，`profile().flares` 数据访问点漏改——测试没红（路由键 `flares` 合法保留），探针 E0 才抓到 `reading 'length'`。
+- **修法**：机械改名后必须 grep 复核目标 token 归零；数据字段访问点（`profile().X` / `p.X`）与路由键（`data-page` / SUBTITLES.X）分开处理——路由键可保留，数据字段必须随 schema 改名。
+- **通用检查**：改字段名后 `grep -rn "profile()\.<old>\|p\.<old>"` 必须为 0。
+
+### L151 · 移植仓的 BOOT 块/探针断言可能残留上上仓身份（两层漂移）
+
+- **来源**：gpp-workbench 的 migrate-public.mjs BOOT 块里是 pericarditis 的 `__PERI_APP__`/CRP picked 表（gpp 自己被 guard 掩盖没炸），GT 移植时再被带上。残留在构建注入块里，check-derivative-leftovers 的静态词表扫不到（符号名不在禁词表）。
+- **修法**：移植后 grep 注入块与探针里的 `window.__*_APP__`、picked 表键名，必须与本仓 identity slug 同源；check-derivative-leftovers 建议加规则：BOOT 块内 `__<X>_APP__` 必须匹配 `<slug>_APP__`。
+- **回收自**：glanzmann-thrombasthenia-workbench（M5 修复记录）。

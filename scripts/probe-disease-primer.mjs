@@ -95,13 +95,13 @@ async function main() {
      真要只验参考实现，显式加 --allow-examples。 */
   const ALLOW_EXAMPLES = args.includes('--allow-examples')
   const explicitUrl = argOf('--url')
-  if (!explicitUrl && !ALLOW_EXAMPLES) {
+  if (!explicitUrl && !ALLOW_EXAMPLES && !SELF_TEST) {
     console.error('✗ 未指定 --url：默认对象是 starter 参考页 examples/disease-primer.html，不是任何病种仓的原型。')
     console.error('  验本仓原型：node scripts/probe-disease-primer.mjs --url http://127.0.0.1:<port>/prototypes/v0.2/index.html')
     console.error('  只验参考实现：加 --allow-examples（此时结果不得写进本仓原型验收记录）')
     process.exit(2)
   }
-  if (explicitUrl && /\/examples\//.test(explicitUrl) && !ALLOW_EXAMPLES) {
+  if (explicitUrl && /\/examples\//.test(explicitUrl) && !ALLOW_EXAMPLES && !SELF_TEST) {
     console.error(`✗ --url 指向参考页（${explicitUrl}）而不是本仓原型：结果不能当原型证据。`)
     console.error('  确要验参考实现请加 --allow-examples；否则改成 .../prototypes/<版本>/index.html')
     process.exit(2)
