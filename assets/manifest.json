@@ -88,8 +88,8 @@
     {
       "path": "patterns/style-picker.js",
       "source": "authored in this starter; in-page style preview picker (button variants A-F + tones) from squamous-cell-skin-cancer-workbench 0.2.0-rc.10",
-      "sha256": "3dc4d2fd6b0d8f6511534e63a34fc490a2a87906fd4fd3dce4b10cf9705abf94",
-      "bytes": 3863
+      "sha256": "8a0bc2b083b411132c539ce13a3019c207ed2fa96878af6377c9545434153484",
+      "bytes": 4259
     }
   ]
 }

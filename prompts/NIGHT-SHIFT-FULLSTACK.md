@@ -85,7 +85,7 @@ A 顶栏「?」可见可点，点开是**整页面板**（不是小弹窗），�
 B 实现三件套缺一不可：primer-data.js（window.DISEASE_PRIMER，四段 id 必须是 definition / evidence / landscape / trend）、
   primer.js、primer.css；面板 DOM 由 primer.js 运行时创建为 #disease-primer，不要自己另写浮层。
   → 所以"index.html 里搜不到 #disease-primer"是正常的；搜不到上面三件才是缺失。
-**风格互动确认（M2 必做，30 秒）**：看板 hero 挂页内「风格预览选择器」（assets/patterns/style-picker.js + buttons-pill-system.css；治愈暖纸见 08 号已验证节），向用户实时切换两组：**按钮效果** A paper / B outline / C keycap / D jelly / E brush / F sticker；**色调** 暖纸 / 淡绿 / 淡粉 / 淡紫（后续可扩充）。**互动让用户各选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认：按钮 **C keycap**、色调 **暖纸**。正式版按所选固化（选择器控件由打包流程移除）。标准参考实现：squamous-cell-skin-cancer-workbench（原型 style.css 即标准模版；新增变体/色调欢迎提 PR）。
+**风格互动确认（M2 必做，30 秒）**：看板 hero 挂页内「风格预览选择器」（assets/patterns/style-picker.js + buttons-pill-system.css；治愈暖纸见 08 号已验证节），向用户实时切换两组：**按钮效果** A paper / B outline / C keycap / D jelly / E brush / F sticker；**色调** 暖纸 / 淡绿 / 淡粉 / 淡紫（后续可扩充）。**互动让用户各选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认：按钮 **C keycap**、色调 **暖纸**。**定稿后开发版不得出现选择器**：migrate-public 构建期把 `SHOW_STYLE_PICKER` 置 false 并断言产物无选择器（禁止运行时 remove 隐藏）；原型保留（demo 确认用）。标准参考实现：squamous-cell-skin-cancer-workbench（原型 style.css 即标准模版；新增变体/色调欢迎提 PR）。
 C 双入口：顶栏「?」+ 首页状态卡各一个，都要能打开同一个整页。
 D 验收必须用探针指向**本仓原型**（这条踩过：探针默认跑 starter 的 examples 参考页，等于没查）：
   探针自带静态服务（默认端口 8124，serve 的是仓库根），--url 要写探针自己的端口，或自起静态服务：

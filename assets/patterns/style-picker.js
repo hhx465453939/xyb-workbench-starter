@@ -7,7 +7,11 @@
  *   2. 按钮效果切换容器：.hero-actions 与 .top-actions（或容器上 data-variant-targets="选择器1,选择器2" 覆盖）；
  *   3. 色调切换：documentElement[data-tone]（配套 :root[data-tone=...] 令牌块见 tokens.healing-paper.css）。
  *   4. 配套样式：buttons-pill-system.css（.style-picker/.sp-chip/.sp-sep）。
- * 作用域：仅原型演示；正式版按所选固化，本控件由打包流程移除（squamous 仓 migrate-public BOOT_BLOCK 示例）。
+ * 作用域（**用户规则 2026-11-21**）：仅在原型 demo 确认阶段显示。定稿后开发版**不得**出现——
+ *   正解：原型留 `var SHOW_STYLE_PICKER = true`，构建期（migrate-public）置 `false` 并断言产物
+ *   含 false / 不含 true；test 双向断言（原型 true、开发版 false）。
+ *   禁止用运行时 querySelector(...).remove() 隐藏（脆弱、会闪、不可断言）。
+ *   参考实现：squamous-cell-skin-cancer-workbench 0.2.0-rc.20（scripts/migrate-public.mjs expected()）。
  * 无依赖、经典脚本，file:// 可开。
  */
 ;(function (global) {

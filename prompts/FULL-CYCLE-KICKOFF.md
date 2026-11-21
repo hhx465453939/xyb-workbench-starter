@@ -86,7 +86,7 @@ M0–M1：单一证据台账，来源分级、版本、待决与失败 URL 一�
 
 M2：按标准的「两组合成档案与一致性」「指标卡、一图秀和治疗线」「隐私、解析和宿主」三节执行，另加两项：X1–X4、C1–C12、MT01–MT15、P 项逐条记证据、缺项与版本哈希；**两套模拟数据缺一套或切换串档即 M2 不成立**（单套数据下"新患者"路径必然空白，评审看到的是空壳）；**AI 入口、3D 卡片翻转、整页视图两入口、疾病概要四段这四类最容易整条漏掉**，开工时先做再回填其余；独立评审 P0 清零后以确切版本过 G2。
 
-**风格互动确认（M2 必做，30 秒）**：看板 hero 挂页内「风格预览选择器」（assets/patterns/style-picker.js + buttons-pill-system.css；治愈暖纸见 08 号已验证节），向用户实时切换两组：**按钮效果** A paper / B outline / C keycap / D jelly / E brush / F sticker；**色调** 暖纸 / 淡绿 / 淡粉 / 淡紫（后续可扩充）。**互动让用户各选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认：按钮 **C keycap**、色调 **暖纸**。正式版按所选固化（选择器控件由打包流程移除）。标准参考实现：squamous-cell-skin-cancer-workbench（原型 style.css 即标准模版；新增变体/色调欢迎提 PR）。
+**风格互动确认（M2 必做，30 秒）**：看板 hero 挂页内「风格预览选择器」（assets/patterns/style-picker.js + buttons-pill-system.css；治愈暖纸见 08 号已验证节），向用户实时切换两组：**按钮效果** A paper / B outline / C keycap / D jelly / E brush / F sticker；**色调** 暖纸 / 淡绿 / 淡粉 / 淡紫（后续可扩充）。**互动让用户各选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认：按钮 **C keycap**、色调 **暖纸**。**定稿后开发版不得出现选择器**：migrate-public 构建期把 `SHOW_STYLE_PICKER` 置 false 并断言产物无选择器（禁止运行时 remove 隐藏）；原型保留（demo 确认用）。标准参考实现：squamous-cell-skin-cancer-workbench（原型 style.css 即标准模版；新增变体/色调欢迎提 PR）。
 
 M3–M6：G2 后冻结数据合同与迁移，标明字段语境、私密策略、来源、未知值、排序与禁止持久化的派生判断。移植验证版本、产物与 UI parity；真实数据、原生 AI、MinerU 各按接口契约验证成功与失败，桩件注册通过不等于宿主可用，API 跨界与 private 出口要有正反例。装机只向实际 DSH Desktop（`io.dsh.desktop`）加载的 profile 安装，排除被继承 `DSH_HOME` 指向的 CLI profile；真实核验包内容、依赖、bundle、重启后新会话、界面与业务路径。Web GUI、dev server、SSH 成功都不等于 Desktop 装机；不可用时如实写未验证，继续做不依赖装机的工作。
 

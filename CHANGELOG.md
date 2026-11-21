@@ -22,6 +22,11 @@
 
 - docs/LESSONS.md：+L162 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js + 转义 </script> + checker date 只查非 script 区）；请求日志（rc.16）是把这类问题钉死的工具。
 
+## 未发布（2026-11-21，风格选择器开发版剔除规则）
+
+- **用户规则**：按钮效果 / 色调选择器只在 M2 demo 确认阶段使用，定稿后开发版不得出现。
+- 四份开发提示词互动块补该规则；`docs/08-TASTE-SEED.md` 与 `assets/patterns/style-picker.js` 头注同步——正解是**构建期剔除**（`SHOW_STYLE_PICKER` 置 false + 产物断言 + test 双向断言），禁止运行时 remove。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L159）
 
 - `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。
