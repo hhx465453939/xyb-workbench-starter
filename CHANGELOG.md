@@ -3,6 +3,10 @@
 - `AGENTS.md` 新增通用收尾门禁：逐项验收矩阵、原型/家族合同、占位功能标记、完整检查链、分层证据与逐行销项；初始化项目会继承。
 - `scripts/init.mjs` 生成的新工作台 `npm run check` 纳入 `check-ui-parity.mjs`，防止公开页面偏离源原型却仍显示检查通过。
 
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L159）
+
+- `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。
+
 ## 未发布（2026-11-21，风格类型交互选择接入开发提示词）
 
 - `assets/patterns/buttons-pill-system.css` 补 paper 变体（A–F 全部可切，keycap 默认）+ manifest sha。

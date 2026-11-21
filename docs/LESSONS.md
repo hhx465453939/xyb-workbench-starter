@@ -1151,3 +1151,9 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-21 squamous-cell-skin-cancer-workbench 真机——DSH Desktop HMR 日志 `Error: cannot get property "config" without inject`，插件激活失败、业务区打不开。修复前装机副本已在 profile 里安静地失败（dshHomePath 目录都不生成）。
 - **修法**：`export function apply(ctx, config = {})`，从第二参读 `config.root`；behcet dsh/index.js 注释里早有此教训（2026-10-25 家族实测），但写新入口时最容易从零手写再踩。verify-desktop-load 的日志判据能抓到这类激活失败——装机后必跑，不能只信 smoke-activate（桩件环境给得了 config）。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.3。
+
+### L159 · 原型/public 静态资源必须挂版本 cache-busting，否则「标签页开着不刷新」静默停在旧样式
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench——用户标签页从 rc.4 一直开着，`#view=` 都是同文档跳转不重拉 CSS；rc.5 按钮系统、rc.6 keycap、变体钩子全部对用户不可见，直到截图对比才发现（用户以为功能缺失，实际是旧样式缓存）。`#hash` 跳转、bfcache、python http.server 无 Cache-Control 三者叠加，静默分叉无报错。
+- **修法**：原型 index.html 的 2 css + 5 js 全挂 `?v=<版本>`；public 由 migrate-public 改写为 `?v=__VERSION_DISPLAY__`（server 注入版本）——**升版即自动失效缓存**。升版固定动作：index.html 的 ?v= 与 VERSION/lib/package 四处同步。参考实现：squamous-cell-skin-cancer-workbench `prototypes/v0.2/index.html` + `scripts/migrate-public.mjs`（CACHE_OLD 白名单规则）。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.8。starter 模板 migrate-public 的同款规则待实施（各自仓资产名不同，按参考实现移植）。
