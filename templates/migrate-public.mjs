@@ -73,16 +73,60 @@ const BOOT_BLOCK = `
   });
 })();`
 
+/* ============ 注入纪律（L162） ============
+ * 两条都踩过真机：①「替换没命中」= 静默 no-op，页面还用旧文案；
+ * ②「替换串里的 $$ 被解释成 $」= 注入的 JS 里 querySelectorAll 助手塌成 querySelector，整站按钮全失效；
+ * ③「正则吃掉属性闭引号」= HTML 属性串错乱，后面的 link/script 标签不被解析，表现像"宿主丢子资源"。
+ * 所以：所有注入走 sub()（函数 replacement + 必须命中），产物过 assertHtmlIntegrity/assertCodeIntegrity。 */
+function sub(text, pattern, replacement, label) {
+  const before = text;
+  const out = text.replace(pattern, () => replacement);
+  if (out === before) {
+    throw new Error(`migrate-public: 替换点未命中（${label}）——原型文案可能改了；先对齐 TITLE_OLD/BAR_OLD 等常量，不许静默 no-op`);
+  }
+  return out;
+}
+
+/** HTML 完整性：属性闭引号 / 标签内嵌 < / script、style 开闭平衡 */
+export function assertHtmlIntegrity(text, label = 'index.html') {
+  const problems = [];
+  if (/(?:href|src)\s*=\s*"[^"]*>/.test(text)) problems.push('属性缺闭引号（形如 href="…>）');
+  if (/<[a-z][^>]*<[a-z]/i.test(text)) problems.push('标签内出现未闭合的 <（属性串错乱）');
+  const pairs = [['script', /<script\b/gi, /<\/script>/gi], ['style', /<style\b/gi, /<\/style>/gi]];
+  for (const [name, openRe, closeRe] of pairs) {
+    const open = (text.match(openRe) || []).length;
+    const close = (text.match(closeRe) || []).length;
+    if (open !== close) problems.push(`<${name}> 开闭不平衡（${open}/${close}）`);
+  }
+  if (problems.length) {
+    throw new Error(`migrate-public: ${label} HTML 完整性失败——${problems.join('；')}（L162：请求数异常先查自己的 HTML，别先怪宿主）`);
+  }
+  return text;
+}
+
+/** 代码完整性：源里出现过的 $$( 在产物里必须一个不少（替换串 $$→$ 事故的探针） */
+export function assertCodeIntegrity(produced, sources, label = 'app.js') {
+  const count = (t, needle) => t.split(needle).length - 1;
+  const want = sources.reduce((n, s) => n + count(s, '$$('), 0);
+  const got = count(produced, '$$(');
+  if (want !== got) {
+    throw new Error(`migrate-public: ${label} 里 $$( 数量不符（产物 ${got} / 源 ${want}）——注入用了字符串 replacement，$$ 被解释成 $（L162）`);
+  }
+  return produced;
+}
+
 function migrateIndex(s) {
-  return s
-    .replace(TITLE_OLD, TITLE_NEW)
-    .replace(BAR_OLD, BAR_NEW)
-    .replace(CHIP_OLD, CHIP_NEW)
-    .replace(FOOT_OLD, FOOT_NEW);
+  const out = sub(sub(sub(sub(s,
+    TITLE_OLD, TITLE_NEW, 'TITLE'),
+    BAR_OLD, BAR_NEW, 'BAR'),
+    CHIP_OLD, CHIP_NEW, 'CHIP'),
+    FOOT_OLD, FOOT_NEW, 'FOOT');
+  return assertHtmlIntegrity(out, 'index.html');
 }
 
 function migrateApp(s) {
-  return s.replace(APPINFO_OLD, APPINFO_NEW) + BOOT_BLOCK;
+  const out = sub(s, APPINFO_OLD, APPINFO_NEW, 'APP_INFO') + BOOT_BLOCK;
+  return assertCodeIntegrity(out, [s, BOOT_BLOCK], 'app.js');
 }
 
 function expected(name) {
@@ -116,7 +160,32 @@ function build() {
 const INVOKED_DIRECTLY = process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href;
 /* Windows/软链兜底：路径比较失败时退回 argv 特征判断 */
 const _invoked = INVOKED_DIRECTLY || (process.argv[1] && process.argv[1].endsWith('migrate-public.mjs'));
+
+/* L162 反向自检：每条闸都必须能红（只报绿不算闸门） */
+function selfTest() {
+  const results = [];
+  const expectThrow = (name, fn) => {
+    try { fn(); results.push([name, false, '未报错（闸门失效）']) } catch (e) { results.push([name, true, String(e.message).slice(0, 90)]) }
+  };
+  const expectPass = (name, fn) => {
+    try { fn(); results.push([name, true, '通过']) } catch (e) { results.push([name, false, String(e.message).slice(0, 90)]) }
+  };
+  expectThrow('HTML 属性缺闭引号必须红', () => assertHtmlIntegrity('<link rel="stylesheet" href="style.css?v=1>\n<div>', 'fixture'));
+  expectThrow('标签内嵌未闭合 < 必须红', () => assertHtmlIntegrity('<div <span> x</span></div>', 'fixture'));
+  expectThrow('script 开闭不平衡必须红', () => assertHtmlIntegrity('<script>var a=1;', 'fixture'));
+  expectThrow('替换未命中必须红', () => sub('<p>别的文案</p>', '<title>旧</title>', '<title>新</title>', 'fixture'));
+  expectThrow('$$( 被吃掉必须红', () => assertCodeIntegrity('function $(s){return document.querySelectorAll(s)}', ['function $$(s){return document.querySelectorAll(s)}'], 'fixture'));
+  expectPass('正常 HTML 必须绿', () => assertHtmlIntegrity('<!doctype html><link rel="stylesheet" href="style.css?v=1"><script>var a=1;</script>', 'fixture'));
+  expectPass('$$ 完整必须绿', () => assertCodeIntegrity('function $$(s){return a}', ['function $$(s){return a}'], 'fixture'));
+  expectPass('替换命中必须绿', () => sub('<title>旧</title>', '<title>旧</title>', '<title>新</title>', 'fixture'));
+  const bad = results.filter(([, ok]) => !ok);
+  for (const [name, ok, note] of results) console.log(`${ok ? 'PASS' : 'FAIL'}  ${name}  — ${note}`);
+  console.log(`\n${bad.length ? 'FAIL' : 'PASS'}  self-test ${results.length - bad.length}/${results.length}`);
+  process.exit(bad.length ? 1 : 0);
+}
+
 if (_invoked) {
-  if (CHECK) check();
+  if (process.argv.includes('--self-test')) selfTest();
+  else if (CHECK) check();
   else build();
 }
