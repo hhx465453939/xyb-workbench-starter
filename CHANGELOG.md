@@ -14,6 +14,11 @@
 
 - `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。
 
+## 未发布（2026-11-21，风格系统对外声明）
+
+- README 新增「风格系统升级」节：治愈暖纸 + 页内选择器 + 色调体系、标准参考实现（squamous-cell-skin-cancer-workbench）、动态迭代与欢迎 PR。
+- 四份提示词补「标准参考实现」句；08 号已验证节补标准参考模版与动态迭代声明。
+
 ## 未发布（2026-11-21，风格类型交互选择接入开发提示词）
 
 - `assets/patterns/buttons-pill-system.css` 补 paper 变体（A–F 全部可切，keycap 默认）+ manifest sha。

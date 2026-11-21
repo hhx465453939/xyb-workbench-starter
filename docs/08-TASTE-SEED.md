@@ -63,3 +63,5 @@
 - `assets/patterns/buttons-pill-system.css`（胶囊三级层级 + 六变体；`--pill-*` 四令牌接线）
 - 参考实现：squamous-cell-skin-cancer-workbench `prototypes/v0.2/style.css`（ui-parity 逐字节闸门保护）
 - 验收：探针 DP 10/10 · page-view 13/13 · 全量路由 34/34 · 数值自检 24/24 · HTTP 形态 PR 5/5 · audit 40/40（视觉重制两轮后全量复跑）
+
+**标准参考模版与动态迭代**：本风格的标准模版 = squamous-cell-skin-cancer-workbench（原型 style.css，ui-parity 闸门保护；rc.10 起 style-picker/buttons-pill-system/healing-paper 令牌已沉淀本 starter 资产）。风格类型按实战**动态迭代**：新增按钮变体/色调的低成本路径见上资产说明；**欢迎按五基因描述 + 验收数字提 PR**，采纳后进本节与 assets。

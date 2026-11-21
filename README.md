@@ -12,6 +12,16 @@
 下面的社区流程面向社区协作与贡献；仅本机使用按上述入口执行。
 
 
+## 风格系统升级（2026-11-21）：治愈暖纸 · 页内风格选择器 · 色调体系
+
+已验证风格类型「[治愈暖纸 Healing Paper](docs/08-TASTE-SEED.md)」进入脚手架资产，**标准参考实现：[squamous-cell-skin-cancer-workbench](https://github.com/xyb-openharness-dsh-plugins/squamous-cell-skin-cancer-workbench)**（rc.10；原型 `prototypes/v0.2/style.css` 即标准模版，ui-parity 逐字符闸门保护）：
+
+- **页内风格预览选择器** `assets/patterns/style-picker.js`：看板 hero 挂 `data-style-picker`，两组胶囊（按钮效果 A–F × 色调 暖纸/淡绿/淡粉/淡紫）点选即时切换全站——M2 风格互动确认的实际形态；四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）已接入，默认 按钮 C keycap + 色调 暖纸。
+- **按钮配方** `assets/patterns/buttons-pill-system.css`：胶囊三级层级（实心主色唯一/键帽/幽灵）+ 六变体 + 选择器控件样式。
+- **令牌预设** `assets/tokens.healing-paper.json/.css`：治愈暖纸全套令牌（含三色调 `html[data-tone]` 块，淡紫=家族原色的纸感新生）。
+
+**动态迭代，欢迎 PR**：新增按钮变体 = pattern CSS 一段 + 变体表一行；新增色调 = `:root[data-tone]` 令牌块 + 选择器 TONES 数组一行——按 08 号五基因描述并带探针/audit 数字即可提 PR，风格类型会随每轮实战持续生长。
+
 ## Git开发快照 · 2026-11-03（十）开发检查点清单：把散落判据收成一张可勾的表
 
 白塞病工作台跑完 M2 回头复盘，最贵的返工不是「没写文档」，而是**判据都在文档里、开发时没人逐条对照**：3D 卡片做成了上下展开而不是固定高度翻面、AI 一键发送入口整条漏掉、一图秀只画了一套合成档案导致新患者路径全空。所以把 36 份文档里的可断言项收成两张表：[检查点主表](prompts/WORKBENCH-DEV-CHECKLIST.md)（IP / X / C / MT / A / P / Q 七类编号，每条给「怎么做对」+「怎么验」+「现有检查手段」）与 [185 条全量索引](prompts/WORKBENCH-DEV-CHECKLIST-FULL.md)（带 `file:line` 原文，供主表指不到的细节回查）。两条硬要求写进 `AGENTS.md` 的 `## 开发检查点`：**两套合成档案**（A 刚确诊记录少 / B 长期随访记录多，切换整页联动不串档），**参考基准明确到仓**——小粉宝=乳腺癌 `breast-cancer-workbench/prototypes`，小橙宝=AML `aml-workbench` 的 `#mind/mind-burden`，只抄结构与元素体系，不抄分期/线序/预后语义。索引同时暴露了一个真问题：33 号点名的 `templates/check-readme-assets.mjs` **仓内并不存在**，白塞病台按 README 要求做的截图墙没有闸门可跑，只能记「待人工」——已在主表 §10 Q27 按事实改写，没写成检查器通过。包版本 `1.10.0-rc.7`。
