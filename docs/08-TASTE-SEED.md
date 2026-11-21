@@ -55,7 +55,7 @@
 
 - 动作**全胶囊** + 三级层级：主=实心草木绿（每屏唯一）/ 次=暖纸贴纸（solid soft 无框）/ 幽灵=透明+暖 hover；active 下沉 1px。
 - **必查坑**：模板生成的顶栏按钮极易无 class 吃 UA 默认样式（灰盒方角系统字体）——上线前扫无 class 原生 button。
-- 六种效果变体 `data-variant` 一键切换：paper（默认）/ outline / keycap ⭐（键帽下沉，推荐）/ jelly / brush（2px 手绘描边，最贴吉卜力原文）/ sticker。
+- 默认=**keycap 键帽下沉**（2026-11-21 用户采纳 C）：白纸面+暖线描边+底部 2px 实影、按下下沉；其余 `data-variant` 可切：paper（暖纸贴纸）/ outline / jelly / brush（2px 手绘描边，最贴吉卜力原文）/ sticker。
 
 ### 资产
 
