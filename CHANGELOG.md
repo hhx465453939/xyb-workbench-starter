@@ -10,7 +10,11 @@
 - `assets/tokens.healing-paper.css`：+ `:root[data-tone=mint|rose|lilac]` 三色调令牌块（底色/暖墨/分隔线/wb-* 映射）。
 - 四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）M2 块升级：互动选**两组**（按钮效果 + 色调），默认 按钮 C keycap + 色调 暖纸。
 
-## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L162）
+## 未发布（2026-11-21，纠正 L162 归因：单文件化属特例）
+
+- `docs/LESSONS.md` L162 **重写**：真因是 `String.replace` 替换串 `$$`→`$`（注入代码必须用函数 replacement + 组装自检）；并纠正前一轮「宿主 iframe 丢子资源」的误判（实为 cache-busting 正则吃掉 href 闭引号；反证：GT 用 7 个普通子资源真机正常，家族 69 仓均多文件）。**单文件化不推广、不作为家族默认。**
+
+
 
 - docs/LESSONS.md：+L162 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js + 转义 </script> + checker date 只查非 script 区）；请求日志（rc.16）是把这类问题钉死的工具。
 

@@ -1171,9 +1171,10 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **修法**：`/ui`、`/ui/`、`/ui/**` 三态统一落 index.html/子目录；test/server.test 直接用外壳真实入口 URL 断言 200——**测试不造形态，测外壳实际会请求的 URL**。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.13。
 
-### L162 · 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js）
+### L162 · `String.replace` 替换串里的 `$$` 会变成 `$`——往页面注入代码必须用函数 replacement
 
-- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench——`[scc-serve]` 请求日志（rc.16 加的）实证：index.html 文档 200，但 7 个子资源浏览器只发起 3 个（primer.css/primer-data.js/trial-match.js/app.js **从未发起**），页面无样式无脚本。换 keycap/色调、升版本都无法解释——问题在宿主 iframe 加载层，不在服务端（同 URL dev-server 渲染完全正常）。
-- **修法**：migrate-public 组装**单文件 index.html**（2 style + 5 script 全内联；内联 JS 转义 `</script>` → `<\/script>` 防解析器提前闭合——primer.js 用法注释里就有字面 `</script>`）。零子资源请求 = 该问题类消灭。原型保持多文件（单一事实源），public 散件仍产出（ui-parity 兼容）。
-- **配套**：check-version-literal 升级——单文件形态下 version 全扫、**date 只查非 script 区**（内联内容的日期是演示语料/来源行，不是版本字面量）；demo 种子块打 inline-begin/end 标记。
-- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.17。
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench——真机症状「UI 样式在、**所有按钮全无反应**」，控制台 `$(...).addEventListener is not a function`。自查实锤：组装/注入代码时用 `html.replace(re, '<script>' + 源码 + '</script>')`，replacement 是**字符串**，JS 语义把 `$$` 解释成一个字面 `$` → app.js 里 `function $$(sel, root)`（querySelectorAll）被改写、并顶掉真正的 `$()` → 全局 helper 错位 → 脚本 boot 前抛异常 → 整站未初始化。
+- **修法**：凡把源码/配置拼进 HTML 的 `replace`，一律用**函数 replacement**（`html.replace(re, () => code)`）；再加一条组装自检：产物里 `function $$(sel, root)` 的定义与 `$$(` 用法计数必须与源一致，不一致直接抛。
+- **顺带纠正一个错误归因（重要，避免传染）**：同一轮我曾把「子资源只到 3 个」判为「宿主 iframe 丢子资源请求」并据此把 public 改成单文件内联。实际是另一处 cache-busting 正则 `[^"]*"` **吃掉了 href 的闭引号** → HTML 属性串错乱 → 后续标签不被解析。**反证：GT 仓用 7 个普通子资源（无查询串）在真机 Desktop 正常渲染（L152 记录）**，家族 69 个兄弟仓也都是多文件形态。结论：宿主不丢子资源；单文件化不是家族必需，已回退为多文件默认。
+- **诊断纪律**：「请求数比预期少」先查自己的 HTML 是否被正则改坏（改完 assert 属性串完整），再怀疑宿主；同类归因反转要留反例证据。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.18（多文件回退 + 函数替换 + 组装自检，装机形态同源 http 验证 nav 9/导航/大字/档案切换/疾病概要面板全通）。
