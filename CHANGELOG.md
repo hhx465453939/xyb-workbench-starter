@@ -14,6 +14,10 @@
 
 - `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。
 
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L161）
+
+- docs/LESSONS.md：+L161 静态 UI 入口测试用外壳真实 iframe URL（含尾斜杠）——激活成功后业务区 404 的第三层真因。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L160）
 
 - `docs/LESSONS.md`：+L160 装机 tgz 不含 prototypes/——demo 种子必须读随包副本（public/demo-data.js），否则激活 ENOENT → 路由未注册 → 外壳 404；smoke-activate 抓不到，装机核验必须跑 verify-desktop-load。

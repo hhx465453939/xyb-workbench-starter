@@ -1164,3 +1164,9 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **修法**：loadDemoData 读取顺序 public/demo-data.js（migrate-public 逐字节副本，随包）→ prototypes/（源码树兜底）；缺失时抛可读错误。npm files 打 public 即闭环。
 - **更深一层**：smoke-activate 桩件在源码树跑，永远抓不到这类；**装机核验必须跑 verify-desktop-load 读宿主日志**。激活失败的两个真凶（ctx.config 误用 / 源码树路径 ENOENT）都是它抓出来的。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.12（装机副本直测 store 打通）。
+
+### L161 · 静态 UI 入口测试必须用外壳真实 iframe URL（含尾斜杠形态）
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench 真机——激活成功、健康检查 200，但业务 iframe 404：外壳 src=`/api/<slug>/ui/`（带尾斜杠），静态处理器只映射了裸 `/ui`，`rel=''` 把 publicDir 当文件。
+- **修法**：`/ui`、`/ui/`、`/ui/**` 三态统一落 index.html/子目录；test/server.test 直接用外壳真实入口 URL 断言 200——**测试不造形态，测外壳实际会请求的 URL**。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.13。
