@@ -33,3 +33,33 @@
 ## 反馈沉淀
 
 将目标感受、主辅方向、转译参数、预览证据和用户接受/拒绝原因填入 templates/UI-DESIGN.md。项目反馈保存在项目内；修改上游个人种子库副本属于独立动作。下次设计先查看已确认偏好，避免每次从默认样式重新试错。
+
+## 已验证风格类型 · 治愈暖纸 Healing Paper（2026-11-21 · 用户确认保留）
+
+> 来源仓：squamous-cell-skin-cancer-workbench（CSCC · v0.2.0-rc.5，commit 5068143/d5f96eb）。
+> 用户在真机浏览器两轮反馈（「设计太丑」→「按钮太丑」）后确认保留本风格；token 预设与按钮配方已沉淀为 starter 资产（见下）。
+
+**主基因：吉卜力手绘亲和（治愈）**——被托住的安心；**辅基因：瑞士平面（信息骨架）**——左对齐、清晰层级、唯一强调色、tabular 数字。只混一层。适用：患者/照护者信息工具（表格、化验、随访记录）；纯治愈基因会被信息密度冲散，辅基因必须压住骨架。
+
+### 五基因 → 参数
+
+| 基因位 | 参数 |
+| --- | --- |
+| 色彩 | 米白纸底 `#faf7f0` + 草木绿 `#4a7c59`（唯一 CTA，面积 ≤10%）+ 暖墨 `#4a4238`/暖灰 `#8a8072`/暖分隔线 `#e7dfcf`；语义状态暖色调（danger=赭 `#b3572f` 非正红）；图表暖四色（草木绿/天空蓝/赭/暖金）；**阴影一律暖色 `#e8e0d0` 系，禁纯黑纯灰** |
+| 光影 | 柔和日光感：卡片无阴影（1px 暖分隔线），阴影只给浮层（panel/drawer/toast）；主按钮暖色微影 |
+| 笔触 | 衬线标题（Noto Serif SC）做手作人文感 + 正文柔黑一家到底；图标/花形点缀每页 1–3 处 |
+| 构图 | 左对齐统治；卡片大圆角 16px、动作胶囊 999px、表单控件 12px；断点 1180/900/600 |
+| 情绪 | 「每天要按几下记录」的可靠治愈——不是营销页的甜 |
+
+### 按钮配方（三轮反馈收敛）
+
+- 动作**全胶囊** + 三级层级：主=实心草木绿（每屏唯一）/ 次=暖纸贴纸（solid soft 无框）/ 幽灵=透明+暖 hover；active 下沉 1px。
+- **必查坑**：模板生成的顶栏按钮极易无 class 吃 UA 默认样式（灰盒方角系统字体）——上线前扫无 class 原生 button。
+- 六种效果变体 `data-variant` 一键切换：paper（默认）/ outline / keycap ⭐（键帽下沉，推荐）/ jelly / brush（2px 手绘描边，最贴吉卜力原文）/ sticker。
+
+### 资产
+
+- `assets/tokens.healing-paper.json`（DTCG 令牌）/ `assets/tokens.healing-paper.css`（`.wb-healing-paper` opt-in 覆盖层）
+- `assets/patterns/buttons-pill-system.css`（胶囊三级层级 + 六变体；`--pill-*` 四令牌接线）
+- 参考实现：squamous-cell-skin-cancer-workbench `prototypes/v0.2/style.css`（ui-parity 逐字节闸门保护）
+- 验收：探针 DP 10/10 · page-view 13/13 · 全量路由 34/34 · 数值自检 24/24 · HTTP 形态 PR 5/5 · audit 40/40（视觉重制两轮后全量复跑）

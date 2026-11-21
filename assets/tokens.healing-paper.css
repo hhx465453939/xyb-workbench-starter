@@ -1,0 +1,18 @@
+/* 风格类型「治愈暖纸 Healing Paper」· 覆盖层（opt-in）
+ * 来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21 用户确认保留）。
+ * 用法：init 生成的项目在业务根元素同时挂 .wb-<slug> 与本类（或把值并进项目 :root）：
+ *   <main class="wb-myslug wb-healing-paper">
+ * 主基因=吉卜力手绘亲和（治愈），辅基因=瑞士平面（信息骨架）；
+ * 阴影一律暖色（禁纯黑灰）；标题衬线做手作人文感；图表暖四色。
+ * 配套按钮配方：assets/patterns/buttons-pill-system.css
+ */
+.wb-healing-paper {
+  --wb-paper: #faf7f0; --wb-surface: #fffdf9; --wb-ink: #4a4238;
+  --wb-muted: #8a8072; --wb-line: #e7dfcf; --wb-mint: #f3eee3;
+  --wb-mint-ink: #2f5d40; --wb-action: #4a7c59; --wb-action-ink: #ffffff;
+  --wb-pink: #f7e8dd; --wb-blue: #eaf2f6; --wb-yellow: #f7f0dd;
+  --wb-radius: 16px; --wb-gap: 14px; --wb-group-gap: 24px;
+}
+.wb-healing-paper h1, .wb-healing-paper h2, .wb-healing-paper h3 {
+  font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
+}

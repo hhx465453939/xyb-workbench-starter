@@ -66,6 +66,24 @@
       "purpose": "36 号疾病概要的结构样式（颜色走项目令牌 + 兜底，不改结构）",
       "sha256": "7acac71973eac8c311e9b311b00de0ae9d40d2d1150f95b6ece8795b4a264deb",
       "bytes": 7716
+    },
+    {
+      "path": "tokens.healing-paper.json",
+      "source": "authored in this starter; verified style preset from squamous-cell-skin-cancer-workbench 0.2.0-rc.5 (user-confirmed 2026-11-21)",
+      "sha256": "08119697cdb3bd6f92d6973ae9451755b028a93a9b7ae0ecfbcdfcc3f649aa29",
+      "bytes": 2499
+    },
+    {
+      "path": "tokens.healing-paper.css",
+      "source": "authored in this starter; opt-in theme overlay for healing-paper style type",
+      "sha256": "ed1112cb5a021f7c1db644aeba490a8ce92204b3d99e14a3964577a3c61f037b",
+      "bytes": 1066
+    },
+    {
+      "path": "patterns/buttons-pill-system.css",
+      "source": "authored in this starter; three-tier pill button pattern + data-variant effects",
+      "sha256": "63ed3d499fb8eedfc8e74b1e2f35f50bbc66247ca2b7a0ad5a13531fe82eb79d",
+      "bytes": 4033
     }
   ]
 }

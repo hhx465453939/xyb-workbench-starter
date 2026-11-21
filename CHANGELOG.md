@@ -1,3 +1,7 @@
+## 未发布（2026-11-21，squamous-cell-skin-cancer-workbench 风格沉淀）
+
+- 新增已验证风格类型「治愈暖纸 Healing Paper」资产：`assets/tokens.healing-paper.json/.css`（DTCG + opt-in 覆盖层）、`assets/patterns/buttons-pill-system.css`（胶囊三级层级按钮配方 + data-variant 六效果）；`docs/08-TASTE-SEED.md` 增补五基因参数表与按钮坑（无 class 原生 button 吃 UA 默认样式）。manifest 登记三件（sha256）。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L158）
 
 - `docs/LESSONS.md`：+L158 apply 的 config 是第二个参数（apply(ctx, config)，不写 ctx.config）——真机 HMR `cannot get property "config" without inject`；装机核验必须跑 verify-desktop-load 的宿主日志判据，不能只信 smoke-activate 桩件。

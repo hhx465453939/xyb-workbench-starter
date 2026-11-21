@@ -1,0 +1,45 @@
+{
+  "$description": "风格类型「治愈暖纸 Healing Paper」· 主基因=吉卜力手绘亲和（治愈），辅基因=瑞士平面（信息骨架）。来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21 用户确认保留）。用法：项目把本文件值映射进业务 :root / .wb-* 令牌；配套按钮配方见 assets/patterns/buttons-pill-system.css",
+  "color": {
+    "paper": { "$type": "color", "$value": "#faf7f0" },
+    "surface": { "$type": "color", "$value": "#fffdf9" },
+    "soft": { "$type": "color", "$value": "#f3eee3" },
+    "softDeep": { "$type": "color", "$value": "#ece5d4" },
+    "ink": { "$type": "color", "$value": "#4a4238" },
+    "muted": { "$type": "color", "$value": "#8a8072" },
+    "line": { "$type": "color", "$value": "#e7dfcf" },
+    "brand": { "$type": "color", "$value": "#4a7c59" },
+    "brandInk": { "$type": "color", "$value": "#2f5d40" },
+    "onBrand": { "$type": "color", "$value": "#ffffff" },
+    "sky": { "$type": "color", "$value": "#8ecae6" },
+    "sun": { "$type": "color", "$value": "#ffd166" },
+    "ok": { "$type": "color", "$value": "#2e7d52" },
+    "warn": { "$type": "color", "$value": "#9a6b2f" },
+    "danger": { "$type": "color", "$value": "#b3572f" },
+    "okBg": { "$type": "color", "$value": "#e9f2e6" },
+    "warnBg": { "$type": "color", "$value": "#f7f0dd" },
+    "dangerBg": { "$type": "color", "$value": "#f7e8dd" },
+    "scrim": { "$type": "color", "$value": "rgba(74, 66, 56, .32)" }
+  },
+  "chart": {
+    "s1": { "$type": "color", "$value": "#4a7c59" },
+    "s2": { "$type": "color", "$value": "#6aa5c9" },
+    "s3": { "$type": "color", "$value": "#b3572f" },
+    "s4": { "$type": "color", "$value": "#c9a227" }
+  },
+  "shadow": {
+    "panel": { "$type": "shadow", "$value": "0 -6px 40px rgba(232, 224, 208, .55)" },
+    "drawer": { "$type": "shadow", "$value": "-8px 0 24px rgba(232, 224, 208, .8)" },
+    "toast": { "$type": "shadow", "$value": "0 6px 24px rgba(232, 224, 208, .6)" },
+    "button": { "$type": "shadow", "$value": "0 2px 8px rgba(74, 124, 89, .3)" }
+  },
+  "dimension": {
+    "radius": { "$type": "dimension", "$value": "16px" },
+    "radiusControl": { "$type": "dimension", "$value": "999px" },
+    "gap": { "$type": "dimension", "$value": "14px" }
+  },
+  "font": {
+    "body": { "$type": "fontFamily", "$value": "PingFang SC, Hiragino Sans GB, Microsoft YaHei, system-ui, sans-serif" },
+    "display": { "$type": "fontFamily", "$value": "Noto Serif SC, Songti SC, STSong, serif" }
+  }
+}

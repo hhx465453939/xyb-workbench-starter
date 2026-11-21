@@ -1,0 +1,54 @@
+/* 按钮配方 · 胶囊三级层级（风格类型「治愈暖纸」配套，亦可单独复用）
+ * 来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21）。
+ * 教训（必读）：init/模板生成的顶栏按钮极易「无 class 吃 UA 默认样式」（灰盒、方角、系统字体）
+ *   —— 上线前先扫一遍无 class 的原生 button（2026-11-21 实测返工）。
+ *
+ * 三级层级（每屏实心主色唯一）：
+ *   主 = .btn-primary   实心强调色（唯一 CTA）
+ *   次 = .btn-secondary 暖纸贴纸（solid soft、无框）
+ *   幽灵 = .btn-ghost   透明 + 暖 hover
+ * 动作全胶囊 999px；active 下沉 translateY(1px)；表单控件圆角 12px。
+ *
+ * 变体（容器挂 data-variant 即全组切换；默认 paper）：
+ *   paper（默认）/ outline（白瓷描边）/ keycap（键帽下沉）/ jelly（果冻渐变）/
+ *   brush（2px 手绘描边）/ sticker（厚贴纸投影）
+ * 接线：把下方 --pill-* 四个令牌映射到项目主题（healing-paper 默认值见 tokens.healing-paper.json）。
+ */
+.pill-scope {
+  --pill-bg: var(--wb-mint, #f3eee3);
+  --pill-bg-hover: #ece5d4;
+  --pill-accent: var(--wb-action, #4a7c59);
+  --pill-accent-hover: var(--wb-mint-ink, #2f5d40);
+  --pill-line: var(--wb-line, #e7dfcf);
+  --pill-text: var(--wb-mint-ink, #2f5d40);
+}
+.pill-scope .btn-primary, .pill-scope .btn-secondary, .pill-scope .btn-ghost, .pill-scope .btn-top,
+.pill-scope .subtab, .pill-scope .pv-btn, .pill-scope .top-actions button {
+  font: inherit; border-radius: 999px; border: 1px solid transparent; background: var(--pill-bg);
+  padding: 8px 14px; min-height: 42px; cursor: pointer; color: var(--pill-text);
+  transition: background .15s ease, transform .05s ease;
+}
+.pill-scope .btn-primary { background: var(--pill-accent); border-color: var(--pill-accent); color: #ffffff; box-shadow: 0 2px 8px rgba(74, 124, 89, .3); }
+.pill-scope .btn-primary:hover { background: var(--pill-accent-hover); }
+.pill-scope .btn-secondary:hover, .pill-scope .top-actions button:hover { background: var(--pill-bg-hover); }
+.pill-scope button:active { transform: translateY(1px); }
+.pill-scope .btn-ghost { background: transparent; color: inherit; }
+.pill-scope .btn-ghost:hover { background: var(--pill-bg); color: var(--pill-text); }
+/* —— 变体 —— */
+.pill-scope[data-variant="outline"] .btn-primary, .pill-scope[data-variant="outline"] .btn-secondary, .pill-scope[data-variant="outline"] .btn-top {
+  background: var(--surface, #fffdf9); border-color: var(--pill-accent); box-shadow: none; }
+.pill-scope[data-variant="keycap"] .btn-primary, .pill-scope[data-variant="keycap"] .btn-secondary, .pill-scope[data-variant="keycap"] .btn-top {
+  background: var(--surface, #fffdf9); border-color: var(--pill-line); box-shadow: 0 2px 0 var(--pill-line); color: var(--pill-text); }
+.pill-scope[data-variant="keycap"] button:active { transform: translateY(2px); box-shadow: none; }
+.pill-scope[data-variant="jelly"] .btn-primary, .pill-scope[data-variant="jelly"] .btn-secondary {
+  background: linear-gradient(180deg, #ffffff 0%, var(--wb-blue, #eaf2f6) 100%); border-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 2px 8px rgba(74, 124, 89, .3); }
+.pill-scope[data-variant="brush"] .btn-primary, .pill-scope[data-variant="brush"] .btn-secondary, .pill-scope[data-variant="brush"] .btn-top {
+  background: var(--surface, #fffdf9); border: 2px solid #d7e6d5; border-radius: 14px; box-shadow: none; }
+.pill-scope[data-variant="brush"] .btn-primary { border-color: var(--pill-accent-hover); }
+.pill-scope[data-variant="sticker"] .btn-primary, .pill-scope[data-variant="sticker"] .btn-secondary, .pill-scope[data-variant="sticker"] .btn-top {
+  background: var(--surface, #fffdf9); border-color: var(--pill-line); box-shadow: 0 3px 0 #e8e0d0; }
+.pill-scope[data-variant="sticker"] button:active { transform: translateY(3px); box-shadow: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pill-scope button { transition: none; }
+}

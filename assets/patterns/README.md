@@ -28,3 +28,5 @@ node scripts/probe-page-view.mjs --self-test # 必须报 FAIL，否则闸门失�
 ```
 
 只跑第一个会出问题：断言写得不对时它是**一直绿**的，反向对照才证明它抓得住缺陷。
+
+- `buttons-pill-system.css`：按钮配方·胶囊三级层级（主/次/幽灵）+ `data-variant` 六效果（paper/outline/keycap/jelly/brush/sticker）；配套风格类型「治愈暖纸」（见 docs/08-TASTE-SEED.md）。接线上注明四令牌映射。
