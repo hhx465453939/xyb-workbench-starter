@@ -10,6 +10,10 @@
 - `assets/tokens.healing-paper.css`：+ `:root[data-tone=mint|rose|lilac]` 三色调令牌块（底色/暖墨/分隔线/wb-* 映射）。
 - 四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）M2 块升级：互动选**两组**（按钮效果 + 色调），默认 按钮 C keycap + 色调 暖纸。
 
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L162）
+
+- docs/LESSONS.md：+L162 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js + 转义 </script> + checker date 只查非 script 区）；请求日志（rc.16）是把这类问题钉死的工具。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L159）
 
 - `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。

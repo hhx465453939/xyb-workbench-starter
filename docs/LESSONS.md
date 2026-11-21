@@ -1170,3 +1170,10 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **来源**：2026-11-21 squamous-cell-skin-cancer-workbench 真机——激活成功、健康检查 200，但业务 iframe 404：外壳 src=`/api/<slug>/ui/`（带尾斜杠），静态处理器只映射了裸 `/ui`，`rel=''` 把 publicDir 当文件。
 - **修法**：`/ui`、`/ui/`、`/ui/**` 三态统一落 index.html/子目录；test/server.test 直接用外壳真实入口 URL 断言 200——**测试不造形态，测外壳实际会请求的 URL**。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.13。
+
+### L162 · 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js）
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench——`[scc-serve]` 请求日志（rc.16 加的）实证：index.html 文档 200，但 7 个子资源浏览器只发起 3 个（primer.css/primer-data.js/trial-match.js/app.js **从未发起**），页面无样式无脚本。换 keycap/色调、升版本都无法解释——问题在宿主 iframe 加载层，不在服务端（同 URL dev-server 渲染完全正常）。
+- **修法**：migrate-public 组装**单文件 index.html**（2 style + 5 script 全内联；内联 JS 转义 `</script>` → `<\/script>` 防解析器提前闭合——primer.js 用法注释里就有字面 `</script>`）。零子资源请求 = 该问题类消灭。原型保持多文件（单一事实源），public 散件仍产出（ui-parity 兼容）。
+- **配套**：check-version-literal 升级——单文件形态下 version 全扫、**date 只查非 script 区**（内联内容的日期是演示语料/来源行，不是版本字面量）；demo 种子块打 inline-begin/end 标记。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.17。
