@@ -42,6 +42,9 @@
 .pill-scope[data-variant="outline"] .btn-primary, .pill-scope[data-variant="outline"] .btn-secondary, .pill-scope[data-variant="outline"] .btn-top {
   background: var(--surface, #fffdf9); border-color: var(--pill-accent); box-shadow: none; }
 /* keycap 已升默认基础样式；data-variant="keycap" 保留为空操作 */
+.pill-scope[data-variant="paper"] .btn-primary, .pill-scope[data-variant="paper"] .btn-secondary, .pill-scope[data-variant="paper"] .btn-top, .pill-scope[data-variant="paper"] .top-actions button {
+  background: var(--pill-bg); border-color: transparent; box-shadow: none; color: var(--pill-text); }
+.pill-scope[data-variant="paper"] button:active { transform: translateY(1px); }
 .pill-scope[data-variant="jelly"] .btn-primary, .pill-scope[data-variant="jelly"] .btn-secondary {
   background: linear-gradient(180deg, #ffffff 0%, var(--wb-blue, #eaf2f6) 100%); border-color: transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 2px 8px rgba(74, 124, 89, .3); }

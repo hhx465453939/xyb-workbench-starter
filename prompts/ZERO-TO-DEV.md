@@ -192,7 +192,9 @@ node scripts/check-trial-matching.mjs .    # 匹配卡分母/三态/不给百分
 - `demo/build-demo-data.mjs` 是**唯一数据源**，同时产出 `demo/demo-data.sqlite` 与  
   `prototypes/v0.2/demo-data.js`；被 import 时只返回 `buildDemoProfiles()` 纯数据，不碰磁盘。
 - 2 套档案 × 6 个月窗口；换档案后的默认指标要与初始状态同构（例：两条数值线 + 一个分类序列）。
-- 原型四件套 `prototypes/v0.2/{index.html, style.css, app.js, demo-data.js}`，`file://` 直接可开、无构建；  
+- 原型四件套 `prototypes/v0.2/{index.html, style.css, app.js, demo-data.js}`，`file://` 直接可开、无构建（按钮配方与互动确认见下方按钮行）；  
+**按钮风格互动确认（M2 必做，30 秒）**：按钮用 assets/patterns/buttons-pill-system.css（胶囊三级层级；治愈暖纸风格类型见 08 号已验证节）；原型容器挂 `data-variant`，向用户实时切换六变体——A paper（暖纸贴纸）/ B outline（白瓷描边）/ C keycap（键帽下沉）/ D jelly（果冻渐变）/ E brush（2px 手绘描边）/ F sticker（厚贴纸投影）——**互动让用户选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认 **C keycap**。
+
   视觉只换 3 个品牌变量 + 品牌字 + 英文名，其余沿用家族骨架。
 - 四个必查件：① 每个二级页签与内容一一对应（穷举 `(view, sub)`）；② 首页右上角 AI 对话能开 / 收起 / 调宽；  
   ③ 一图秀严格按原型（单调三次插值、末点 13px 避让、分类序列只画节点不连线；**左栏控制版式与全期归一化/图例区间/pin 读数见 ONE-CHART-SPEC 2026-10-25 增补**）；

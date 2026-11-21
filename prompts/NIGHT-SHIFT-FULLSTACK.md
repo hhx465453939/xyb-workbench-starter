@@ -85,6 +85,7 @@ A 顶栏「?」可见可点，点开是**整页面板**（不是小弹窗），�
 B 实现三件套缺一不可：primer-data.js（window.DISEASE_PRIMER，四段 id 必须是 definition / evidence / landscape / trend）、
   primer.js、primer.css；面板 DOM 由 primer.js 运行时创建为 #disease-primer，不要自己另写浮层。
   → 所以"index.html 里搜不到 #disease-primer"是正常的；搜不到上面三件才是缺失。
+**按钮风格互动确认（M2 必做，30 秒）**：按钮用 assets/patterns/buttons-pill-system.css（胶囊三级层级；治愈暖纸风格类型见 08 号已验证节）；原型容器挂 `data-variant`，向用户实时切换六变体——A paper（暖纸贴纸）/ B outline（白瓷描边）/ C keycap（键帽下沉）/ D jelly（果冻渐变）/ E brush（2px 手绘描边）/ F sticker（厚贴纸投影）——**互动让用户选一个并升为默认**，记录到 docs/UI-DESIGN；用户未选或夜间无人值守默认 **C keycap**。
 C 双入口：顶栏「?」+ 首页状态卡各一个，都要能打开同一个整页。
 D 验收必须用探针指向**本仓原型**（这条踩过：探针默认跑 starter 的 examples 参考页，等于没查）：
   探针自带静态服务（默认端口 8124，serve 的是仓库根），--url 要写探针自己的端口，或自起静态服务：

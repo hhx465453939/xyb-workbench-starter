@@ -1,3 +1,8 @@
+## 未发布（2026-11-21，风格类型交互选择接入开发提示词）
+
+- `assets/patterns/buttons-pill-system.css` 补 paper 变体（A–F 全部可切，keycap 默认）+ manifest sha。
+- 四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）M2 处接入「按钮风格互动确认」：design mode 实时切 A–F 六变体让用户选，**默认 C keycap**（夜间无人值守同）。
+
 ## 未发布（2026-11-21，squamous-cell-skin-cancer-workbench 风格沉淀）
 
 - 新增已验证风格类型「治愈暖纸 Healing Paper」资产：`assets/tokens.healing-paper.json/.css`（DTCG + opt-in 覆盖层）、`assets/patterns/buttons-pill-system.css`（胶囊三级层级按钮配方 + data-variant 六效果）；`docs/08-TASTE-SEED.md` 增补五基因参数表与按钮坑（无 class 原生 button 吃 UA 默认样式）。manifest 登记三件（sha256）。
