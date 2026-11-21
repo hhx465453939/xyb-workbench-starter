@@ -30,3 +30,4 @@ node scripts/probe-page-view.mjs --self-test # 必须报 FAIL，否则闸门失�
 只跑第一个会出问题：断言写得不对时它是**一直绿**的，反向对照才证明它抓得住缺陷。
 
 - `buttons-pill-system.css`：按钮配方·胶囊三级层级（主/次/幽灵）+ `data-variant` 六效果（paper/outline/keycap/jelly/brush/sticker）；配套风格类型「治愈暖纸」（见 docs/08-TASTE-SEED.md）。接线上注明四令牌映射。
+- `style-picker.js`：页内「风格预览选择器」（按钮效果 A–F + 色调 暖纸/淡绿/淡粉/淡紫，点选即时切换）——M2 风格互动确认的实际形态；容器挂 `data-style-picker`，正式版由打包流程移除。

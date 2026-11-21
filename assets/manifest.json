@@ -76,14 +76,20 @@
     {
       "path": "tokens.healing-paper.css",
       "source": "authored in this starter; opt-in theme overlay for healing-paper style type",
-      "sha256": "ed1112cb5a021f7c1db644aeba490a8ce92204b3d99e14a3964577a3c61f037b",
-      "bytes": 1066
+      "sha256": "7c073e689079db7efdd08d5273b2d909744e3af91d0964f85e6b4720a119ea87",
+      "bytes": 2188
     },
     {
       "path": "patterns/buttons-pill-system.css",
       "source": "authored in this starter; three-tier pill button pattern + data-variant effects",
-      "sha256": "0f5948f12b45b7a6e47ba76201fda9ecfa5a9b701fd391e339b09ce32b9a10ab",
-      "bytes": 4536
+      "sha256": "481570a00ff46a201245d86f8c2a42eaea8d9918b2f0d09cdfe0e63802d39356",
+      "bytes": 5481
+    },
+    {
+      "path": "patterns/style-picker.js",
+      "source": "authored in this starter; in-page style preview picker (button variants A-F + tones) from squamous-cell-skin-cancer-workbench 0.2.0-rc.10",
+      "sha256": "3dc4d2fd6b0d8f6511534e63a34fc490a2a87906fd4fd3dce4b10cf9705abf94",
+      "bytes": 3863
     }
   ]
 }

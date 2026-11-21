@@ -3,6 +3,13 @@
 - `AGENTS.md` 新增通用收尾门禁：逐项验收矩阵、原型/家族合同、占位功能标记、完整检查链、分层证据与逐行销项；初始化项目会继承。
 - `scripts/init.mjs` 生成的新工作台 `npm run check` 纳入 `check-ui-parity.mjs`，防止公开页面偏离源原型却仍显示检查通过。
 
+## 未发布（2026-11-21，风格类型二扩：页内选择器 + 色调体系）
+
+- 新增 `assets/patterns/style-picker.js`：页内「风格预览选择器」pattern（按钮效果 A–F × 色调 暖纸/淡绿/淡粉/淡紫，点选即时切换；容器 `data-style-picker`，正式版由打包流程移除）。
+- `assets/patterns/buttons-pill-system.css`：+ .style-picker/.sp-chip/.sp-sep 控件样式；manifest sha 更新。
+- `assets/tokens.healing-paper.css`：+ `:root[data-tone=mint|rose|lilac]` 三色调令牌块（底色/暖墨/分隔线/wb-* 映射）。
+- 四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）M2 块升级：互动选**两组**（按钮效果 + 色调），默认 按钮 C keycap + 色调 暖纸。
+
 ## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L159）
 
 - `docs/LESSONS.md`：+L159 原型/public 静态资源挂 `?v=<版本>` cache-busting（标签页不刷新静默停在旧样式）；starter 模板 migrate-public 同款规则待实施（按参考实现移植）。

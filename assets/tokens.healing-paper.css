@@ -16,3 +16,23 @@
 .wb-healing-paper h1, .wb-healing-paper h2, .wb-healing-paper h3 {
   font-family: "Noto Serif SC", "Songti SC", "STSong", serif;
 }
+
+/* —— 色调变体（html[data-tone]；默认暖纸=无属性。风格预览选择器的色调组切换） —— */
+:root[data-tone="mint"] {
+  --page: #f2f8f3; --surface: #fcfffd; --soft: #e4f1e7; --soft-deep: #d5e7da;
+  --ink: #2e3d33; --muted: #6d8172; --line: #cfe0d4;
+  --wb-paper: #f2f8f3; --wb-surface: #fcfffd; --wb-ink: #2e3d33; --wb-muted: #6d8172;
+  --wb-line: #cfe0d4; --wb-mint: #e4f1e7; --wb-mint-ink: #2c5f42; --wb-action: #3e8058;
+}
+:root[data-tone="rose"] {
+  --page: #fbf3f5; --surface: #fffcfd; --soft: #f7e9ec; --soft-deep: #efd9de;
+  --ink: #463a3f; --muted: #928089; --line: #ecd6db;
+  --wb-paper: #fbf3f5; --wb-surface: #fffcfd; --wb-ink: #463a3f; --wb-muted: #928089;
+  --wb-line: #ecd6db; --wb-mint: #f7e9ec; --wb-mint-ink: #8a3f55; --wb-action: #b0576f;
+}
+:root[data-tone="lilac"] {
+  --page: #f8f6fb; --surface: #fefcfe; --soft: #efeaf6; --soft-deep: #e2dbf0;
+  --ink: #3a3444; --muted: #857c93; --line: #ded5ec;
+  --wb-paper: #f8f6fb; --wb-surface: #fefcfe; --wb-ink: #3a3444; --wb-muted: #857c93;
+  --wb-line: #ded5ec; --wb-mint: #efeaf6; --wb-mint-ink: #5d4380; --wb-action: #7d5ba6;
+}

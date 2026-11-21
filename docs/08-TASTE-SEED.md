@@ -55,7 +55,7 @@
 
 - 动作**全胶囊** + 三级层级：主=实心草木绿（每屏唯一）/ 次=暖纸贴纸（solid soft 无框）/ 幽灵=透明+暖 hover；active 下沉 1px。
 - **必查坑**：模板生成的顶栏按钮极易无 class 吃 UA 默认样式（灰盒方角系统字体）——上线前扫无 class 原生 button。
-- 默认=**keycap 键帽下沉**（2026-11-21 用户采纳 C）：白纸面+暖线描边+底部 2px 实影、按下下沉；其余 `data-variant` 可切：paper（暖纸贴纸）/ outline / jelly / brush（2px 手绘描边，最贴吉卜力原文）/ sticker。
+- 默认=**keycap 键帽下沉**（2026-11-21 用户采纳 C）；**色调默认暖纸**，可选淡绿/淡粉/淡紫（`html[data-tone]` 令牌块）。互动形态：看板 hero 挂页内「风格预览选择器」（style-picker.js + buttons-pill-system.css），按钮效果 A–F × 色调四档点选即时切换。
 
 ### 资产
 
