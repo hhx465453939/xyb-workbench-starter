@@ -22,6 +22,10 @@
 
 - docs/LESSONS.md：+L162 宿主 iframe 会丢子资源请求——public UI 单文件化（内联全部 css/js + 转义 </script> + checker date 只查非 script 区）；请求日志（rc.16）是把这类问题钉死的工具。
 
+## 未发布（2026-11-21，自 squamous-cell-skin-cancer-workbench 回流：L163）
+
+- docs/LESSONS.md：+L163 「记录少」的演示档案≠零化验（≥2 时间点×≥2 指标，保证一图秀/指标卡有内容；零条覆盖由 docs/symptoms 承担）+ 图表参考实现与断言口径。
+
 ## 未发布（2026-11-21，风格选择器开发版剔除规则）
 
 - **用户规则**：按钮效果 / 色调选择器只在 M2 demo 确认阶段使用，定稿后开发版不得出现。

@@ -1179,3 +1179,10 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **诊断纪律**：「请求数比预期少」先查自己的 HTML 是否被正则改坏（改完 assert 属性串完整），再怀疑宿主；同类归因反转要留反例证据。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.19（多文件回退 + 函数替换 + 组装自检；装机形态同源 http 验证 nav 9 / 导航切换 / 大字 / 档案切换 / 疾病概要面板全通 · 0 pageerror）。
 - **已落闸（starter）**：`templates/migrate-public.mjs` 内置三道闸，任何项目 `npm run check`（check-ui-parity 调 `expected()`）都会走到：① `sub()` 函数 replacement + **替换未命中直接抛**；② `assertHtmlIntegrity()`（属性缺闭引号 / 标签内嵌 `<` / script·style 开闭不平衡）；③ `assertCodeIntegrity()`（源里 `$$(` 在产物里必须一个不少）。反向自检：`node scripts/migrate-public.mjs --self-test` 8/8（5 条反例全红）。
+
+### L163 · 「记录少」的演示档案 ≠ 零化验：否则默认档案一打开一图秀/指标卡全空
+
+- **来源**：2026-11-21 squamous-cell-skin-cancer-workbench 用户反馈「一图秀无模拟数据、无效果展现」——A 套（刚确诊）按字面理解做成 `labs: []`，而 A 是默认档案，用户第一次打开看到的就是空态；当时把「零条覆盖」（Q11）错当成「零化验」。
+- **修法**：演示档案的「少」要有下限——**≥2 时间点 × ≥2 指标**的基础化验（本仓 A 套补 6 条 WBC/HGB/PLT × 术前/术后），保证一图秀、指标卡、趋势卡有可渲染内容；「零条覆盖」由 docs / symptoms 等**不影响首屏主视图**的空集合承担。图表视觉参考 breast-cancer-workbench v0.4 `chartSVG`（固定画布/网格/日期轴/Catmull-Rom/末点避让/治疗条 lane + 轴外标记）。
+- **检查**：store/demo parity 测试断言默认档案化验 ≥4 条且 ≥2 时间点；一图秀数值断言（C1 各序列满格归一化、C2 单点不连线、C4 computed fill=none）只统计 `path.chart-line[data-metric]` 与 `circle.chart-dot[data-metric]`，装饰元素不计入。
+- **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.21。
