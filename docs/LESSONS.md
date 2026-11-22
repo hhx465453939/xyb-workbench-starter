@@ -1196,3 +1196,11 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
   4. `check-placeholder-free.mjs` 取 `process.argv[2]` 未过滤 `--self-test`，不带 `.` 直接跑 `--self-test` 会把 `--self-test` 当目录报 `ENOENT`；`check-trial-snapshot.mjs` 缺少 `--self-test` 自检分支。
 - **修法（已落 starter）**：① `assets/tokens.healing-paper.css` 注释改 `.wb-{slug}` 并更新 `assets/manifest.json` sha256；② `project-template/.gitignore` 内置 `.secrets` 与 `!research/**/*.sqlite`；③ `templates/mineru-cloud-extract.mjs` 补 `import { readZip } from '../lib/zip.js'`；④ `check-placeholder-free.mjs` 过滤 flag 参数，`check-trial-snapshot.mjs` 增补 `--self-test` 坏快照注入自检（坏 sha256 + 条数失配 → 抓出 7 条错误）。
 - **回收自**：vwd-type3-workbench 0.1.2。
+
+### L165 · 肿瘤相关骨软化症（TIO）「澄净冷青 Clinical Sage」母题首发、口服中性磷酸盐每日多剂次服药流水与 33 号截图模版
+
+- **来源**：2026-11-22 tio-workbench（肿瘤相关骨软化症，小磷宝 PhosPal，slug: `tio`）全周期实测：
+  1. **首发澄净冷青母题（Clinical Sage）**：清冷纸底 `#f4f7f6` + 冷青主色 `#1f5f5b`（对比度 5.36:1 AA），在非肿瘤代谢性骨病（TIO 肾性失磷、低磷骨软化）场景下表现优异，专业感与抚慰感兼备，并通过 WCAG 2.2 AA 校验。
+  2. **每日多次分散服药流水**：TIO 患者口服中性磷酸盐（Joulie 溶液）需每日 4–6 次频服以防渗透性腹泻并维持血磷，治疗记录模型需支持剂次流水而非单日一条；副作用（腹泻/腹胀）单列字段，不与剂量混杂。
+  3. **33 号规范 10 张实渲截图自动化**：过往工作台需人工改写截屏脚本；本次将标准截屏器收敛为 `templates/capture-shots.mjs`，包含 puppeteer-core 路径自适配、标准 1280×860 2x 分辨率、A/B 档案切换与 10 大关键界面全自动捕获，开箱即用。
+- **回收自**：tio-workbench 0.1.0（M0–M6+D1–D4 42/42 单测 · 44/44 audit · 三探针 58/10/13 全绿）。
