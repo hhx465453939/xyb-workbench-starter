@@ -1189,10 +1189,10 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 
 ### L164 · 随包资产注释禁裸 `<slug>`、`.gitignore` 模板需内置 `.secrets` 与 `!research/**/*.sqlite`、六道门禁 `--self-test` 参数位置无关化
 
-- **来源**：2026-11-22 vwd-type3-workbench（血管性血友病 3 型，小凝宝 VwfPal）全周期实测：
+- **来源**：2026-11-22 vwd-type3-workbench（血管性血友病 3 型，小友宝 VwfPal）全周期实测：
   1. `assets/tokens.healing-paper.css` 头注释写着 `.wb-<slug>`，`init` 整目录原样复制 `assets/` 后，一旦 `package.json` `files` 含 `assets`，`check-placeholder-free.mjs` 即报 `assets/tokens.healing-paper.css: 初始化占位符 <slug>`。
   2. `project-template/.gitignore` 漏写 `.secrets`（致新仓首次跑 `npm run audit` 即报 `✗ mineru/忽略密钥`），且 `*.sqlite` 未豁免 `!research/**/*.sqlite`（易把 M4 临床试验快照 sqlite 漏提交）。
   3. `templates/mineru-cloud-extract.mjs` 第 323 行调用 `readZip(buffer)` 却未顶部 `import { readZip } from '../lib/zip.js'`。
   4. `check-placeholder-free.mjs` 取 `process.argv[2]` 未过滤 `--self-test`，不带 `.` 直接跑 `--self-test` 会把 `--self-test` 当目录报 `ENOENT`；`check-trial-snapshot.mjs` 缺少 `--self-test` 自检分支。
 - **修法（已落 starter）**：① `assets/tokens.healing-paper.css` 注释改 `.wb-{slug}` 并更新 `assets/manifest.json` sha256；② `project-template/.gitignore` 内置 `.secrets` 与 `!research/**/*.sqlite`；③ `templates/mineru-cloud-extract.mjs` 补 `import { readZip } from '../lib/zip.js'`；④ `check-placeholder-free.mjs` 过滤 flag 参数，`check-trial-snapshot.mjs` 增补 `--self-test` 坏快照注入自检（坏 sha256 + 条数失配 → 抓出 7 条错误）。
-- **回收自**：vwd-type3-workbench 0.1.1。
+- **回收自**：vwd-type3-workbench 0.1.2。
