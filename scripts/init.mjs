@@ -88,7 +88,7 @@ async function main() {
   plan.set('scripts/check-data-dir.mjs', await readFile(join(starter,'templates/check-data-dir.mjs')))
   plan.set('scripts/check-trial-chain.mjs', await readFile(join(starter,'templates/check-trial-chain.mjs')))
   plan.set('scripts/check-patient-create.mjs', await readFile(join(starter,'templates/check-patient-create.mjs')))
-  // 2026-11-11 pemphigus 回流：补 M5 起需要的脚本与两条 M0 安全检查。
+  // 2026-11-11 pemphigus 回流：补 M5 起需要的脚本与两条 M0 安全检查。 leftover-allow: 历史版本回流日志注释
   // check-schema-words 无 schema 目录时 SKIP；check-wording 对缺失目录逐个容错——
   // 两者在 M0（无原型/无库）就是绿的，进 check 链不破坏「第一天全绿」。
   for (const f of ['check-schema-words.mjs','check-placeholder-free.mjs','check-wording.mjs','check-ui-parity.mjs','check-public-tokens.mjs','migrate-public.mjs','build-client.mjs','build-version.mjs']) {

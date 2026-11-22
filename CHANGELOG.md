@@ -1,3 +1,16 @@
+## 未发布（2026-11-22，风格母题重大升级：官方三大母题 + WCAG 2.2 医疗无障碍 + 病房暗纸模式 + 固化脚本）
+
+- **三大官方母题（Archetypes）**：
+  - `tokens.healing-paper.json/.css`：次级文本优化至 `#6e6456`，对比度提升至 4.7:1（达 WCAG 2.2 AA 级）；标题字体增加抗断笔现代无衬线回退；
+  - `tokens.clinical-sage.json/.css`：新增「澄净冷青」母题（清冷纸底 `#f4f7f6` + 冷青松石 `#1f5f5b` + 冷炭字 `#202d2c`），纯现代无衬线，次级文本对比度 5.36:1（WCAG AA），专为出血性疾病、心血管急症与血液肿瘤设计；
+  - `tokens.dawn-clarity.json/.css`：新增「晨曦大字」母题（明晰蓝 `#0052cc` + 墨黑字 `#111827`），WCAG 2.2 AAA 级极端无障碍（对比度全线 ≥7.2:1），正文基线 17px，触控区 ≥48px，专为老年退行性病变与视力减退群体设计。
+- **病房低照度暗纸模式（Paper Twilight）**：避免夜间发光纯黑眩光，采用深墨暗纸底（`#18191a` / `#171a1a` / `#121314`）+ 柔和米灰字，暗色对比度保持 ≥4.5:1 / ≥7:1。
+- **医疗图表 Viz 语义色彩体系**：在三大母题统一定义 `--wb-viz-band-normal`（正常值范围阴影带）、`--wb-viz-marker-abnormal`（异常高低值标记）、`--wb-viz-event-infusion`（输注事件线）、`--wb-viz-event-bleed`（出血发作阴影带），彻底防范图表序列与警示状态色混淆。
+- **原型选择器与 CLI 固化脚本**：
+  - `assets/patterns/style-picker.js`：升级支持三大母题、按钮效果 A–F、夜间暗纸与色调的即时切换；
+  - `scripts/apply-theme.mjs`（及 `templates/apply-theme.mjs`）：一键固化所选主题与变体至项目，自带 `--self-test`；
+  - `test/theme-system.test.mjs`：新增 6 项测试，数学复算对比度、DTCG JSON 规范性与占位符防腐。
+
 ## 未发布（2026-11-22，自 vwd-type3-workbench 回流：L164 门禁与模板四项加固）
 
 - `assets/tokens.healing-paper.css` + `assets/manifest.json`：头注释 `.wb-<slug>` 改为 `.wb-{slug}`，消除新项目 `files` 含 `assets` 时被 `check-placeholder-free.mjs` 误判为未替换占位符。

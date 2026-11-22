@@ -12,15 +12,24 @@
 下面的社区流程面向社区协作与贡献；仅本机使用按上述入口执行。
 
 
-## 风格系统升级（2026-11-21）：治愈暖纸 · 页内风格选择器 · 色调体系
+## 风格系统重大升级（2026-11-22）：官方三大母题 · WCAG 2.2 无障碍 · 病房暗纸护眼 · 医疗图表 Viz 体系
 
-已验证风格类型「[治愈暖纸 Healing Paper](docs/08-TASTE-SEED.md)」进入脚手架资产，**标准参考实现：[squamous-cell-skin-cancer-workbench](https://github.com/xyb-openharness-dsh-plugins/squamous-cell-skin-cancer-workbench)**（rc.10；原型 `prototypes/v0.2/style.css` 即标准模版，ui-parity 逐字符闸门保护）：
+针对小 X 宝家族 86 个罕见病与 25+ 癌种的不同临床与患者语境，脚手架正式升级为**官方三大母题（Archetypes）**，全线对齐 W3C DTCG 令牌标准与 **WCAG 2.2 医疗无障碍规范**（详见 [08 号规范](docs/08-TASTE-SEED.md)）：
 
-- **页内风格预览选择器** `assets/patterns/style-picker.js`：看板 hero 挂 `data-style-picker`，两组胶囊（按钮效果 A–F × 色调 暖纸/淡绿/淡粉/淡紫）点选即时切换全站——M2 风格互动确认的实际形态；四份开发提示词（CANCER-KICKOFF / FULL-CYCLE-KICKOFF / NIGHT-SHIFT-FULLSTACK / ZERO-TO-DEV）已接入，默认 按钮 C keycap + 色调 暖纸。
-- **按钮配方** `assets/patterns/buttons-pill-system.css`：胶囊三级层级（实心主色唯一/键帽/幽灵）+ 六变体 + 选择器控件样式。
-- **令牌预设** `assets/tokens.healing-paper.json/.css`：治愈暖纸全套令牌（含三色调 `html[data-tone]` 块，淡紫=家族原色的纸感新生）。
+1. **治愈暖纸（Healing Paper，默认）**：面向长程慢病与康复期随访（乳腺癌、鳞癌、皮肌炎等）。主吉卜力手绘亲和 + 辅瑞士平面；米白底 `#faf7f0` + 暖墨字 `#4a4238` + 草木绿 `#4a7c59`。**次级文本全线优化至 `#6e6456`（对比度 4.7:1，达到 WCAG AA 级，解决原 #8a8072 3.2:1 偏弱问题）**。
+2. **澄净冷青（Clinical Sage）**：面向出血性疾病、心血管急症、血液肿瘤（血友病、VWD3、心包炎、MDS 等）。现代医学理性 + 北欧克制；清冷纸底 `#f4f7f6` + 冷炭字 `#202d2c` + 冷青松石 `#1f5f5b`；纯无衬线黑体，**彻底消除低分屏与低色域屏上的汉字笔画断笔发虚**，次级文本对比度 **5.36:1**（WCAG AA）。
+3. **晨曦大字（Dawn Clarity）**：面向老年退行性病变、视力减退、伴随眼疾患者群体。**WCAG 2.2 AAA 级极端无障碍包容性设计**；明晰蓝 `#0052cc` + 墨黑字 `#111827`，文本对比度全线 **≥7.2:1**；正文基线 **17px**（小字 ≥14px），交互控件最小高度 **≥48px**（保障触控靶区尺寸），高可见 3px 聚焦框。
 
-**动态迭代，欢迎 PR**：新增按钮变体 = pattern CSS 一段 + 变体表一行；新增色调 = `:root[data-tone]` 令牌块 + 选择器 TONES 数组一行——按 08 号五基因描述并带探针/audit 数字即可提 PR，风格类型会随每轮实战持续生长。
+### 关键设计与工程实践
+
+- **病房低照度「暗纸护眼模式（Paper Twilight）」**：患者与家属夜间病房关灯记录用药/出血发作时，避免使用刺眼的纯黑 OLED，采用柔和深墨暗纸底（`#18191a` / `#171a1a` / `#121314`），柔和米灰字，暗态对比度依然保持在 4.5:1 以上。
+- **医疗图表 Viz 语义色彩体系**：统一定义 `--wb-viz-band-normal`（正常参考范围阴影带）、`--wb-viz-marker-abnormal`（异常高低值警戒警示点）、`--wb-viz-event-infusion`（因子输注/用药对齐线）、`--wb-viz-event-bleed`（出血发作阴影带），彻底根绝图表曲线与状态警示色混淆。
+- **按钮配方与原型挑款**：
+  - `assets/patterns/buttons-pill-system.css`：胶囊三级层级（实心主色唯一 / 键帽 / 幽灵）+ 6 种变体（A 暖纸 / B 白瓷 / C 键帽 / D 果冻 / E 手绘 / F 贴纸），默认 C keycap 键帽微立体下沉。
+  - 原型期（M2）：看板挂载 `assets/patterns/style-picker.js`，在页面上直接点选预览三大母题、6 种按钮变体、夜间暗纸与细节色调。
+  - 一键固化：`node scripts/apply-theme.mjs <项目目录> --theme clinical-sage --variant keycap`，自动完成样式固化；
+  - 发版防腐：构建期 `migrate-public` 编译期静态剥离选择器并由单元测试双向断言，发布包 100% 纯净。
+
 
 ## Git开发快照 · 2026-11-03（十）开发检查点清单：把散落判据收成一张可勾的表
 

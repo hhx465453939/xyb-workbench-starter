@@ -1,0 +1,60 @@
+{
+  "$description": "风格类型「澄净冷青 Clinical Sage」· 主基因=现代医学理性（克制），辅基因=北欧冷静结构。面向出血性疾病、心血管急症、血液肿瘤（血友病、VWD3、心包炎、MDS 等）。全线符合 WCAG 2.2 AA 级无障碍规范。用法：项目把本文件值映射进业务 :root / .wb-* / --xyb-sys-* 令牌；配套按钮配方见 assets/patterns/buttons-pill-system.css",
+  "color": {
+    "paper": { "$type": "color", "$value": "#f4f7f6" },
+    "surface": { "$type": "color", "$value": "#ffffff" },
+    "soft": { "$type": "color", "$value": "#e5eeec" },
+    "softDeep": { "$type": "color", "$value": "#d2e2df" },
+    "ink": { "$type": "color", "$value": "#202d2c", "$description": "深冷炭墨，对比度 12.2:1" },
+    "muted": { "$type": "color", "$value": "#526664", "$description": "WCAG 2.2 AA 级对比度 5.36:1（底色 #f4f7f6）" },
+    "line": { "$type": "color", "$value": "#d3dedc" },
+    "brand": { "$type": "color", "$value": "#1f5f5b", "$description": "冷青松石，主强调色" },
+    "brandInk": { "$type": "color", "$value": "#14423f" },
+    "onBrand": { "$type": "color", "$value": "#ffffff" },
+    "sky": { "$type": "color", "$value": "#4a90a4" },
+    "sun": { "$type": "color", "$value": "#e5a93b" },
+    "ok": { "$type": "color", "$value": "#21734f" },
+    "warn": { "$type": "color", "$value": "#9e631b" },
+    "danger": { "$type": "color", "$value": "#ba4328" },
+    "okBg": { "$type": "color", "$value": "#e6f2ec" },
+    "warnBg": { "$type": "color", "$value": "#f7f0e1" },
+    "dangerBg": { "$type": "color", "$value": "#faebe8" },
+    "scrim": { "$type": "color", "$value": "rgba(32, 45, 44, 0.36)" }
+  },
+  "chart": {
+    "s1": { "$type": "color", "$value": "#1f5f5b" },
+    "s2": { "$type": "color", "$value": "#3b82a6" },
+    "s3": { "$type": "color", "$value": "#ba4328" },
+    "s4": { "$type": "color", "$value": "#b0882e" }
+  },
+  "viz": {
+    "bandNormal": { "$type": "color", "$value": "rgba(31, 95, 91, 0.08)", "$description": "化验参考值正常区间带" },
+    "markerAbnormal": { "$type": "color", "$value": "#ba4328", "$description": "化验异常警示标记点" },
+    "eventInfusion": { "$type": "color", "$value": "#3b82a6", "$description": "因子输注/用药事件纵向对齐线" },
+    "eventBleed": { "$type": "color", "$value": "rgba(186, 67, 40, 0.14)", "$description": "出血/发作区间带" }
+  },
+  "twilight": {
+    "paper": { "$type": "color", "$value": "#171a1a", "$description": "低照度病房墨青纸底" },
+    "surface": { "$type": "color", "$value": "#202525" },
+    "soft": { "$type": "color", "$value": "#283030" },
+    "ink": { "$type": "color", "$value": "#e0e6e5", "$description": "柔冷白字，对比度 12.0:1" },
+    "muted": { "$type": "color", "$value": "#93a3a1", "$description": "暗色次级文本，对比度 5.1:1" },
+    "line": { "$type": "color", "$value": "#2d3635" },
+    "brand": { "$type": "color", "$value": "#389e97" }
+  },
+  "shadow": {
+    "panel": { "$type": "shadow", "$value": "0 -6px 36px rgba(18, 38, 36, .12)" },
+    "drawer": { "$type": "shadow", "$value": "-6px 0 20px rgba(18, 38, 36, .15)" },
+    "toast": { "$type": "shadow", "$value": "0 6px 20px rgba(18, 38, 36, .14)" },
+    "button": { "$type": "shadow", "$value": "0 2px 6px rgba(31, 95, 91, .25)" }
+  },
+  "dimension": {
+    "radius": { "$type": "dimension", "$value": "12px" },
+    "radiusControl": { "$type": "dimension", "$value": "999px" },
+    "gap": { "$type": "dimension", "$value": "14px" }
+  },
+  "font": {
+    "body": { "$type": "fontFamily", "$value": "PingFang SC, Hiragino Sans GB, Microsoft YaHei, system-ui, -apple-system, sans-serif" },
+    "display": { "$type": "fontFamily", "$value": "PingFang SC, Hiragino Sans GB, Microsoft YaHei, system-ui, -apple-system, sans-serif" }
+  }
+}

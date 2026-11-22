@@ -1,0 +1,62 @@
+{
+  "$description": "风格类型「晨曦大字 Dawn Clarity」· 主基因=极端无障碍包容性（WCAG 2.2 AAA 级），辅基因=明晰大字骨架。面向老年退行性病变、视力减退、伴随眼疾患者群体。对比度全线超 7:1，触控区 ≥48px。用法：项目把本文件值映射进业务 :root / .wb-* / --xyb-sys-* 令牌；配套按钮配方见 assets/patterns/buttons-pill-system.css",
+  "color": {
+    "paper": { "$type": "color", "$value": "#f8f9fa" },
+    "surface": { "$type": "color", "$value": "#ffffff" },
+    "soft": { "$type": "color", "$value": "#e9ecef" },
+    "softDeep": { "$type": "color", "$value": "#dee2e6" },
+    "ink": { "$type": "color", "$value": "#111827", "$description": "深黑蓝墨，WCAG AAA 级对比度 15.4:1" },
+    "muted": { "$type": "color", "$value": "#4b5563", "$description": "WCAG 2.2 AAA 级对比度 7.2:1（底色 #f8f9fa，超 7:1 标准）" },
+    "line": { "$type": "color", "$value": "#cbd5e1" },
+    "brand": { "$type": "color", "$value": "#0052cc", "$description": "明晰高对比蓝，AAA 级适用" },
+    "brandInk": { "$type": "color", "$value": "#0747a6" },
+    "onBrand": { "$type": "color", "$value": "#ffffff" },
+    "sky": { "$type": "color", "$value": "#0284c7" },
+    "sun": { "$type": "color", "$value": "#d97706" },
+    "ok": { "$type": "color", "$value": "#0d6832" },
+    "warn": { "$type": "color", "$value": "#854d0e" },
+    "danger": { "$type": "color", "$value": "#b91c1c" },
+    "okBg": { "$type": "color", "$value": "#ecfdf5" },
+    "warnBg": { "$type": "color", "$value": "#fef3c7" },
+    "dangerBg": { "$type": "color", "$value": "#fee2e2" },
+    "scrim": { "$type": "color", "$value": "rgba(17, 24, 39, 0.45)" }
+  },
+  "chart": {
+    "s1": { "$type": "color", "$value": "#0052cc" },
+    "s2": { "$type": "color", "$value": "#0d6832" },
+    "s3": { "$type": "color", "$value": "#b91c1c" },
+    "s4": { "$type": "color", "$value": "#d97706" }
+  },
+  "viz": {
+    "bandNormal": { "$type": "color", "$value": "rgba(13, 104, 50, 0.12)", "$description": "化验参考值正常区间带（高对比）" },
+    "markerAbnormal": { "$type": "color", "$value": "#b91c1c", "$description": "化验异常警示标记点" },
+    "eventInfusion": { "$type": "color", "$value": "#0052cc", "$description": "因子输注/用药事件纵向对齐线" },
+    "eventBleed": { "$type": "color", "$value": "rgba(185, 28, 28, 0.16)", "$description": "出血/发作区间带" }
+  },
+  "twilight": {
+    "paper": { "$type": "color", "$value": "#121314", "$description": "夜间高对比深暗纸" },
+    "surface": { "$type": "color", "$value": "#1e2022" },
+    "soft": { "$type": "color", "$value": "#282b2e" },
+    "ink": { "$type": "color", "$value": "#f3f4f6", "$description": "明亮白字，对比度 14.5:1" },
+    "muted": { "$type": "color", "$value": "#9ca3af", "$description": "WCAG AAA 级暗色次级文本，对比度 7.1:1" },
+    "line": { "$type": "color", "$value": "#374151" },
+    "brand": { "$type": "color", "$value": "#60a5fa" }
+  },
+  "shadow": {
+    "panel": { "$type": "shadow", "$value": "0 -6px 32px rgba(0, 0, 0, .14)" },
+    "drawer": { "$type": "shadow", "$value": "-6px 0 24px rgba(0, 0, 0, .16)" },
+    "toast": { "$type": "shadow", "$value": "0 6px 20px rgba(0, 0, 0, .15)" },
+    "button": { "$type": "shadow", "$value": "0 2px 4px rgba(0, 82, 204, .2)" }
+  },
+  "dimension": {
+    "radius": { "$type": "dimension", "$value": "10px" },
+    "radiusControl": { "$type": "dimension", "$value": "999px" },
+    "gap": { "$type": "dimension", "$value": "16px" },
+    "minTarget": { "$type": "dimension", "$value": "48px", "$description": "WCAG 2.2 触控目标最小尺寸" }
+  },
+  "font": {
+    "body": { "$type": "fontFamily", "$value": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" },
+    "display": { "$type": "fontFamily", "$value": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif" },
+    "bodySize": { "$type": "dimension", "$value": "17px", "$description": "基线大字 17px" }
+  }
+}

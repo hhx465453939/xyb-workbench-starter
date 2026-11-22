@@ -1,5 +1,5 @@
-/* 按钮配方 · 胶囊三级层级（风格类型「治愈暖纸」配套，亦可单独复用）
- * 来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21）。
+/* 按钮配方 · 胶囊三级层级（支持三大官方母题，亦可单独复用）
+ * 来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21；2026-11-22 扩展支持三大母题与暗纸模式）。
  * 教训（必读）：init/模板生成的顶栏按钮极易「无 class 吃 UA 默认样式」（灰盒、方角、系统字体）
  *   —— 上线前先扫一遍无 class 的原生 button（2026-11-21 实测返工）。
  *
@@ -13,34 +13,33 @@
  *   按下下沉 2px 实影收起；主按钮实影深一号色。
  * 其余变体（容器挂 data-variant 切换）：paper（暖纸贴纸）/ outline（白瓷描边）/ jelly（果冻渐变）/
  *   brush（2px 手绘描边）/ sticker（厚贴纸投影）
- * 接线：把下方 --pill-* 四个令牌映射到项目主题（healing-paper 默认值见 tokens.healing-paper.json）。
+ * 接线：把下方 --pill-* 令牌映射到项目主题（自动适配 healing-paper / clinical-sage / dawn-clarity）。
  */
 .pill-scope {
-  --pill-bg: var(--wb-mint, #f3eee3);
+  --pill-bg: var(--xyb-sys-bg-surface-soft, var(--wb-mint, #f3eee3));
   --pill-bg-hover: #ece5d4;
-  --pill-accent: var(--wb-action, #4a7c59);
-  --pill-accent-hover: var(--wb-mint-ink, #2f5d40);
-  --pill-line: var(--wb-line, #e7dfcf);
-  --pill-text: var(--wb-mint-ink, #2f5d40);
+  --pill-accent: var(--xyb-sys-action-primary, var(--wb-action, #4a7c59));
+  --pill-accent-hover: var(--xyb-sys-action-primary-hover, var(--wb-mint-ink, #2f5d40));
+  --pill-line: var(--xyb-sys-border-subtle, var(--wb-line, #e7dfcf));
+  --pill-text: var(--xyb-sys-action-primary-hover, var(--wb-mint-ink, #2f5d40));
 }
 .pill-scope .btn-primary, .pill-scope .btn-secondary, .pill-scope .btn-ghost, .pill-scope .btn-top,
 .pill-scope .subtab, .pill-scope .pv-btn, .pill-scope .top-actions button {
-  font: inherit; border-radius: 999px; border: 1px solid var(--pill-line); background: var(--surface, #fffdf9);
+  font: inherit; border-radius: 999px; border: 1px solid var(--pill-line); background: var(--surface, var(--wb-surface, #fffdf9));
   box-shadow: 0 2px 0 var(--pill-line);
   padding: 8px 14px; min-height: 42px; cursor: pointer; color: var(--pill-text);
   transition: background .15s ease, transform .05s ease, box-shadow .05s ease;
 }
-.pill-scope .btn-primary { background: var(--pill-accent); border-color: var(--pill-accent); color: #ffffff; box-shadow: 0 2px 0 var(--pill-accent-hover); }
+.pill-scope .btn-primary { background: var(--pill-accent); border-color: var(--pill-accent); color: var(--xyb-sys-action-on-primary, #ffffff); box-shadow: 0 2px 0 var(--pill-accent-hover); }
 .pill-scope .btn-primary:hover { background: var(--pill-accent-hover); }
 .pill-scope .btn-secondary:hover, .pill-scope .top-actions button:hover, .pill-scope .btn-top:hover { background: var(--pill-bg); }
 .pill-scope button:active { transform: translateY(2px); box-shadow: none; }
-.pill-scope .btn-ghost { background: transparent; border-color: transparent; box-shadow: none; }
-.pill-scope .btn-ghost:hover { background: var(--pill-bg); }
-.pill-scope .btn-ghost { background: transparent; color: inherit; }
+.pill-scope .btn-ghost { background: transparent; border-color: transparent; box-shadow: none; color: inherit; }
 .pill-scope .btn-ghost:hover { background: var(--pill-bg); color: var(--pill-text); }
+
 /* —— 变体 —— */
 .pill-scope[data-variant="outline"] .btn-primary, .pill-scope[data-variant="outline"] .btn-secondary, .pill-scope[data-variant="outline"] .btn-top {
-  background: var(--surface, #fffdf9); border-color: var(--pill-accent); box-shadow: none; }
+  background: var(--surface, var(--wb-surface, #fffdf9)); border-color: var(--pill-accent); box-shadow: none; }
 /* keycap 已升默认基础样式；data-variant="keycap" 保留为空操作 */
 .pill-scope[data-variant="paper"] .btn-primary, .pill-scope[data-variant="paper"] .btn-secondary, .pill-scope[data-variant="paper"] .btn-top, .pill-scope[data-variant="paper"] .top-actions button {
   background: var(--pill-bg); border-color: transparent; box-shadow: none; color: var(--pill-text); }
@@ -49,10 +48,10 @@
   background: linear-gradient(180deg, #ffffff 0%, var(--wb-blue, #eaf2f6) 100%); border-color: transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), 0 2px 8px rgba(74, 124, 89, .3); }
 .pill-scope[data-variant="brush"] .btn-primary, .pill-scope[data-variant="brush"] .btn-secondary, .pill-scope[data-variant="brush"] .btn-top {
-  background: var(--surface, #fffdf9); border: 2px solid #d7e6d5; border-radius: 14px; box-shadow: none; }
+  background: var(--surface, var(--wb-surface, #fffdf9)); border: 2px solid var(--pill-line, #d7e6d5); border-radius: 14px; box-shadow: none; }
 .pill-scope[data-variant="brush"] .btn-primary { border-color: var(--pill-accent-hover); }
 .pill-scope[data-variant="sticker"] .btn-primary, .pill-scope[data-variant="sticker"] .btn-secondary, .pill-scope[data-variant="sticker"] .btn-top {
-  background: var(--surface, #fffdf9); border-color: var(--pill-line); box-shadow: 0 3px 0 #e8e0d0; }
+  background: var(--surface, var(--wb-surface, #fffdf9)); border-color: var(--pill-line); box-shadow: 0 3px 0 var(--pill-line); }
 .pill-scope[data-variant="sticker"] button:active { transform: translateY(3px); box-shadow: none; }
 @media (prefers-reduced-motion: reduce) {
   .pill-scope button { transition: none; }
@@ -61,14 +60,19 @@
 /* ---------- 风格预览选择器（style-picker.js 渲染的控件本体） ---------- */
 .style-picker {
   display: flex; gap: 6px; flex-wrap: wrap; align-items: center;
-  background: rgba(255, 255, 255, .6); border: 1px dashed var(--pill-line, #e7dfcf); border-radius: 12px;
-  padding: 6px 10px; margin: 0 0 14px;
+  background: rgba(255, 255, 255, .7); border: 1px dashed var(--pill-line, #e7dfcf); border-radius: 12px;
+  padding: 8px 12px; margin: 0 0 14px; backdrop-filter: blur(4px);
 }
-.sp-label { font-size: 12.5px; color: var(--pill-text, #2f5d40); font-weight: 600; }
+:root[data-twilight="true"] .style-picker, :root[data-theme="dark"] .style-picker {
+  background: rgba(30, 32, 34, .8); border-color: #3e4448;
+}
+.sp-label { font-size: 12.5px; color: var(--pill-text, #2f5d40); font-weight: 600; margin-left: 2px; }
 .sp-chip {
   font: inherit; font-size: 12.5px; border-radius: 999px; border: 1px solid var(--pill-line, #e7dfcf);
   background: var(--surface, #fffdf9); color: inherit; padding: 3px 10px; min-height: 30px; cursor: pointer;
+  transition: all .15s ease;
 }
 .sp-chip:hover { border-color: var(--pill-accent, #4a7c59); }
 .sp-chip[aria-pressed="true"] { background: var(--pill-accent, #4a7c59); border-color: var(--pill-accent, #4a7c59); color: #ffffff; font-weight: 600; }
-.sp-sep { width: 1px; align-self: stretch; background: var(--pill-line, #e7dfcf); margin: 0 4px; }
+.sp-sep { width: 1px; align-self: stretch; background: var(--pill-line, #e7dfcf); margin: 0 6px; }
+.sp-note { font-size: 12px; margin-left: 4px; }

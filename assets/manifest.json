@@ -69,27 +69,51 @@
     },
     {
       "path": "tokens.healing-paper.json",
-      "source": "authored in this starter; verified style preset from squamous-cell-skin-cancer-workbench 0.2.0-rc.5 (user-confirmed 2026-11-21)",
-      "sha256": "08119697cdb3bd6f92d6973ae9451755b028a93a9b7ae0ecfbcdfcc3f649aa29",
-      "bytes": 2499
+      "source": "authored in this starter; verified style preset from squamous-cell-skin-cancer-workbench 0.2.0-rc.5 (user-confirmed 2026-11-21; WCAG 2.2 AA & Viz upgrade 2026-11-22)",
+      "sha256": "9266ed0b4d908f7bd1c26fb6b63e16c86d9e52ad39e9e09b1ce23c7693233426",
+      "bytes": 3832
     },
     {
       "path": "tokens.healing-paper.css",
       "source": "authored in this starter; opt-in theme overlay for healing-paper style type",
-      "sha256": "51ee9d73233318a9961736f47e93a6262f96021f38b82b1432187c29ce7c7c12",
-      "bytes": 2188
+      "sha256": "ca4e7c459d09a5c9e24504c169f7b84c7dbf0796b81a5c37e1d6dc98381558fc",
+      "bytes": 3730
+    },
+    {
+      "path": "tokens.clinical-sage.json",
+      "source": "authored in this starter; official archetype for acute/bleeding/cardiovascular/hematology workbenches (WCAG 2.2 AA)",
+      "sha256": "a93e0ba84358d3d50095c3aa33915e66bab45938670d81e70729ab05b2a66314",
+      "bytes": 3835
+    },
+    {
+      "path": "tokens.clinical-sage.css",
+      "source": "authored in this starter; opt-in theme overlay for clinical-sage style type",
+      "sha256": "23d4a40d45e252037a9c7475dc9f22d65eadd4b0b24ee46f5cda36c3b651cb20",
+      "bytes": 2624
+    },
+    {
+      "path": "tokens.dawn-clarity.json",
+      "source": "authored in this starter; official archetype for elderly & visual impairment (WCAG 2.2 AAA high contrast & 48px touch targets)",
+      "sha256": "1ce8316bc03e5d2b172c955aec4b5d9231452f5869b94e45d9f68ab9722a5453",
+      "bytes": 4136
+    },
+    {
+      "path": "tokens.dawn-clarity.css",
+      "source": "authored in this starter; opt-in theme overlay for dawn-clarity style type",
+      "sha256": "e8c0cb0281e98e4e4690b965b6a28f0d9f53992f7c919a44d49419b62f69c1c3",
+      "bytes": 3255
     },
     {
       "path": "patterns/buttons-pill-system.css",
       "source": "authored in this starter; three-tier pill button pattern + data-variant effects",
-      "sha256": "481570a00ff46a201245d86f8c2a42eaea8d9918b2f0d09cdfe0e63802d39356",
-      "bytes": 5481
+      "sha256": "7550c1940344c05cfcfcab323ce98527c7fd23335c44d99cc78416294ddeb60c",
+      "bytes": 5981
     },
     {
       "path": "patterns/style-picker.js",
-      "source": "authored in this starter; in-page style preview picker (button variants A-F + tones) from squamous-cell-skin-cancer-workbench 0.2.0-rc.10",
-      "sha256": "8a0bc2b083b411132c539ce13a3019c207ed2fa96878af6377c9545434153484",
-      "bytes": 4259
+      "source": "authored in this starter; in-page style preview picker (three archetypes + button variants A-F + paper twilight + tones)",
+      "sha256": "c86401621766e77f3796d854d00ce7dd4a4e20cb0e5a1ff1723c8a8d1db38ec3",
+      "bytes": 6596
     }
   ]
 }

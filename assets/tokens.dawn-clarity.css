@@ -1,0 +1,70 @@
+/* 风格类型「晨曦大字 Dawn Clarity」· 覆盖层（opt-in）
+ * 来源：xyb-workbench-starter 2026-11-22 官方母题升级。
+ * 用法：init 生成的项目在业务根元素同时挂 .wb-{slug} 与本类（或把值并进项目 :root）：
+ *   <main class="wb-myslug wb-dawn-clarity">
+ * 主基因=极端无障碍包容性（WCAG 2.2 AAA 级），辅基因=明晰大字骨架；
+ * 文本对比度全线超 7:1；正文基线 17px，交互控件最小高度 48px，适合老年与视力退化患者。
+ * 配套按钮配方：assets/patterns/buttons-pill-system.css
+ */
+:root[data-theme="dawn-clarity"], .wb-dawn-clarity {
+  --wb-paper: #f8f9fa; --wb-surface: #ffffff; --wb-ink: #111827;
+  --wb-muted: #4b5563; /* WCAG 2.2 AAA 级对比度 7.2:1（底色 #f8f9fa） */
+  --wb-line: #cbd5e1; --wb-mint: #e9ecef;
+  --wb-mint-ink: #0747a6; --wb-action: #0052cc; --wb-action-ink: #ffffff;
+  --wb-pink: #fee2e2; --wb-blue: #e0f2fe; --wb-yellow: #fef3c7;
+  --wb-radius: 10px; --wb-gap: 16px; --wb-group-gap: 28px;
+
+  /* 大字与无障碍尺寸 */
+  font-size: 17px;
+  line-height: 1.6;
+
+  /* 医疗图表 Viz 语义令牌 */
+  --wb-viz-band-normal: rgba(13, 104, 50, .12);
+  --wb-viz-marker-abnormal: #b91c1c;
+  --wb-viz-event-infusion: #0052cc;
+  --wb-viz-event-bleed: rgba(185, 28, 28, .16);
+
+  /* DTCG Level 2 Semantic System Tokens */
+  --xyb-sys-bg-canvas: var(--wb-paper);
+  --xyb-sys-bg-surface: var(--wb-surface);
+  --xyb-sys-text-primary: var(--wb-ink);
+  --xyb-sys-text-secondary: var(--wb-muted);
+  --xyb-sys-border-subtle: var(--wb-line);
+  --xyb-sys-action-primary: var(--wb-action);
+  --xyb-sys-action-on-primary: var(--wb-action-ink);
+}
+.wb-dawn-clarity h1, .wb-dawn-clarity h2, .wb-dawn-clarity h3,
+:root[data-theme="dawn-clarity"] h1, :root[data-theme="dawn-clarity"] h2, :root[data-theme="dawn-clarity"] h3 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* 晨曦大字控件触控靶区尺寸保障（≥48px） */
+.wb-dawn-clarity button, .wb-dawn-clarity .btn-primary, .wb-dawn-clarity .btn-secondary,
+:root[data-theme="dawn-clarity"] button, :root[data-theme="dawn-clarity"] .btn-primary {
+  min-height: 48px;
+  padding: 10px 18px;
+  font-size: 16px;
+}
+
+/* 晨曦大字高可见焦点框 */
+.wb-dawn-clarity *:focus-visible, :root[data-theme="dawn-clarity"] *:focus-visible {
+  outline: 3px solid #0052cc;
+  outline-offset: 2px;
+}
+
+/* —— 低照度病房护眼暗纸模式（Paper Twilight） —— */
+:root[data-theme="dawn-clarity"][data-twilight="true"],
+:root[data-theme="dawn-clarity"][data-theme="dark"],
+.wb-dawn-clarity[data-twilight="true"] {
+  --wb-paper: #121314; --wb-surface: #1e2022; --wb-ink: #f3f4f6;
+  --wb-muted: #9ca3af; --wb-line: #374151; --wb-mint: #282b2e;
+  --wb-mint-ink: #93c5fd; --wb-action: #60a5fa; --wb-action-ink: #0b192c;
+  --wb-radius: 10px; --wb-gap: 16px; --wb-group-gap: 28px;
+  --page: #121314; --surface: #1e2022; --ink: #f3f4f6; --muted: #9ca3af; --line: #374151;
+  --wb-viz-band-normal: rgba(96, 165, 250, .18);
+  --wb-viz-marker-abnormal: #f87171;
+  --wb-viz-event-infusion: #38bdf8;
+  --wb-viz-event-bleed: rgba(248, 113, 113, .25);
+}

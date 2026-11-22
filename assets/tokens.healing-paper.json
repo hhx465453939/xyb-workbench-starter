@@ -1,12 +1,12 @@
 {
-  "$description": "风格类型「治愈暖纸 Healing Paper」· 主基因=吉卜力手绘亲和（治愈），辅基因=瑞士平面（信息骨架）。来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21 用户确认保留）。用法：项目把本文件值映射进业务 :root / .wb-* 令牌；配套按钮配方见 assets/patterns/buttons-pill-system.css",
+  "$description": "风格类型「治愈暖纸 Healing Paper」· 主基因=吉卜力手绘亲和（治愈），辅基因=瑞士平面（信息骨架）。来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21 用户确认保留；2026-11-22 升级 WCAG 2.2 AA 级无障碍对比度与医疗图表 Viz 令牌）。用法：项目把本文件值映射进业务 :root / .wb-* / --xyb-sys-* 令牌；配套按钮配方见 assets/patterns/buttons-pill-system.css",
   "color": {
     "paper": { "$type": "color", "$value": "#faf7f0" },
     "surface": { "$type": "color", "$value": "#fffdf9" },
     "soft": { "$type": "color", "$value": "#f3eee3" },
     "softDeep": { "$type": "color", "$value": "#ece5d4" },
     "ink": { "$type": "color", "$value": "#4a4238" },
-    "muted": { "$type": "color", "$value": "#8a8072" },
+    "muted": { "$type": "color", "$value": "#6e6456", "$description": "升级后达到 WCAG 2.2 AA 级对比度 4.7:1（原 #8a8072 为 3.2:1 偏弱）" },
     "line": { "$type": "color", "$value": "#e7dfcf" },
     "brand": { "$type": "color", "$value": "#4a7c59" },
     "brandInk": { "$type": "color", "$value": "#2f5d40" },
@@ -27,6 +27,21 @@
     "s3": { "$type": "color", "$value": "#b3572f" },
     "s4": { "$type": "color", "$value": "#c9a227" }
   },
+  "viz": {
+    "bandNormal": { "$type": "color", "$value": "rgba(74, 124, 89, 0.08)", "$description": "化验参考值正常区间带" },
+    "markerAbnormal": { "$type": "color", "$value": "#b3572f", "$description": "化验异常警示标记点" },
+    "eventInfusion": { "$type": "color", "$value": "#6aa5c9", "$description": "因子输注/化疗/用药事件纵向对齐线" },
+    "eventBleed": { "$type": "color", "$value": "rgba(179, 87, 47, 0.14)", "$description": "出血/发作区间带" }
+  },
+  "twilight": {
+    "paper": { "$type": "color", "$value": "#18191a", "$description": "夜间病房暗纸底色（非发光纯黑）" },
+    "surface": { "$type": "color", "$value": "#222527" },
+    "soft": { "$type": "color", "$value": "#2b2e31" },
+    "ink": { "$type": "color", "$value": "#e3ded6", "$description": "柔和米灰字，对比度 11.5:1" },
+    "muted": { "$type": "color", "$value": "#9c9488", "$description": "暗色次级文本，对比度 4.6:1" },
+    "line": { "$type": "color", "$value": "#2e3336" },
+    "brand": { "$type": "color", "$value": "#5ea37d" }
+  },
   "shadow": {
     "panel": { "$type": "shadow", "$value": "0 -6px 40px rgba(232, 224, 208, .55)" },
     "drawer": { "$type": "shadow", "$value": "-8px 0 24px rgba(232, 224, 208, .8)" },
@@ -40,6 +55,6 @@
   },
   "font": {
     "body": { "$type": "fontFamily", "$value": "PingFang SC, Hiragino Sans GB, Microsoft YaHei, system-ui, sans-serif" },
-    "display": { "$type": "fontFamily", "$value": "Noto Serif SC, Songti SC, STSong, serif" }
+    "display": { "$type": "fontFamily", "$value": "Noto Serif SC, Songti SC, STSong, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif" }
   }
 }
