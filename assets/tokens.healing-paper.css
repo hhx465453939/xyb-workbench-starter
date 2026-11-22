@@ -1,6 +1,6 @@
 /* 风格类型「治愈暖纸 Healing Paper」· 覆盖层（opt-in）
  * 来源：squamous-cell-skin-cancer-workbench 0.2.0-rc.5（2026-11-21 用户确认保留）。
- * 用法：init 生成的项目在业务根元素同时挂 .wb-<slug> 与本类（或把值并进项目 :root）：
+ * 用法：init 生成的项目在业务根元素同时挂 .wb-{slug} 与本类（或把值并进项目 :root）：
  *   <main class="wb-myslug wb-healing-paper">
  * 主基因=吉卜力手绘亲和（治愈），辅基因=瑞士平面（信息骨架）；
  * 阴影一律暖色（禁纯黑灰）；标题衬线做手作人文感；图表暖四色。

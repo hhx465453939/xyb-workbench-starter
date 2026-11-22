@@ -1,3 +1,11 @@
+## 未发布（2026-11-22，自 vwd-type3-workbench 回流：L164 门禁与模板四项加固）
+
+- `assets/tokens.healing-paper.css` + `assets/manifest.json`：头注释 `.wb-<slug>` 改为 `.wb-{slug}`，消除新项目 `files` 含 `assets` 时被 `check-placeholder-free.mjs` 误判为未替换占位符。
+- `project-template/.gitignore`：内置 `.secrets` / `.secrets/`（对齐 `check-conformance.mjs` `mineru/忽略密钥` 审计项）与 `!research/**/*.sqlite`（防止 M4 试验快照 sqlite 被 `*.sqlite` 规则忽略）。
+- `templates/mineru-cloud-extract.mjs`：补齐顶部 `import { readZip } from '../lib/zip.js'`，修复 `readZip(buffer)` 未导入隐患。
+- `templates/check-placeholder-free.mjs` / `scripts/check-placeholder-free.mjs` / `templates/check-trial-snapshot.mjs`：过滤 flag 参数使 `--self-test` 位置无关，并为 `check-trial-snapshot.mjs` 增加 `--self-test` 坏快照自检分支，使六件强制门禁全部具备 `--self-test` 验红能力。
+- `docs/LESSONS.md`：新增 L164。
+
 ## 未发布（2026-11-21，交付防假绿门禁回流）
 
 - `AGENTS.md` 新增通用收尾门禁：逐项验收矩阵、原型/家族合同、占位功能标记、完整检查链、分层证据与逐行销项；初始化项目会继承。

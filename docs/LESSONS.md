@@ -1186,3 +1186,13 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **修法**：演示档案的「少」要有下限——**≥2 时间点 × ≥2 指标**的基础化验（本仓 A 套补 6 条 WBC/HGB/PLT × 术前/术后），保证一图秀、指标卡、趋势卡有可渲染内容；「零条覆盖」由 docs / symptoms 等**不影响首屏主视图**的空集合承担。图表视觉参考 breast-cancer-workbench v0.4 `chartSVG`（固定画布/网格/日期轴/Catmull-Rom/末点避让/治疗条 lane + 轴外标记）。
 - **检查**：store/demo parity 测试断言默认档案化验 ≥4 条且 ≥2 时间点；一图秀数值断言（C1 各序列满格归一化、C2 单点不连线、C4 computed fill=none）只统计 `path.chart-line[data-metric]` 与 `circle.chart-dot[data-metric]`，装饰元素不计入。
 - **回收自**：squamous-cell-skin-cancer-workbench 0.2.0-rc.21。
+
+### L164 · 随包资产注释禁裸 `<slug>`、`.gitignore` 模板需内置 `.secrets` 与 `!research/**/*.sqlite`、六道门禁 `--self-test` 参数位置无关化
+
+- **来源**：2026-11-22 vwd-type3-workbench（血管性血友病 3 型，小凝宝 VwfPal）全周期实测：
+  1. `assets/tokens.healing-paper.css` 头注释写着 `.wb-<slug>`，`init` 整目录原样复制 `assets/` 后，一旦 `package.json` `files` 含 `assets`，`check-placeholder-free.mjs` 即报 `assets/tokens.healing-paper.css: 初始化占位符 <slug>`。
+  2. `project-template/.gitignore` 漏写 `.secrets`（致新仓首次跑 `npm run audit` 即报 `✗ mineru/忽略密钥`），且 `*.sqlite` 未豁免 `!research/**/*.sqlite`（易把 M4 临床试验快照 sqlite 漏提交）。
+  3. `templates/mineru-cloud-extract.mjs` 第 323 行调用 `readZip(buffer)` 却未顶部 `import { readZip } from '../lib/zip.js'`。
+  4. `check-placeholder-free.mjs` 取 `process.argv[2]` 未过滤 `--self-test`，不带 `.` 直接跑 `--self-test` 会把 `--self-test` 当目录报 `ENOENT`；`check-trial-snapshot.mjs` 缺少 `--self-test` 自检分支。
+- **修法（已落 starter）**：① `assets/tokens.healing-paper.css` 注释改 `.wb-{slug}` 并更新 `assets/manifest.json` sha256；② `project-template/.gitignore` 内置 `.secrets` 与 `!research/**/*.sqlite`；③ `templates/mineru-cloud-extract.mjs` 补 `import { readZip } from '../lib/zip.js'`；④ `check-placeholder-free.mjs` 过滤 flag 参数，`check-trial-snapshot.mjs` 增补 `--self-test` 坏快照注入自检（坏 sha256 + 条数失配 → 抓出 7 条错误）。
+- **回收自**：vwd-type3-workbench 0.1.1。

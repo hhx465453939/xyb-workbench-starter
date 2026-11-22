@@ -17,7 +17,8 @@ import { readFileSync, existsSync, readdirSync, statSync, mkdtempSync, writeFile
 import { join, resolve, extname } from 'node:path'
 import { tmpdir } from 'node:os'
 
-const ROOT = resolve(process.argv[2] || '.')
+const positional = process.argv.slice(2).filter(a => !a.startsWith('-'))
+const ROOT = resolve(positional[0] || '.')
 const SELF_TEST = process.argv.includes('--self-test')
 
 const PATTERNS = [

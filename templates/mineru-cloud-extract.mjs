@@ -14,6 +14,7 @@
 import { readFileSync as readFileSyncFn, writeFileSync as writeFileSyncFn, mkdirSync, chmodSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
+import { readZip } from '../lib/zip.js';
 
 export const MINERU_TOKEN_URL = 'https://mineru.net/apiManage/token';
 /** 18 号：Token 只进本地密钥文件，默认落用户目录（绝对路径）；.secrets 相对写法只作展示别名。 */

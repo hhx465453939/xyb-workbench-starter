@@ -5,7 +5,7 @@ import { DatabaseSync } from 'node:sqlite'
 import { dirname, join, resolve } from 'node:path'
 import { isDeepStrictEqual } from 'node:util'
 
-const args=process.argv.slice(2), optional=args.includes('--if-present')
+const args=process.argv.slice(2), optional=args.includes('--if-present'), selfTest=args.includes('--self-test')
 const positional=args.filter((arg)=>!arg.startsWith('-'))
 const target=resolve(positional[0]||'.'), errors=[]
 const sha256=(bytes)=>createHash('sha256').update(bytes).digest('hex')
@@ -113,6 +113,28 @@ async function checkSnapshot(dir) {
   console.log(`CHECK ${dir}: records=${rows.length}/${dbRows.length} sourceStatuses=${statuses.length}`)
  }catch(error){errors.push(`${dir}: SQLite validation failed: ${error.message}`)}
  finally{db.close()}
+}
+
+if (selfTest) {
+ const { mkdtempSync, writeFileSync, rmSync } = await import('node:fs')
+ const { tmpdir } = await import('node:os')
+ const tmp = mkdtempSync(join(tmpdir(), 'snap-st-'))
+ try {
+  writeFileSync(join(tmp, 'trials-2026.jsonl'), JSON.stringify({ recordId: 'T1', title: 'x' }) + '\n')
+  const db = new DatabaseSync(join(tmp, 't.sqlite'))
+  db.exec('CREATE TABLE trials (record_id TEXT PRIMARY KEY, merged_sources TEXT, source_id TEXT, title TEXT, study_type TEXT, sponsors TEXT, registry_numbers TEXT, dates TEXT, source_url TEXT, retrieved_at TEXT, status_note TEXT, snapshot_date TEXT); CREATE TABLE source_statuses (query TEXT, source_id TEXT, state TEXT);')
+  db.close()
+  writeFileSync(join(tmp, 'manifest.json'), JSON.stringify({
+   recordCount: 5, dbCount: 5, sourceStatusRows: 2,
+   files: { 'trials-2026.jsonl': { sha256: 'deadbeef' }, 't.sqlite': { sha256: 'deadbeef' } }
+  }))
+  await checkSnapshot(tmp)
+  if (errors.length < 3) { console.error('FAIL self-test: broken snapshot did not trigger errors'); process.exit(1) }
+  console.log(JSON.stringify({ selfTest: 'PASS', badFails: errors.length, samples: errors.slice(0, 3) }, null, 2))
+  process.exit(0)
+ } finally {
+  rmSync(tmp, { recursive: true, force: true })
+ }
 }
 
 let snapshots=[]
