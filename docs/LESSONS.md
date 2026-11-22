@@ -1,3 +1,29 @@
+## 2026-11-22 · 从家族性噬血细胞综合征小噬宝 PhagoPal（fhl-workbench v0.1.0）回收
+
+### L95 · 原型指标卡 key 与 label 失配导致静默 0 渲染
+
+在构建 `prototypes/v0.2/demo-data.js` 时，`metricGroups.items` 必须配置为 `metricDefs` 对象的键名（即缩写 key，如 `['SF', 'sCD25', 'IL-6']`），而不是中文名称（如 `['血清铁蛋白', '可溶性CD25', '白介素-6']`）。
+若写错为中文名，原型渲染器无法按 key 取到单位、参考区间与数据点，导致所有指标卡全部静默跳过渲染，卡片总数为 0，直接触发 `probe-page-view.mjs` 在 `X2` 断言报 `expected > 0, got 0`。
+**规则**：`metricGroups` 只存指标 key 引用，显示标签统一通过 `metricDefs[key].name` 解构；增加断言校验 `metricGroups.items` 中的每个元素必须在 `metricDefs` 中有定义。
+
+### L96 · 诱发因素枚举 `triggerDefs` 必须与 `TRIG1` 探针硬断言完全闭环
+
+`demo-data.js` 中必须显式提供完整的 `triggerDefs` 诱发因素枚举（如 `ebv_virus`, `infection`, `non_adhere`, `chemo_myelo`, `vaccine`, `fatigue`, `unknown`, `other` 8 项）。
+探针在抓取 `TRIG1` 触发事件时，会严格断言 `hasEnum === true`。若缺少该配置，探针在自动化走查中报红。
+
+### L97 · 移植底本的表名与列名强校验（静态 AST/词表 + 动态测试）
+
+从底本移植代码时，核心业务事件表名（如 TIO 的 `pmt_events` vs FHL 的 `fhl_events`）以及关联列名（如 `treatment_events` 的 `name` vs `drug_name`）极易遗留在 `readmodels.js` 或测试用例中。
+这种失配在纯静态扫描时不易察觉，但在运行时会直接抛出 SQLite 错误 `no such table: pmt_events` 或 `table treatment_events has no column named name`。
+**规则**：以 `schema/0001_initial.sql` 唯一真实来源建立表名/字段名白名单；`npm test` 必须全量覆盖全部 CRUD 与 readmodel 接口。
+
+### L98 · `check-profile.mjs` 单插件快速验机与异常隔离
+
+在 DSH Desktop 宿主装载了多个社区插件的复杂 profile 环境下，`check-profile.mjs` 原有逻辑会顺序遍历加载每一个插件，若某个其他插件（因未编译或未安装）报错，会误中断当前正在验收的插件。
+**回流改进**：支持 `--only <slug>` 精确单仓过滤，并在扫描各个插件时做好 `try/catch` 隔离与容错，使得当前插件的自动化验收独立可靠。
+
+---
+
 ## 2026-10-25 · 从慢性淋巴细胞白血病小淋宝 LymPal（cll-workbench v0.2.0）回收
 
 ### L28 · 移植底本的检查器会把**底本病种名**当成本项目的期望值
