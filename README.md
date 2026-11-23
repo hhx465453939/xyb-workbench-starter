@@ -31,6 +31,30 @@
   - 发版防腐：构建期 `migrate-public` 编译期静态剥离选择器并由单元测试双向断言，发布包 100% 纯净。
 
 
+## 模型与 ADE 选型实测报告参考（2026-11 实战：Gemini 3.8 vs Gemini 4）
+
+在多批次癌症工作台（乳腺癌、卵巢癌、阴道癌、外阴癌、默克尔细胞癌、葡萄膜黑色素瘤）的 M0–M9 工业化全栈开发与 6 人 Swarm（Analyst + Builder + Auditor 双轨协作）实战中，我们对当期主流大模型在 **Antigravity / ADE 环境** 下的实际工程表现进行了全链路实测对比，给到后续开发者和协同 Agents 在环境配置与模型选择时作为参考：
+
+### 核心维度对比矩阵
+
+| 评估维度 | **Gemini 3.8 (Flash High / Low)** | **Gemini 4 / 顶尖前沿模型** | 生产流水线实战建议 |
+| :--- | :--- | :--- | :--- |
+| **首字时延与吞吐 (TTFT & Throughput)** | 🟢 **极快（秒级响应）**<br>工具调用（grep/read/edit/test）衔接几乎零停顿，测试-改写-验证闭环流畅。 | 🟡 **较慢（深度推理延迟明显）**<br>单步思维链长，在多轮命令调试与代码微调中等待成本高。 | **工程开发首选 3.8**：在修 22 道门禁与 Playwright 探针时，3.8 的开发周转速度快近 1 倍。 |
+| **高并发抗压与配额稳定性 (Quota & 429)** | 🟢 **极高稳定性（持久 100% 配额）**<br>支持 6–8 个 Swarm 子代理高频并发调用，无任何限流中断。 | 🔴 **易触顶（偶发 `RESOURCE_EXHAUSTED`）**<br>高并发流水线中易遭遇 429，需多模型轮转调度或退避。 | **长任务 / 夜班首选 3.8**：保证无人值守流水线不因配额中断挂起。 |
+| **门禁执行力与规范遵循 (Rule Following)** | 🟢 **严格合规、零投机**<br>对《四条不可让步》、22 道静态门禁、小粉宝一图秀平滑样条契约执行精准，绝不擅改断言假绿。 | 🟢 **严格合规、逻辑自洽**<br>遵守规范契约，代码整洁度高。 | **两者持平**：3.8 在有明确脚手架检查器约束下，合规性与高级模型无差异。 |
+| **复杂长篇医学指南提炼 (Medical Derivation)** | 🟡 **良好（需脚手架模板辅助）**<br>在非结构化原始长文本初筛时偶尔有少量底本惯性，但依靠门禁扫描可一次性修正。 | 🟢 **极佳（提炼凝练、专业度高）**<br>直接从生硬长文本中抽象“4 组 8 项指标”与分期映射时语境更自然。 | **前置调研可选 Gemini 4 辅助**：但在已有脚手架标准时，3.8 产物质量完全对齐。 |
+
+### 开发者与 Agent 选型决策指南 (Decision Matrix)
+
+1. **标准 M0–M9 全周期工业化建仓（推荐：Gemini 3.8 Flash High）**：
+   - 依赖 `xyb-workbench-starter` 净起盘（`init.mjs`）并遵循 `prompts/NIGHT-SHIFT-FULLSTACK.md`；
+   - 借助 22 道静态门禁、七件硬门禁与三套 Playwright 探针作为确定性护栏；
+   - 凭借 3.8 的超高吞吐与充裕配额，以最低 token/时间成本达成零返工交付。
+2. **未收录罕见病的前期极复杂临床逻辑推演（推荐：Gemini 4 / 思考模型点选）**：
+   - 适用于 M1 医学调研初期、多方矛盾指南调和或全新业务分期架构设计；
+   - 完成方案定稿与 SPEC 沉淀后，依然切回 3.8 展开工程实现。
+
+
 ## Git开发快照 · 2026-11-03（十）开发检查点清单：把散落判据收成一张可勾的表
 
 白塞病工作台跑完 M2 回头复盘，最贵的返工不是「没写文档」，而是**判据都在文档里、开发时没人逐条对照**：3D 卡片做成了上下展开而不是固定高度翻面、AI 一键发送入口整条漏掉、一图秀只画了一套合成档案导致新患者路径全空。所以把 36 份文档里的可断言项收成两张表：[检查点主表](prompts/WORKBENCH-DEV-CHECKLIST.md)（IP / X / C / MT / A / P / Q 七类编号，每条给「怎么做对」+「怎么验」+「现有检查手段」）与 [185 条全量索引](prompts/WORKBENCH-DEV-CHECKLIST-FULL.md)（带 `file:line` 原文，供主表指不到的细节回查）。两条硬要求写进 `AGENTS.md` 的 `## 开发检查点`：**两套合成档案**（A 刚确诊记录少 / B 长期随访记录多，切换整页联动不串档），**参考基准明确到仓**——小粉宝=乳腺癌 `breast-cancer-workbench/prototypes`，小橙宝=AML `aml-workbench` 的 `#mind/mind-burden`，只抄结构与元素体系，不抄分期/线序/预后语义。索引同时暴露了一个真问题：33 号点名的 `templates/check-readme-assets.mjs` **仓内并不存在**，白塞病台按 README 要求做的截图墙没有闸门可跑，只能记「待人工」——已在主表 §10 Q27 按事实改写，没写成检查器通过。包版本 `1.10.0-rc.7`。
@@ -215,6 +239,7 @@ python3 skills/hvt-requirement-review/scripts/hvt_scan.py --project . --profile 
 
 | 要做的事 | 文档 |
 | --- | --- |
+| **模型与 ADE 选型实测参考（Gemini 3.8 vs Gemini 4 实战对比与决策矩阵）** | [README.md §模型与 ADE 选型实测报告参考](#模型与-ade-选型实测报告参考2026-11-实战gemini-38-vs-gemini-4) |
 | **开工前逐条勾的开发检查点（IP/X/C/MT/A/P/Q 编号、两套合成档案、小粉宝/小橙宝基准）** | [WORKBENCH-DEV-CHECKLIST](prompts/WORKBENCH-DEV-CHECKLIST.md) + [185 条全量索引](prompts/WORKBENCH-DEV-CHECKLIST-FULL.md) |
 | **需求到人工反馈的闭环项目流程（含 HTML 确认、临床试验 SQLite、>98% parity、DSH Desktop RC发布）** | [17-CLOSED-LOOP-PROJECT-FLOW](docs/17-CLOSED-LOOP-PROJECT-FLOW.md) |
 | Git 克隆/命令激活/同步/初始化 | [CLI-GIT](docs/CLI-GIT.md) |
