@@ -95,7 +95,7 @@ C 资料目录（2026-11-12 两个仓同天翻车：按钮点了只有一句说�
   闸门：`node scripts/check-data-dir.mjs .`（`--self-test` 必须能红）
 
 D 临床试验（要么四段齐，要么裁得有实测依据）
-  按 35 号四段链路：建档（只有已确认字段参与匹配）→ 检索（关键词/病理/状态/阶段/地区）→ 匹配（符合度 pct + 四档分层，待确认按 0 计，pct 只偏低不偏高）→ 呈现/收藏（`saved_trial`）。
+  按 35 号四段链路：建档（只有已确认字段参与匹配）→ 检索（关键词/病理/状态/阶段/地区）→ 匹配（符合度 `pct = 符合 ÷ 已对照` + 四档分层，待确认按 0 计不进分母，可对照 `< 2` 返回 `pct = null`；卡片保留 `.score`「`pct%` + 登记字段符合度」与 `.denom` 固定行「`n / m 项对得上 · k 项待确认`」；禁止的是「匹配度/匹配指数/入选概率」而非 35 号符合度）→ 呈现/收藏（`saved_trial`）。
   裁剪红线：**不许用「候选池个位数 / 罕见病召回不可靠」这类推断当理由**——先实测召回（跑一次在线/本地通道，记 N 条与快照日期）。
   2026-11-12 的教训：两个仓都写「快照 0 条、召回不可靠」，实测却有 30 条（多数是登记研究、不是干预试验），
   而且包里其实躺着 trials 快照——数据在、入口是假的。
@@ -118,6 +118,7 @@ E 患者档案（demo 之外必须能新建——只有 demo 等于样机）
 · 用户取消目录选择：不要留下空会话，在界面提示可以再点一次"AI 对话"重试。
 · 创建失败：在工作台内显示失败原因，不能点了没反应。
 · 草稿只填入、不自动发送（newSession 只在用户显式点击时调一次）。
+· 宿主接线防白屏/防禁用三条（BCC/DFSP 真机回流）：`dsh/index.js` 必须向 `webServer.register` 同时注册 API 前缀与 `'/' + API_PREFIX`（UI 静态前缀）并导出 `uiReady()`；`src/client.js` 读服务必须写 `host?.desktopWorkbenches?.service || host?.desktopWorkbenches`；`paneVisible` 必须受 `hasConversation || connecting` 约束（禁止 `paneOpen || hasConversation` 常驻右侧空白占位）；`demo-data.js` 与 `dsh/readmodels.js` 保持同源。
 · 改完必须重新生成 lib/client.js、升版本、更新 CHANGELOG，并重跑静态校验与打包；安装与实机验证状态如实记录。
 另：不要装到 ~/.dsh 或 DeepSeek Harness（只装本机 DSH Desktop）；服务缺失时才禁用按钮并写降级原因，不许自建聊天框兜底。
 

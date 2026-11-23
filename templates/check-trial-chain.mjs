@@ -76,7 +76,7 @@ export function check(input) {
     const segs = [
       ['建档（只有已确认字段参与匹配）', /molecular_marker|pathology_type|档案字段|建档/],
       ['检索（关键词/病理/状态/阶段/地区）', /关键词|keyword/],
-      ['匹配（符合度 pct + 四档分层 + 待确认按 0 计）', /符合度|pct|分层|待确认/],
+      ['匹配（符合度 pct + 四档分层 + 待确认按 0 计）', /(?=[\s\S]*(?:符合度|\bpct\b))(?=[\s\S]*(?:分层|待确认|部分对得上|字段都对得上))/],
       ['呈现/收藏（saved_trial 或收藏）', /saved_trial|收藏/],
     ]
     const missing = segs.filter(([, re]) => !re.test(ui)).map(([n]) => n)

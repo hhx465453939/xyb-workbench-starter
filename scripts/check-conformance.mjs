@@ -223,6 +223,12 @@ async function main() {
       ok('ui/随包界面', 'public/index.html 随包发出', uiEntry)
     }
 
+    if (uiEntry && hasPublic) {
+      const hasUiRoute = /path\s*:\s*(?:'\/'\s*\+\s*API_PREFIX|"\/"\s*\+\s*API_PREFIX|`\/\$\{API_PREFIX\}`|UI_PREFIX|UI_ENTRY|['"`]\/(?!api\/)[a-z0-9-]+['"`])/.test(shellDsh)
+      if (hasUiRoute) ok('ui/服务端路由', 'dsh/index.js 已注册 UI 静态前缀路由', uiEntry)
+      else fail('ui/服务端路由', "dsh/index.js 只注册了 API 路由而漏注册 UI 静态前缀路由（如 '/' + API_PREFIX），装机后 iframe 会 404 白屏")
+    }
+
     /* 外壳自绘业务卡片＝家族口径禁止的第二种界面（装配层应该只做入口 + iframe） */
     const drawn = /wb-status-(?:eyebrow|days|line)|data-status-days|接入骨架/.test(shellClient)
     if (drawn && !uiEntry) fail('ui/外壳自绘', 'lib/client.js 自己在画业务卡片，且没有 iframe UI_ENTRY：装配层不该当业务页')

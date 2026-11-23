@@ -76,6 +76,20 @@ export function audit(texts) {
     }
     if (!scoredText.includes('不是入组资格')) problems.push('T2b 有百分数但缺『不是入组资格』声明（35 号语义规则 3）')
   }
+  /* T2c 存在独立 trial-match.js 模块时（35 号 v3 标准形态），必须真的计算展示层粗筛符合度 pct、
+     守住「可对照项 < 2 不给百分数（pct = null）」并在卡片呈现「登记字段符合度」与「项对得上」分母行
+     （2026-11-23 BCC/DFSP v0.1.2 实测：只渲染四档标签而漏掉 .score 百分数方块与 .denom 分母行，或把 ? 计入分母）。 */
+  const moduleFiles = scanned.filter(({ f }) => MODULE_FILE.test(f))
+  if (moduleFiles.length) {
+    const modText = moduleFiles.map(({ s }) => s).join('\n')
+    const allText = scanned.map(({ s }) => s).join('\n')
+    if (!/\bpct\b/.test(modText) || !/<\s*2\b/.test(modText)) {
+      problems.push('T2c trial-match.js 缺少展示层符合度 pct 计算或缺少「可对照项 < 2 不给百分数（pct = null）」守卫（35 号 §二 / §七.3）')
+    }
+    if (!/登记字段符合度|粗筛符合度/.test(allText) || !/项对得上|项已对照/.test(allText)) {
+      problems.push('T2c 试验匹配卡片缺少「登记字段符合度」分数方块或「n / m 项对得上」固定分母行（35 号 §六）')
+    }
+  }
   return problems
 }
 
@@ -98,12 +112,23 @@ const SELFTEST = [
   ['缺三态词（只有待确认、没说需核）', GOOD.replace('这条登记读不出，标为待确认，需核方案原文', '待确认'), 'T1'],
   ['缺未核实', GOOD.replace('登记状态未核实 · 快照 2026-10-18', '快照 2026-10-18'), 'T3'],
   ['缺档位词', GOOD.replace("'部分对得上'", "'疑似'"), 'T2b'],
+  ['trial-match.js 合规（含 pct、<2 守卫与分母行）', [
+    { f: 'public/trial-match.js', s: 'function evaluate(items){ const comparable = items.filter(x => x.state !== "?"); const pct = comparable.length < 2 ? null : Math.round(ok / comparable.length * 100); return { pct, band: "部分对得上" }; }' },
+    { f: 'public/app.js', s: 'const trialMatchCard = (res) => `${res.pct}% 登记字段符合度 ${res.matchedCount} / ${res.comparedCount} 项对得上 · 待确认，需核方案原文 · 不是入组资格 · 未核实 · 快照 2026-11-23`;' },
+  ], null],
+  ['trial-match.js 缺 pct 或可对照 <2 守卫', [
+    { f: 'public/trial-match.js', s: 'function evaluate(items){ return { tier: "部分对得上", unknown: "待确认，需核方案原文", note: "登记状态未核实 · 快照 2026-11-23" }; }' },
+  ], 'T2c'],
+  ['trial-match.js 卡片缺分母行（只写四档无 n / m 项对得上）', [
+    { f: 'public/trial-match.js', s: 'function evaluate(items){ const pct = comparable.length < 2 ? null : 50; return { pct, label: "登记字段符合度", band: "部分对得上", note: "不是入组资格 · 待确认，需核方案原文 · 未核实 · 快照 2026-11-23" }; }' },
+  ], 'T2c'],
 ]
 
 const runSelfTest = () => {
   let bad = 0
-  for (const [name, src, expect] of SELFTEST) {
-    const got = audit([{ f: 'fixture.js', s: src }])
+  for (const [name, src, expect, file = 'fixture.js'] of SELFTEST) {
+    const inputs = Array.isArray(src) ? src : [{ f: file, s: src }]
+    const got = audit(inputs)
     const hit = expect ? got.some((p) => p.startsWith(expect)) : got.length === 0
     if (!hit) { bad++; console.error(`✗ self-test 失败：${name} → ${got.length ? got.join('；') : '无问题'}`) }
     else console.log(`✓ ${name}`)

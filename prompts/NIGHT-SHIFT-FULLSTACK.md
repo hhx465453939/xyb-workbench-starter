@@ -53,7 +53,7 @@ C 版本十处同源与数据口径：
 ① 配置目录必须是真入口
   顶栏「配置目录」→ 真调 `uiWorkspace.pickDirectory()`（无宿主能力才降级 `showDirectoryPicker`）；客户端+服务端双端硬拒主目录/桌面/下载根目录/tmp；`cordis.patch.yml` 用 `config.root: !!js dshHomePath('<slug>')` 且 `dsh/index.js` 真读；选完回显并写入 `app_setting` 重开仍在。「本原型为示意，目录未真实挂载」**仅限降级路径**。
 ② 临床试验入口必须完整可用（禁止臆断裁剪）
-  按 35 号四段齐全：建档（仅已确认字段）→ 检索（多维筛选，按条件排不掺分）→ 匹配（`pct = 符合 ÷ 已对照`、待确认按 0 计、四档分层、可对照 <2 不给百分数）→ 呈现/收藏（`saved_trial`，拒收零副作用）。
+  按 35 号四段齐全：建档（仅已确认字段）→ 检索（多维筛选，按条件排不掺分）→ 匹配（`pct = 符合 ÷ 已对照`、待确认按 0 计不进分母、四档分层、可对照 `< 2` 置 `pct = null`；卡片固定渲染 `.score`「`pct%` + 登记字段符合度」与 `.denom`「`n / m 项对得上 · k 项待确认`」；注意禁词是「匹配度/匹配指数/入选概率」，**不可误删 35 号符合度百分比与分母行**）→ 呈现/收藏（`saved_trial`，拒收零副作用）。
   卡头标明候选池口径（已载 N / 返回 M / 非全库扫描 + 快照日期）；`trialMatch.total` 为全表计数 + `honestyNote`。裁剪必须附通道实测证据（`manifest` N 条 / 相关 Y 条 / 逐通道终态，`FAILED` 不算查过；相关 0 写「检索词命中才进池，不等于无研究」）。
 ③ demo 之外必须可新建真实患者并落 SQLite
   档案级「新建我的档案」→ `POST /api/<slug>/subjects` → `INSERT INTO subjects(..., is_demo=0)`；新建即切档联动、多档案隔离会话与草稿；demo 带 `is_demo=1` 不可删改；空记录新档可用；八类记录写入全走 API 落库，刷新仍在。
@@ -96,8 +96,8 @@ C 版本十处同源与数据口径：
 7 创建失败在工作台内显示原因，不许静默无反应。
 8 保持「草稿只填入、不自动发送」（禁 `input.submit()`、`send:true`）。
 9 改完重生成 `lib/client.js`、升版更新 CHANGELOG、重跑校验打包，实机状态如实记录。
-· **两处致命细节**：① 订阅必须写在 **Panel 组件体内、任何 `return` 之前**；② 无会话时按钮**禁止 `disabled`**（仅宿主无 `newSession` 能力时禁用并注明降级原因）。
-· 门禁：`node scripts/check-agent-pane-contract.mjs .`（`--self-test` 必红），报告附 grep 计数：`newSession≥1 / subscribe≥1 / ensureSession(…)=0 / Boolean(conversation)=0`。
+· **四处致命细节（漏一条即白屏/点不动）**：① 订阅必须写在 **Panel 组件体内、任何 `return` 之前**；② 无会话时按钮**禁止 `disabled`**（仅宿主无 `newSession` 能力时禁用并注明降级原因）；③ `service` 解析必须写 `host?.desktopWorkbenches?.service || host?.desktopWorkbenches`（真机方法直挂 `desktopWorkbenches`），且 `paneVisible` 必须受 `hasConversation || connecting` 约束（禁止 `paneOpen || hasConversation` 常驻右侧空白面板）；④ `dsh/index.js` 必须向 `webServer.register` 同时注册 `API_BASE_HOSTED` 与 `'/' + API_PREFIX`（UI 静态前缀）并导出 `uiReady()`，`demo-data.js` 须与 `readBootstrap` 同源。
+· 门禁：`node scripts/check-agent-pane-contract.mjs .` 与 `node scripts/check-route-prefix.mjs`（`--self-test` 必红），报告附 grep 计数：`newSession≥1 / subscribe≥1 / ensureSession(…)=0 / Boolean(conversation)=0`。
 
 ========== 5. 四步交付流水线（D1–D4 不可跳） ==========
 · D1 开发自检：跑 §3 七件门禁 + `npm test` + `npm run audit`（`check-conformance.mjs`）+ 三套 Playwright 探针（M2 路由连拍 / disease-primer / page-view）全绿。

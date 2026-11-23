@@ -1,3 +1,13 @@
+## 未发布（2026-11-23，自 BCC/DFSP v0.1.1–v0.1.3 真机修复回流：L170 与四项门禁加固）
+
+- **门禁与默认检查链加固（消除真机装机假绿）**：
+  - `templates/check-route-prefix.mjs` + `scripts/init.mjs` + `scripts/check-conformance.mjs`：`check-route-prefix.mjs` 新增 M0 骨架阶段兼容跳过与 `--self-test` 并默认接入 `init.mjs` 的 `npm run check`；`check-conformance.mjs` 新增 `ui/服务端路由` 检查，拦截 `dsh/index.js` 漏挂 `'/' + API_PREFIX` UI 静态前缀路由导致的装机 404 白屏。
+  - `templates/check-agent-pane-contract.mjs`：新增判据 13（禁止只读 `desktopWorkbenches.service` 而未回退 `|| host?.desktopWorkbenches`）与判据 14（禁止 `paneOpen || hasConversation` 导致无会话常驻空白右栏），同步扩展 `--self-test` 反向用例。
+  - `templates/check-trial-matching.mjs` + `templates/check-trial-chain.mjs` + `templates/check-wording.mjs` + `test/trial-matching-gate-integration.test.mjs`：澄清 35 号「登记字段符合度 + `n / m 项对得上` 分母行」与「匹配度/匹配指数/入选概率」禁词边界；新增 `T2c` 断言强制要求存在 `trial-match.js` 时实现 `pct`、可对照 `< 2` 不给百分数守卫及卡片分母行（`self-test 14/14`）。
+- **文档与四大启动提示词回流**：
+  - `docs/LESSONS.md`：新增 L170，沉淀基底细胞皮肤癌（BCC）与隆突性皮肤纤维肉瘤（DFSP）`v0.1.1`–`v0.1.3` 三轮真机修复经验。
+  - 同步更新 `prompts/FULL-CYCLE-KICKOFF.md`、`prompts/NIGHT-SHIFT-FULLSTACK.md`、`prompts/ZERO-TO-DEV.md`、`prompts/NEWBIE-KICKOFF.md`，固化 UI 路由双前缀、`desktopWorkbenches` 直挂回退、`paneVisible`、`demo-data.js` 与 `readBootstrap` 同源以及 35 号评分方块与分母行约束。
+
 ## 未发布（2026-11-23，净起盘固化与提示词升级：ZERO-TO-DEV v1.7 / NIGHT-SHIFT-FULLSTACK v2.1 / L166–L167）
 
 ## 未发布：开发报告模板

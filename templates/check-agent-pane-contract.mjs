@@ -24,6 +24,8 @@
  * 10 创建成功后 setPaneOpen(true)（用户点名第 3 条的静态可判部分）
  * 11 会话订阅必须在 Panel 组件体内、主 return 之前；放在别的组件或 return 之后等于死代码
  * 12 无会话时按钮不得因 !hasConversation 被 disabled；只允许在宿主无 newSession 能力时禁用
+ * 13 宿主服务挂载兼容：若读取 desktopWorkbenches.service，必须回退 || host?.desktopWorkbenches（真机方法直挂 desktopWorkbenches）
+ * 14 右侧会话栏显隐：禁止 paneOpen || hasConversation（无会话时右侧空白占位栏常驻）
  *
  * 用法：
  *   node scripts/check-agent-pane-contract.mjs [项目目录]
@@ -126,6 +128,26 @@ export function inspect(source, { hasGenerated = true, generatedSource = null } 
     else o.push('12 无会话时按钮未被会话真值 disabled ✓')
   }
 
+  /* 13 宿主服务挂载点：DSH Desktop 把 newSession/ownsSession/currentSession/subscribe 直接挂在
+     host.desktopWorkbenches 上（非 .service 子属性）。若只写 host?.desktopWorkbenches?.service
+     而不回退 || host?.desktopWorkbenches，真机上 service 为 undefined，「AI 对话」按钮永远禁用
+     （2026-11-23 BCC/DFSP v0.1.1 实测踩坑，v0.1.2 修复回流）。 */
+  {
+    const onlySubService = /desktopWorkbenches\??\.service\b/.test(code)
+      && !/desktopWorkbenches\??\.service\s*\|\|\s*[A-Za-z_$][\w$]*\??\.desktopWorkbenches\b/.test(code)
+    if (onlySubService) f.push('13 service 只读 desktopWorkbenches.service 未回退 || host?.desktopWorkbenches（真机方法直挂 desktopWorkbenches，会导致按钮永久禁用）')
+    else o.push('13 宿主 desktopWorkbenches 服务解析兼容直挂形态 ✓')
+  }
+
+  /* 14 右侧会话栏显隐：paneOpen 初始为 true，若写 paneVisible = paneOpen || hasConversation，
+     无会话时右侧 35% 空白面板也会常驻撑开（2026-11-23 BCC/DFSP v0.1.1 实测踩坑）。
+     必须受 (hasConversation || connecting) 约束，如 paneOpen && (hasConversation || connecting)。 */
+  {
+    const badPaneVisible = /\bpaneOpen\s*\|\|\s*hasConversation\b|\bhasConversation\s*\|\|\s*paneOpen\b/.test(code)
+    if (badPaneVisible) f.push('14 paneVisible 使用了 paneOpen || hasConversation（无会话时右侧空白占位栏会常驻，应为 paneOpen && (hasConversation || connecting)）')
+    else o.push('14 无会话且未连接时不常驻展开右侧空白会话栏 ✓')
+  }
+
   /* 7 生成物同步（只在有 lib/client.js 时判；自测用参数注入）
      构建器会先声明 `const __PANEL_LAYOUT__ = {...}`，再在渲染/注册代码里引用它。
      声明名与对它的引用都不是漏替换；真正要抓的是**从未被声明**的 __XXX__。
@@ -194,24 +216,57 @@ if (SELF_TEST) {
     "  return h('main', null, h('button', { onClick: openAgent, disabled: !hasConversation }, 'AI 对话'))",
     "}",
   ].join('\n')
+  const serviceBad = [
+    "const service = host?.desktopWorkbenches?.service",
+    "function Panel({ conversation }) {",
+    "  useEffect(() => service?.subscribe?.(() => rerender()), [])",
+    "  if (ownedSession()) { setPaneOpen(true); return h('main', null, conversation) }",
+    "  const id = await service.newSession(defaultWorkspace?.()?.workspaceId)",
+    "  if (!id) { setNote('已取消资料目录选择，没有创建会话。可以再次点击重试。'); return }",
+    "  setPaneOpen(true)",
+    "  postMessage({ type: 'thymic:agent-draft', prompt, send: false })",
+    "  catch (e) { setNote(`没能调起会话：${e.message}。可以再次点击重试。`) }",
+    "  return h('main', null, conversation)",
+    "}",
+  ].join('\n')
+  const paneVisibleBad = [
+    "const service = host?.desktopWorkbenches?.service || host?.desktopWorkbenches",
+    "function Panel({ conversation }) {",
+    "  useEffect(() => service?.subscribe?.(() => rerender()), [])",
+    "  if (ownedSession()) { setPaneOpen(true); return h('main', null, conversation) }",
+    "  const id = await service.newSession(defaultWorkspace?.()?.workspaceId)",
+    "  if (!id) { setNote('已取消资料目录选择，没有创建会话。可以再次点击重试。'); return }",
+    "  setPaneOpen(true)",
+    "  postMessage({ type: 'thymic:agent-draft', prompt, send: false })",
+    "  catch (e) { setNote(`没能调起会话：${e.message}。可以再次点击重试。`) }",
+    "  const paneVisible = paneOpen || hasConversation",
+    "  return h('main', null, conversation)",
+    "}",
+  ].join('\n')
   const r1 = inspect(bad, { hasGenerated: true, generatedSource: 'const X = __CUSTOM_FRAME__' })
   const r2 = inspect(good, { hasGenerated: true, generatedSource: 'const X = true' })
   const r3 = inspect(good, { hasGenerated: true, generatedSource: 'const __VERSION__ = "0.2.1"\nconst __AGENT_PANE__ = {"default":0.35}\nconst AGENT = __AGENT_PANE__' })
   const r4 = inspect(placementGood, { hasGenerated: true, generatedSource: 'const X = true' })
   const r5 = inspect(placementBad, { hasGenerated: true, generatedSource: 'const X = true' })
   const r6 = inspect(disabledBad, { hasGenerated: true, generatedSource: 'const X = true' })
+  const r7 = inspect(serviceBad, { hasGenerated: true, generatedSource: 'const X = true' })
+  const r8 = inspect(paneVisibleBad, { hasGenerated: true, generatedSource: 'const X = true' })
   const badCaught = r1.fails.length >= 8
   const goodClean = r2.fails.length === 0 && r4.fails.length === 0
   const declarationsClean = r3.fails.length === 0
   const placementCaught = r5.fails.some((x) => x.startsWith('11 '))
   const disabledCaught = r6.fails.some((x) => x.startsWith('12 '))
+  const serviceCaught = r7.fails.some((x) => x.startsWith('13 '))
+  const paneVisibleCaught = r8.fails.some((x) => x.startsWith('14 '))
   console.log(`${badCaught ? 'PASS' : 'FAIL'}  self-test 反例被抓住（${r1.fails.length} 条）`)
   for (const x of r1.fails) console.log('   · ' + x)
   console.log(`${placementCaught ? 'PASS' : 'FAIL'}  self-test 订阅放在 return 之后会被抓住`)
   console.log(`${disabledCaught ? 'PASS' : 'FAIL'}  self-test 无会话按钮 disabled 会被抓住`)
+  console.log(`${serviceCaught ? 'PASS' : 'FAIL'}  self-test desktopWorkbenches.service 无回退会被抓住`)
+  console.log(`${paneVisibleCaught ? 'PASS' : 'FAIL'}  self-test paneOpen || hasConversation 会被抓住`)
   console.log(`${goodClean ? 'PASS' : 'FAIL'}  self-test 正例零误报${goodClean ? '' : '：' + JSON.stringify([...r2.fails, ...r4.fails])}`)
   console.log(`${declarationsClean ? 'PASS' : 'FAIL'}  self-test 已声明的注入常量不误报${declarationsClean ? '' : '：' + r3.fails.join(' | ')}`)
-  process.exit(badCaught && goodClean && declarationsClean && placementCaught && disabledCaught ? 0 : 2)
+  process.exit(badCaught && goodClean && declarationsClean && placementCaught && disabledCaught && serviceCaught && paneVisibleCaught ? 0 : 2)
 }
 
 const candidates = ['src/client.js', 'lib/client.js'].map((p) => join(target, p))
