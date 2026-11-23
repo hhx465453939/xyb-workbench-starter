@@ -1,5 +1,7 @@
 # 全流程启动提示词 v2.0（M0–M9 · 自动领取 · 可无人值守 · 经验自收敛）
 
+> 交付或停修时按 `templates/DEVELOPMENT-REPORT.md` 八段报告，记录工具、实际模型及可见 token 消耗；不可观测写「未取得」，估算与实耗分开。具体任务既有报告与停修要求继续适用。
+
 > 用法：整段复制给新会话，填三个空后发出。脚手架规则（CANCER-KICKOFF v2.0 / ZERO-TO-DEV v1.3 / 06 / 28 / 30 / 32 / 33 / 35 号 / LESSONS）默认生效；本文与之冲突时以本文为准，本文未写的按脚手架执行。执行前同时读取 [患者工作台实现标准](PATIENT-WORKBENCH-IMPLEMENTATION-STANDARD.md)、[三条硬闸门](PATIENT-DATA-AND-TRIALS-GATES.md) 与 [开发检查点清单](WORKBENCH-DEV-CHECKLIST.md)；第 5 节阶段强化的细节以该标准为准，M2 起每个页面的自检以检查点清单逐条勾。
 > 来源：GBM / MPM / THY / MEL / MM / ENDO 六轮实战，加白塞病一轮（两组合成档案、非肿瘤固定出口、医嘱误路由、隐私历史版本、390px 实测）收敛。
 

@@ -1,5 +1,9 @@
 ## 未发布（2026-11-23，净起盘固化与提示词升级：ZERO-TO-DEV v1.7 / NIGHT-SHIFT-FULLSTACK v2.1 / L166–L167）
 
+## 未发布：开发报告模板
+
+- 新增八段开发与交付报告模板及一次实战案例；四个开发启动提示词接入工具、模型与 token 口径。
+
 - L13 回流：`check-primer-links` 允许通过结构化 `ordering.mode=source-order` 声明按来源顺序呈现，但必须提供不少于 20 字的 rationale 和与本段 source URL 精确匹配的 `sourceUrl`；新增正反自测，防止无证排序与无来源声明。
 
 - HCL M9 回流：`scripts/init.mjs` 在新项目生成 `check-trial-matching.mjs` 并将其加入默认 `npm run check`；`scripts/check-starter.mjs` 校验模板存在和默认链集成，避免“有模板但没执行”。
