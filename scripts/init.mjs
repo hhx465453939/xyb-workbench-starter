@@ -87,6 +87,8 @@ async function main() {
   plan.set('scripts/check-agent-pane-contract.mjs', await readFile(join(starter,'templates/check-agent-pane-contract.mjs')))
   plan.set('scripts/check-data-dir.mjs', await readFile(join(starter,'templates/check-data-dir.mjs')))
   plan.set('scripts/check-trial-chain.mjs', await readFile(join(starter,'templates/check-trial-chain.mjs')))
+  // 35 号匹配契约：默认生成并集成，防止仅有脚本模板却漏入新项目 check 链。
+  plan.set('scripts/check-trial-matching.mjs', await readFile(join(starter,'templates/check-trial-matching.mjs')))
   plan.set('scripts/check-patient-create.mjs', await readFile(join(starter,'templates/check-patient-create.mjs')))
   // 2026-11-11 pemphigus 回流：补 M5 起需要的脚本与两条 M0 安全检查。 leftover-allow: 历史版本回流日志注释
   // check-schema-words 无 schema 目录时 SKIP；check-wording 对缺失目录逐个容错——
@@ -101,7 +103,7 @@ async function main() {
     main: './dsh/index.js', exports: { '.': './dsh/index.js', './client': './lib/client.js', './package.json': './package.json', './cordis.patch.yml': './cordis.patch.yml' },
     files: ['dsh','lib','assets','cordis.patch.yml','README.md','NOTICE.md'],
     scripts: {
-      check: 'node --check dsh/index.js && node --check lib/client.js && node scripts/check-workbench-package.mjs . && node scripts/check-host-contract.mjs && node scripts/smoke-activate.mjs && node scripts/check-probe-coverage.mjs && node scripts/check-version-literal.mjs && node scripts/check-static-refs.mjs && node scripts/check-choice-limit.mjs && node scripts/check-assertion-strength.mjs && node scripts/check-derivative-leftovers.mjs . && node scripts/check-trial-snapshot.mjs . --if-present && node scripts/check-primer-links.mjs && node scripts/check-agent-pane-contract.mjs . && node scripts/check-data-dir.mjs . && node scripts/check-trial-chain.mjs . && node scripts/check-patient-create.mjs . && node scripts/check-schema-words.mjs . && node scripts/check-placeholder-free.mjs . && node scripts/check-wording.mjs . && node scripts/check-ui-parity.mjs',
+      check: 'node --check dsh/index.js && node --check lib/client.js && node scripts/check-workbench-package.mjs . && node scripts/check-host-contract.mjs && node scripts/smoke-activate.mjs && node scripts/check-probe-coverage.mjs && node scripts/check-version-literal.mjs && node scripts/check-static-refs.mjs && node scripts/check-choice-limit.mjs && node scripts/check-assertion-strength.mjs && node scripts/check-derivative-leftovers.mjs . && node scripts/check-trial-snapshot.mjs . --if-present && node scripts/check-primer-links.mjs && node scripts/check-agent-pane-contract.mjs . && node scripts/check-data-dir.mjs . && node scripts/check-trial-chain.mjs . && node scripts/check-trial-matching.mjs . && node scripts/check-patient-create.mjs . && node scripts/check-schema-words.mjs . && node scripts/check-placeholder-free.mjs . && node scripts/check-wording.mjs . && node scripts/check-ui-parity.mjs',
       'check:version-literal': 'node scripts/check-version-literal.mjs',
       'check:host': 'node scripts/check-host-contract.mjs',
       'check:version-literal': 'node scripts/check-version-literal.mjs',
