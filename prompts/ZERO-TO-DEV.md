@@ -1,6 +1,7 @@
-# 从一个癌种名到可运行开发版：一次性交付提示词 v1.6（发起层见 prompts/CANCER-KICKOFF.md v2.0）
+# 从一个癌种名到可运行开发版：一次性交付提示词 v1.7（发起层见 prompts/CANCER-KICKOFF.md v2.0）
 
 > 用法：把「你是…」到文件结尾整段复制给一个新会话，先填四个空：癌种中文名 / 癌种英文名 / 目标目录 / 样板基准。
+> **v1.7 固化（2026-11-23，源自 L166–L167 实测）**：① §0.1 强制改为 **starter `init.mjs` 干净起盘**，明令禁止 `cp -r` 整仓拷贝上一代病种仓作为底本（从根源消灭跨病种残留与 50+ 处返工）；② 明确 `init.mjs` 仅接受标准 config 顶层键（扩展元数据在 `init` 后回填）；③ §1.4 一图秀曲线与节点设置统一对标 `breast-cancer-workbench`（小粉宝）。
 > **v1.5 必读**：开工前先看 §1.3.1「三条不可让步」（配置目录真入口 / 临床四段可用 / 新建患者写库），细则与报数模板见 [PATIENT-DATA-AND-TRIALS-ONESHOT](PATIENT-DATA-AND-TRIALS-ONESHOT.md)。这两组是 2026-11-12 两仓返工的原始错因。  
 > 样板基准默认 `<癌种英文>-workbench v0.1.0`（当前可用样板：`colorectal-workbench`、`gastric-workbench`；数据/指南/分级三层可参照 `breast-cancer-workbench` v0.12.0）。  
 > 本文件由 2026-10 食管癌（EsopPal）一轮 + 乳腺癌 v0.10–v0.12 三轮（G1 出处 / G2 节奏 / G3 分级）沉淀而成；顺序不是建议，是闸口。  
@@ -40,10 +41,15 @@ Windows `%APPDATA%\dsh-desktop\harness`、Linux `${XDG_CONFIG_HOME:-~/.config}/d
 - **两个明确排除的目标**：① `~/.dsh/profiles/*`（`dsh` CLI 侧的 Harness，Desktop 不读；Windows 为 `%USERPROFILE%\.dsh`）；② `DeepSeek Harness`（`com.deepseek.dsh`，另一款 app，profile 不共享）。装上去不是"备选"，是"没装"。
 - 规则全文见 starter `docs/37-DEPLOY-TARGET.md`；装机手法（包管理器、`DSH_HOME`、`bundles`、Windows/macOS 命令差异）见 `docs/06-VALIDATION-AND-RELEASE.md`。
 
-### 0.1 初始化（不写业务代码）
+### 0.1 净起盘初始化（v1.7 硬纪律：只用 `init.mjs`，禁止整仓拷贝旧病种仓）
 
-1. 用社区脚手架初始化：`dsh-wb-cli`（`~/Downloads/xyb-workbench-starter`，`bin/dsh-wb-cli.mjs`）  
-   执行 `init` 到目标目录，确认 `.dsh-wb-starter.json` 记下 starter 版本与 revision。
+1. **必须用社区脚手架干净起盘**（**严禁 `cp -r` 整仓复制上一代病种仓作为起点**——历史实测整仓拷贝会带入 50+ 处跨病种残留、BOOT 块身份漂移与重打包返工）：
+   ```bash
+   node <starter>/scripts/init.mjs --config ./project.config.json --target <目标目录>
+   ```
+   - **配置键约束**：`init.mjs` 严格校验 config 顶层键，遇到未声明的扩展键（如 `disease`）会报错中止；起盘 JSON 仅保留标准键（`packageName / title / repository / description / slug / layoutMode / businessWidth / targetUsers / scenario / coreFlow / completion`），`init` 完成后再回填扩展元数据。
+   - **确认落盘**：核对 `.dsh-wb-starter.json` 已记录 starter 版本与 revision；立即 `git init -b main` 并绑定远端孵化仓。
+   - **样板只读、绝不整仓搬运**：兄弟工作台（如 `breast-cancer-workbench` 小粉宝、`cervical-workbench`）**仅作只读架构与视觉对照**；如局部借鉴纯通用工具脚本，必须定点移植并立即执行 `node scripts/check-derivative-leftovers.mjs . --self-test`（禁词表须覆盖最近已交付病种，确保 **0 命中**）。
 2. 初始化后立刻做三件事，再动业务：
    - 把 `prompts/` 里适用的提示词复制进项目 `prompts/`（至少 `START.md`、`DESIGNER-FIRST.md`、  
      `DSH-WORKBENCH-TOP-BAR.md`、`DSH-AGENT-PANE-INTEGRATION.md`、`ZERO-TO-DEV.md` 本身）；
@@ -197,8 +203,8 @@ node scripts/check-trial-matching.mjs .    # 匹配卡分母/三态/不给百分
 
   视觉只换 3 个品牌变量 + 品牌字 + 英文名，其余沿用家族骨架。
 - 四个必查件：① 每个二级页签与内容一一对应（穷举 `(view, sub)`）；② 首页右上角 AI 对话能开 / 收起 / 调宽；  
-  ③ 一图秀严格按原型（单调三次插值、末点 13px 避让、分类序列只画节点不连线；**左栏控制版式与全期归一化/图例区间/pin 读数见 ONE-CHART-SPEC 2026-10-25 增补**）；
-  ③b 移植底本后**先跑 `node scripts/check-derivative-leftovers.mjs .`**：底本品牌名/病种名/接口前缀残留会直接出现在患者界面（CLL 实测 14+4 处）；
+  ③ 一图秀严格按原型并**对标小粉宝（`breast-cancer-workbench`）曲线与节点设置**（数值曲线全期独立归一化 + 单调三次/Catmull-Rom `smoothPath` + 白边立体节点、末点 13px 避让、分类自评与单点记录只画节点不连线、治疗事件放顶部独立泳道且开关不改数值曲线坐标；**左栏控制版式与图例区间/pin 读数见 ONE-CHART-SPEC 2026-10-25 增补**）；
+  ③b **净起盘 + 残留零命中守卫**：严格遵守 §0.1 用 `init.mjs` 起盘不整仓拷旧仓；每轮合并或局部借鉴脚本后，必跑 `node scripts/check-derivative-leftovers.mjs . --self-test`（词表覆盖最近前序病种），确认 0 命中；
   ③c 五套测试按本项目 schema **整体重写**，不改底本常量（LESSONS L29）；
   ④ 3D 卡整卡 180°、背面是迷你折线、分类记录不翻不连线。
 - **整页视图（32 号，2026-10-25 起）**：内容超过 1.5 屏或需要分区的交互（记录详情、报告原文、全屏图表、  

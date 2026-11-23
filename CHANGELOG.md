@@ -1,3 +1,9 @@
+## 未发布（2026-11-23，净起盘固化与提示词升级：ZERO-TO-DEV v1.7 / NIGHT-SHIFT-FULLSTACK v2.1 / L166–L167）
+
+- `prompts/ZERO-TO-DEV.md`（v1.6 → **v1.7**）：§0.1 固化 **`init.mjs` 干净起盘硬纪律**（严禁 `cp -r` 整仓拷贝旧病种仓作为起点，注明先仅用标准 config 键起盘再回填扩展元数据，兄弟仓只读对照）；§1.4 固化一图秀曲线与节点对标小粉宝（`breast-cancer-workbench`）与 `check-derivative-leftovers.mjs --self-test` 零命中守卫。
+- `prompts/NIGHT-SHIFT-FULLSTACK.md`（v2.0 → **v2.1**）：重构为净起盘优先（取消旧仓整仓拷贝）、将 `check-derivative-leftovers.mjs` 升级为第七件硬门禁、新增开工配额体检与 Analyst→Builder→Auditor 角色隔离（兼容单轨 3 人 / 双轨 6 人 Swarm）、独立拆分 §3.2 视觉与小粉宝一图秀基准、补齐 D4 装机实测防坑（绝对路径 `.tgz` + `--legacy-peer-deps` + `harness/profiles/web`）。
+- `docs/LESSONS.md`：沉淀 L166（MH/NK 双轨 6 人小队 + MCP 握手 + 残留防护）与 L167（阴道癌/外阴癌净起盘零返工 + 小粉宝一图秀对齐 + 多模型配额避险）。
+
 ## 未发布（2026-11-22，自 tio-workbench 回流：L165 澄净冷青实战与 10 张实渲截图模版）
 
 - `templates/capture-shots.mjs`：新增 33 号规范 10 张 1280×860 真实渲染截图全自动捕获模版，集成 puppeteer-core 智能加载、A/B 双档案切换与关键路由导引。
