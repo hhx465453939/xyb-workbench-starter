@@ -1265,3 +1265,12 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
   4. **Task B 原生 AI 面板 12 项契约常态守卫**：保持面板创建走 `newSession`、会话订阅在组件体顶层、按钮状态不依赖真值等关键规则，双仓均实现 12/12 PASS 零代码反工。
 - **回收自**：mh-workbench v0.1.0（Issue #99）与 nk-workbench v0.1.0（Issue #100）。
 
+### L167 · NCCN W6 妇科收口（阴道癌/外阴癌）双轨零反工交付：starter 净起、小粉宝一图秀对齐与多模型配额避险
+
+- **来源**：2026-11-23 阴道癌（Vaginal Cancer · 小兰宝 VagiPal · NCCN #58 · Issue #102）与外阴癌（Vulvar Cancer · 小槿宝 VulvaPal · NCCN #59 · Issue #103）双轨 6 人 Swarm 实测：
+  1. **用 `xyb-workbench-starter/scripts/init.mjs` 干净起盘（先删 `project.config.json` 未知扩展键再回填）**：相比直接拷贝上一代病种仓，用 `init.mjs` 起盘从根源杜绝跨病种残留——双仓在首次独立审计中 `check-derivative-leftovers.mjs`（58 词表 79 文件 / 46 词表 80 文件）即取得 **0 命中一次过**，全程零反工。
+  2. **一图秀全面对齐小粉宝（PinkyPal）曲线与节点契约**：数值曲线采用全期独立归一化 + 单调三次样条/Catmull-Rom `smoothPath` + 白边立体节点；单点样本与分类自评（如 `PELVIC_NRS`、`VULVAR_PAIN_ITCH`、`RT_SKIN_GRADE`）严格只画节点不连线；顶部独立泳道渲染手术菱形虚线与放化疗色带，开关治疗节点开关后数值曲线 `path[d]` 与坐标字节 100% 不变。
+  3. **本地 MinerU 解析指南直出权威临床参数**：妇科放疗本地 MinerU JSON（《妇科肿瘤放射治疗管理指南》）可由 Analyst 直接检索核验 OAR D2cc 限量、EQD2（α/β=10/3）、蛙形腿与 Bolus 放疗细节，避免写死未经核验的医学数值。
+  4. **Swarm 异构高配额模型分工防 429**：主协调器切换至高配额模型并按角色分层指派（Analyst 用 Hydrogen High、Builder 用 Neon High、Auditor 用 3.8 Flash High），全流程耗时约 48 分钟即完成双仓 M0–M9 全量闭环且零配额中断。
+- **回收自**：vaginal-cancer-workbench v0.1.0（Issue #102）与 vulvar-cancer-workbench v0.1.0（Issue #103）。
+
