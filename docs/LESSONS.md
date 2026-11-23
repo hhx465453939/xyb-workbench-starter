@@ -1274,3 +1274,11 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
   4. **Swarm 异构高配额模型分工防 429**：主协调器切换至高配额模型并按角色分层指派（Analyst 用 Hydrogen High、Builder 用 Neon High、Auditor 用 3.8 Flash High），全流程耗时约 48 分钟即完成双仓 M0–M9 全量闭环且零配额中断。
 - **回收自**：vaginal-cancer-workbench v0.1.0（Issue #102）与 vulvar-cancer-workbench v0.1.0（Issue #103）。
 
+### L168 · 默克尔细胞癌（MCC）与葡萄膜黑色素瘤（UM）双轨交付：探针命名覆盖、36 号出口段落与私密断言多源校验
+
+- **来源**：2026-11-23 默克尔细胞癌（Merkel Cell Carcinoma · 小默宝 MerkelPal · NCCN #44 / 罕见病 #19 · Issue #105）与葡萄膜黑色素瘤（Uveal Melanoma · 小瞳宝 UveaPal · NCCN #43 · Issue #106）双轨交付实测：
+  1. **探针文件命名与包名对齐规则（`check-probe-coverage.mjs`）**：`check-probe-coverage.mjs` 中的 `detectRouteProbes()` 会根据 `package.json` 的包名去除 `-workbench` 后缀探测 `scripts/probe-<slug>-m2.mjs`。若包名为 `merkel-cell-carcinoma-workbench` 或 `uveal-melanoma-workbench`，探针文件名必须匹配 `probe-merkel-cell-carcinoma-m2.mjs` 与 `probe-uveal-melanoma-m2.mjs`（通过软链接 `ln -s probe-mcc-m2.mjs scripts/probe-merkel-cell-carcinoma-m2.mjs` 可同时兼容简写与全名），避免静态门禁报出“未配置全量探针”。
+  2. **36 号规范固定出口提取器段落扫描规则（`check-primer-links.mjs`）**：36 号规范 L13 要求“治疗全景段末尾必须有一句固定出口”，其校验提取器仅扫描 `land.intro`、`land.points` 与 `land.groups`。若将固定出口仅放在 `landscape.closing` 对象属性或使用自定义的 `subsections`，提取器不会提取该段文字，导致出现假红。固定出口原话（“不代表任何一项适合你。选哪一个，这一句需要问你的医生。”）必须置于 `points` 或 `groups` 数组中。
+  3. **私密记录多源性对探针断言强度的要求**：在验证“私密记录在看板摘要与复诊导出中严格隔离（0 泄露）”时，导出的隔离条数统计包含私密感受（feelings）、门诊准备问题（visitPrep 标记私密）、私密专护日记等多源 bucket。探针不应硬编码写死单一数字（如仅感受的 2 条），而应与 `countPrivateRecords()` 动态计算结果一致，或采用模式匹配断言 `/已自动隔离 [23] 条私密记录/`，确保断言强度的同时避免因档案字段扩充引发假红。
+- **回收自**：merkel-cell-carcinoma-workbench v0.1.0（Issue #105）与 uveal-melanoma-workbench v0.1.0（Issue #106）。
+
