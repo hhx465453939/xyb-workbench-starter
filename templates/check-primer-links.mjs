@@ -134,9 +134,9 @@ function evaluate(primer, { legacy = false } = {}) {
       err ? fails.push(`L3 ${at} 原件列 ${err}`) : oks.push(`L3 ${at} ✓`)
     }
   }
-  /* L13：治疗全景段末尾必须有一句固定出口（36 号 §2.2），且排列口径必须是登记过的一种。
+  /* L13：治疗全景需固定患者安全出口，且有来源支撑的排序口径。
      2026-11-02 白塞病实测：模板原话只写「按病期与线序排列」，非肿瘤病种照抄即失真
-     （慢性复发病人没有病期与线序），改写又违反「原话照抄」——于是口径登记为两种。 */
+     （慢性复发病人没有病期与线序）。同样，来源未支持排序体系时可声明按来源原顺序呈现，禁止捏造医学排序。 */
   const EXIT_CLAUSES = ['按病期与线序排列', '按受累器官与病情轻重排列']
   const land = (primer.sections || []).find(s => s.id === 'landscape')
   if (land) {
@@ -151,11 +151,18 @@ function evaluate(primer, { legacy = false } = {}) {
     checked++
     if (!all.includes('不代表任何一项适合你') || !all.includes('需要问你的医生')) {
       fails.push('L13 landscape 段缺固定出口（36 号 §2.2 原话须含「不代表任何一项适合你」「需要问你的医生」）')
-    } else if (!EXIT_CLAUSES.some(c => all.includes(c))) {
-      fails.push(`L13 landscape 固定出口的排列口径未登记（只认：${EXIT_CLAUSES.join(' / ')}）——非肿瘤病种用第二种，并在 SPEC 注明`)
+    } else if (!EXIT_CLAUSES.some(c => all.includes(c)) && !validSourceOrder(land)) {
+      fails.push(`L13 landscape 排序口径未登记：需有固定排序语句，或通过 ordering.mode=source-order 声明按来源顺序呈现，并提供匹配来源 URL 与 rationale`)
     } else oks.push('L13 landscape 固定出口 ✓')
   }
   return { oks, fails, warns, checked }
+}
+
+function validSourceOrder(section) {
+  const order = section.ordering
+  if (order?.mode !== 'source-order' || typeof order.rationale !== 'string' || order.rationale.trim().length < 20) return false
+  const urls = (section.sources || []).map(source => source?.url).filter(Boolean)
+  return typeof order.sourceUrl === 'string' && urls.includes(order.sourceUrl)
 }
 
 /* ---------- 联网实测：内容类型才是「是不是文件本身」的唯一硬证据 ---------- */
@@ -211,6 +218,8 @@ const FIXTURES = [
   { name: 'nolink 缺 note', data: { sections: [{ id: 'e', sources: [{ org: 'X', original: true, nolink: true }] }] }, expect: 'L4' },
   { name: '治疗全景缺固定出口', data: { sections: [{ id: 'landscape', groups: [{ label: '1', points: ['一般治疗：口腔卫生'] }] }] }, expect: 'L13' },
   { name: '固定出口口径未登记', data: { sections: [{ id: 'landscape', points: ['以上是文献与指南里列出的手段，按器官排列，不代表任何一项适合你。选哪一个，这一句需要问你的医生。'] }] }, expect: 'L13' },
+  { name: '来源支持的 source-order 显式口径', data: { sections: [{ id: 'landscape', points: ['这些信息不代表任何一项适合你；具体适用性需要问你的医生。'], sources: [{ url: 'https://example.org/guideline' }], ordering: { mode: 'source-order', rationale: '可用来源未规定统一排序依据，页面仅按来源文本顺序呈现，不作临床排序。', sourceUrl: 'https://example.org/guideline' } }] }, expect: null },
+  { name: 'source-order 缺少匹配来源', data: { sections: [{ id: 'landscape', points: ['这些信息不代表任何一项适合你；具体适用性需要问你的医生。'], sources: [{ url: 'https://example.org/guideline' }], ordering: { mode: 'source-order', rationale: '可用来源未规定统一排序依据，页面仅按来源文本顺序呈现，不作临床排序。', sourceUrl: 'https://example.org/other' } }] }, expect: 'L13' },
   { name: '官方入口页缺 note', data: { sections: [{ id: 'e', sources: [{ org: 'NCCN', entry: true, url: 'https://www.nccn.org/guidelines/guidelines-detail?category=1&id=1414' }] }] }, expect: 'L12' },
   { name: '入口页冒充原件', data: { sections: [{ id: 'e', table: { head: ['机构', '原件'], rows: [['NCCN', { text: '已取得：临床版', kind: 'hub', note: 'x', url: 'https://www.nccn.org/guidelines/guidelines-detail?category=1&id=1414' }]] } }] }, expect: 'L9' }
 ]
@@ -219,7 +228,7 @@ function selfTest() {
   let bad = 0
   for (const f of FIXTURES) {
     const r = evaluate(f.data, { legacy: false })
-    const hit = r.fails.some(x => x.startsWith(f.expect))
+    const hit = f.expect === null ? r.fails.length === 0 : r.fails.some(x => x.startsWith(f.expect))
     console.log(`${hit ? 'PASS' : 'FAIL'}  self-test · ${f.name} → 期望 ${f.expect}`)
     if (!hit) { bad++; console.log(`      实得：${r.fails.join(' | ') || '（无 FAIL）'}`) }
   }

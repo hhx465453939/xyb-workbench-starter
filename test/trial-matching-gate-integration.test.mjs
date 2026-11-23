@@ -10,3 +10,10 @@ test('new projects generate and run the trial matching contract by default', () 
   const output = execFileSync(process.execPath, [new URL('../templates/check-trial-matching.mjs', import.meta.url).pathname, '--self-test'], { encoding: 'utf8' })
   assert.match(output, /self-test 11\/11/)
 })
+
+test('primer L13 only accepts source-order display with a cited rationale', () => {
+  const output = execFileSync(process.execPath, [new URL('../templates/check-primer-links.mjs', import.meta.url).pathname, '--self-test'], { encoding: 'utf8' })
+  assert.match(output, /来源支持的 source-order 显式口径/)
+  assert.match(output, /source-order 缺少匹配来源/)
+  assert.match(output, /self-test：14 条，14 通过/)
+})

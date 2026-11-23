@@ -1,5 +1,7 @@
 ## 未发布（2026-11-23，净起盘固化与提示词升级：ZERO-TO-DEV v1.7 / NIGHT-SHIFT-FULLSTACK v2.1 / L166–L167）
 
+- L13 回流：`check-primer-links` 允许通过结构化 `ordering.mode=source-order` 声明按来源顺序呈现，但必须提供不少于 20 字的 rationale 和与本段 source URL 精确匹配的 `sourceUrl`；新增正反自测，防止无证排序与无来源声明。
+
 - HCL M9 回流：`scripts/init.mjs` 在新项目生成 `check-trial-matching.mjs` 并将其加入默认 `npm run check`；`scripts/check-starter.mjs` 校验模板存在和默认链集成，避免“有模板但没执行”。
 
 - `prompts/ZERO-TO-DEV.md`（v1.6 → **v1.7**）：§0.1 固化 **`init.mjs` 干净起盘硬纪律**（严禁 `cp -r` 整仓拷贝旧病种仓作为起点，注明先仅用标准 config 键起盘再回填扩展元数据，兄弟仓只读对照）；§1.4 固化一图秀曲线与节点对标小粉宝（`breast-cancer-workbench`）与 `check-derivative-leftovers.mjs --self-test` 零命中守卫。
