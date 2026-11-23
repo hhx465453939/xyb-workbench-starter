@@ -1282,3 +1282,13 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
   3. **私密记录多源性对探针断言强度的要求**：在验证“私密记录在看板摘要与复诊导出中严格隔离（0 泄露）”时，导出的隔离条数统计包含私密感受（feelings）、门诊准备问题（visitPrep 标记私密）、私密专护日记等多源 bucket。探针不应硬编码写死单一数字（如仅感受的 2 条），而应与 `countPrivateRecords()` 动态计算结果一致，或采用模式匹配断言 `/已自动隔离 [23] 条私密记录/`，确保断言强度的同时避免因档案字段扩充引发假红。
 - **回收自**：merkel-cell-carcinoma-workbench v0.1.0（Issue #105）与 uveal-melanoma-workbench v0.1.0（Issue #106）。
 
+### L169 · 基底细胞皮肤癌（BCC）与隆突性皮肤纤维肉瘤（DFSP）双轨交付：双下划线占位符白名单、36号表格结构规范与真实装机事实闭环
+
+- **来源**：2026-11-23 基底细胞皮肤癌（BCC · 小基宝 BasePal · NCCN #45 · Issue #109）与隆突性皮肤纤维肉瘤（DFSP · 小隆宝 FibroPal · NCCN #48 / 罕见病 #22 · Issue #110）双轨交付实测：
+  1. **双下划线占位符严格扫描白名单（`check-placeholder-free.mjs`）**：门禁采用 `/__[A-Z][A-Z0-9_]{2,}__/g` 严格扫描发布包全部文件，白名单仅限定为 6 个官方占位符（`__API_BASE__`, `__VERSION__`, `__VERSION_DISPLAY__`, `__BUILD_DATE__`, `__PANEL_LAYOUT__`, `__AGENT_PANE__`）。禁止使用形如 `__PERI_APP__`、`__BCC_APP__`、`__DFSP_APP__` 或 `__DFSP_API_BASE__` 等临时变量命名，代码中一律规范采用标准无包围下划线全局挂载：`window.BCC_APP` / `window.DFSP_APP` 与 `window.BCC_API_BASE` / `window.DFSP_API_BASE`。
+  2. **`check-conformance.mjs` 门禁与 `package.json` 串联脚本合规**：一致性审计的 `check/单测` 规则强制要求 `package.json` 的 `scripts.check` 字符串显式匹配 `/--test|node --test/`，因此必须在所有质量门禁尾部串联 `&& node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/*.test.mjs`；文档集必须严格包含匹配当前日期的 `docs/DEV-REQUIREMENTS-YYYY-MM-DD.md` 以及 `docs/DIFF-MATRIX.md` 和 `docs/DEV-PLAN.md` 才能达成 44/44 满分。
+  3. **36 号指南证据表格（`table`）数据结构守卫**：在 `public/primer-data.js` 的 `evidence` 节点中，`table` 字段必须严格遵循 `{ head: [...], rows: [...] }` 对象结构，绝不能写成对象数组 `[{ org, title, status }]`。若格式写错，`primer.js` 内部 `tableHtml` 无法解析导致 `.dp-table` 缺失，会触发 `probe-disease-primer.mjs` P9 断言“可比元素不足（3/4：缺少 .dp-table）”挂起。
+  4. **DSH Desktop 宿主环境原生装机与事实证据闭环（M8 落地）**：宿主实际加载路径为 `~/Library/Application Support/dsh-desktop/harness/profiles/web`。装包必须使用 app 自带的 `$DSH_HOME/.desktop-bin/pnpm --dir "$DSH_HOME/profiles/web" add <绝对路径>/release/<包名>.tgz`，并同步在 `dsh.profile.bundles` 中写入包名；运行 `node scripts/verify-desktop-load.mjs` 自动从当前运行日志切片、已安装版本 mtime、`dshHomePath` 数据目录（如 `bcc_workbench.sqlite`）与宿主工作台清单四重事实核验，彻底实现“代码本地全绿 + Desktop 原生加载就绪”的双重闭环。
+- **回收自**：basal-cell-carcinoma-workbench v0.1.0（Issue #109）与 dfsp-workbench v0.1.0（Issue #110）。
+
+
