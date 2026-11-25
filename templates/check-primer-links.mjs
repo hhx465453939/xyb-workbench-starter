@@ -118,6 +118,19 @@ function evaluate(primer, { legacy = false } = {}) {
         cell.note ? oks.push(`L4 ${at} nolink 有说明`) : fails.push(`L4 ${at} nolink 缺 note`)
         continue
       }
+      /* 二次来源格：未取得原件但必须给可点的二次来源（36 号 §2.5）。
+         2026-11-25 rett-workbench 实测：未取得原件的行若只写「据二次来源」纯文字会被 L3 判红，
+         但把 PubMed 摘要页塞成 kind=fulltext 又等于谎称原件 —— 两种都不对，故单独开一档。 */
+      if (cell.original === false) {
+        checked++
+        if (/已取得|原件已取得/.test(String(cell.text || ''))) fails.push(`L9 ${at} 标了 original:false 却写「已取得」——二次来源不是原件`)
+        else if (!cell.secondaryUrl) fails.push(`L8 ${at} 二次来源格缺 secondaryUrl（未取得原件时必须给可点的二次来源）`)
+        else {
+          const err = checkUrl(cell.secondaryUrl, null)
+          err ? fails.push(`L8 ${at} 二次来源 ${err}`) : oks.push(`L8 ${at} 未取得原件·二次来源可点 ✓`)
+        }
+        continue
+      }
       if (cell.kind === 'hub') {
         /* 官方入口页可以出现在"原件"列，但必须写明"需自行注册"而不能声称已取得。 */
         checked++
@@ -216,6 +229,8 @@ const FIXTURES = [
   { name: 'http 而非 https', data: { sections: [{ id: 'e', sources: [{ org: 'X', original: false, secondaryUrl: 'http://example.com/a' }] }] }, expect: 'L2' },
   { name: '只给域名首页', data: { sections: [{ id: 'e', sources: [{ org: 'X', original: true, kind: 'fulltext', url: 'https://www.esmo.org/' }] }] }, expect: 'L1' },
   { name: 'nolink 缺 note', data: { sections: [{ id: 'e', sources: [{ org: 'X', original: true, nolink: true }] }] }, expect: 'L4' },
+  { name: '二次来源格缺链接', data: { sections: [{ id: 'e', table: { head: ['机构', '原件'], rows: [['Hagberg', { text: '未取得原件，据二次来源', original: false }]] } }] }, expect: 'L8' },
+  { name: '二次来源格合规可点', data: { sections: [{ id: 'e', table: { head: ['机构', '原件'], rows: [['Hagberg', { text: '未取得原件，据二次来源 ↗', original: false, secondaryUrl: 'https://pubmed.ncbi.nlm.nih.gov/12112728/' }]] } }] }, expect: null },
   { name: '治疗全景缺固定出口', data: { sections: [{ id: 'landscape', groups: [{ label: '1', points: ['一般治疗：口腔卫生'] }] }] }, expect: 'L13' },
   { name: '固定出口口径未登记', data: { sections: [{ id: 'landscape', points: ['以上是文献与指南里列出的手段，按器官排列，不代表任何一项适合你。选哪一个，这一句需要问你的医生。'] }] }, expect: 'L13' },
   { name: '来源支持的 source-order 显式口径', data: { sections: [{ id: 'landscape', points: ['这些信息不代表任何一项适合你；具体适用性需要问你的医生。'], sources: [{ url: 'https://example.org/guideline' }], ordering: { mode: 'source-order', rationale: '可用来源未规定统一排序依据，页面仅按来源文本顺序呈现，不作临床排序。', sourceUrl: 'https://example.org/guideline' } }] }, expect: null },
