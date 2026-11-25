@@ -49,6 +49,20 @@ node scripts/init.mjs --config <cfg.json> --target <路径>
 
 **坑 3：主题切换最容易被漏** —— 第一批 3 个里 2 个漏了。必须在派单里单独加粗列出。
 
+**坑 8（2026-11-25 新增，代价最贵）：浏览器层最容易整批空着。** 家族官方探针 `probe-page-view` / `probe-disease-primer` 依赖 `puppeteer-core`，本机没有该依赖时它们直接 `exit 2`，于是七台工作台的"浏览器层"全都写着"未验证"——**交付看着齐，实际没有一条真实渲染证据**。
+→ 解法：每台都带一份**零依赖 CDP 探针** `scripts/probe-cdp-universal.mjs`（Node 内置 `child_process` + 全局 `WebSocket`，自动找 Chrome、临时 profile、跑完清理），11 条断言：B1 JS 执行 / B2 零外部请求 / B3 无 import 与 fetch / B4 页签数 / B5 `preserve-3d` 与卡高 / B6 图表 svg / B7 history 导航 / B8 减少动效下曲线可见 / B9 **390 与 1440 无整页横向溢出** / B10 版本 chip。
+→ 必须同时跑 `--self-test`（空壳夹具，期望报 FAIL），否则又是"只报绿"的假闸门。
+
+**坑 9（同批实测抓到的真缺陷）：390 宽横向溢出。** 一台原型的顶栏同时放了 品牌 + 档案切换 `<select>` + 状态摘要 + 操作按钮，窄屏一行放不下 → `documentElement.scrollWidth` 从 390 撑到 **531**，整页横向滚动。探针 B9 当场报红。
+→ 修法：窄屏媒体查询按"信息优先"降级（品牌名可截断、状态摘要隐藏、`select` 可伸缩、顶栏允许换行），**不要**给 `body` 加 `overflow-x:hidden` 掩盖。
+→ 定位工具：`scripts/probe-overflow.mjs <宽度>` 直接列出所有 `right` 超视口的元素及其 `scrollWidth`。注意 `<select>`、`<input>` 这类**替换元素有默认最小宽度**，`min-width:0` 不一定够。
+
+**坑 10：`write` 新文件会被 `think-before-write` 拦。** 往一个陌生项目里新增脚本前，先 `read` 该项目的 `AGENTS.md`（哪怕只是一段），否则门控会拦下"还没读项目约定就要改代码"。
+
+**坑 11：提交时子 agent 还在跑 = `index.lock` 冲突。** 收口前必须先让该项目的子 agent 停手（发消息明确"不要再执行 git"），再 `git add` / `commit`；遇到 `may have crashed in this repository earlier` 就删 `.git/index.lock` 重试。
+
+**坑 12：`.codebase-memory/` 会被 `git add -A` 卷进仓。** 索引产物不该随包分发，认领后补一行 `.gitignore`：`.codebase-memory/`。
+
 **坑 4：PROTOTYPE-REVIEW 会留着模板** —— 子 agent 容易只写别的文档，最后交上来 1037 B 的模板原文。验收时按**文件大小**先筛（<2500 B = 可疑模板）。
 
 **坑 5：MILESTONE-EVIDENCE 常常没人写** —— 按纪律应由**验收方**补写（证据产生者 ≠ 检查者，L114），别指望开发方。
