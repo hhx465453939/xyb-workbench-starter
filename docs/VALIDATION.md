@@ -41,6 +41,19 @@
 官方市场规范与目录协议在本轮重新抓取并记录SHA-256；开发规范内容与已有快照一致。README、CHANGELOG、SPEC和设计/验收/发布模板已更新。上述检查不代表新业务项目的Desktop归属或市场投稿已完成；参考状态函数不访问真实文件系统或创建会话。本轮未替脚手架本身新增市场条目。
 
 
+## 1.10.0-rc.69 / rc.70：Windows 真机实测 + 内建审计闭环（2026-11-25）
+
+**环境**：Windows 11 + Git for Windows（`core.autocrlf=true`）+ Node v24.22.1 + npm 11.18.0。以下均为本机实跑，不是推演。
+
+- **脚手架自身**：`npm run check` **通过**（265 → 283 文件随新入口增长；含 `.gitattributes`、副本一致性、注册表 == 策展表两条新断言）；`npm test` **88/88**（基线 58/76）。
+- **`init` 端到端**：目标在 `%TEMP%`（与仓库不同盘，正是原先拒跑的场景）生成 **283 文件**、`init_exit=0`；同盘同样通过。
+- **生成项目首日**：`npm run check` **0 红**，7 条 SKIP 各带原因（资料目录/临床/患者/ui-parity/schema/primer/snapshot）。
+- **闭环入口**：生成项目 `npm run audit:loop` = **14 pass / 7 skip / 0 fail（21 条）**；`--json` 可解析、`schemaVersion=1`、连跑两次去 `meta` 后**完全一致**、每条 skip 带 `reason`；`--only data-dir` 只执行该条；`--stage M0` 执行 13 条；`--out ../escape.json` 被拒（`exit 2`）。
+- **反向对照**：篡改 `assets/manifest.json` 任一 sha256 → `check-starter` **exit 1** 并点名文件，恢复后 exit 0；只塞 `pickDirectory` 不给实现 → `check-data-dir` **exit 1**（未跳过）。
+- **脱敏**：新增/改动文件对三种平台家目录模式的扫描 **0 命中**；测试夹具一律 `os.tmpdir()` 并自动清理；`__pycache__` 已在提交前清除并加入 `.gitignore`。
+
+**未验证（不得用上面的绿替代）**：Windows 实机装机与 DSH Desktop 真加载（本机未装 Desktop）；浏览器端到端探针（无 `puppeteer-core`）；macOS / Linux 上的 `audit-loop` 实跑；存量大仓（乳腺癌/AML 等）上的 `audit:loop`。
+
 ## 1.2.1：长内容弹窗规则
 
 2026-10-16，`npm run check` 通过（87文件），文档本地链接与入口语法检查通过。本轮仅更新规范/模板和CLI版本，未新增测试或重复1.2.0全部测试。UI设计与ACC-19补充固定标题/关闭、内容独立滚动、表单关联、焦点和窄窗大字验收；规范本身不代表生成项目自动实现这些交互。

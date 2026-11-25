@@ -1,15 +1,17 @@
 ---
 doc: PRD
 change_id: CHG-002
-version: 0.1
-status: draft
+version: 1.0
+status: approved
 owner: community-maintainers
 created: 2026-11-25
+approved_by: project-owner
+approved_at: 2026-11-25
 ---
 
 # PRD · 脚手架内建「审计—测试」闭环与标准 IO
 
-> 本 PRD 未批准。批准前不产出 SPEC、不进入实现（按 ai-spec 流程）。
+> 批准记录：2026-11-25 由项目主人批准进入 SPEC 阶段。批准范围 = §3 目标 G1–G6、§5 标准 IO 契约 v1、§6 里程碑 M1–M5；§10 未决项已按下方裁决冻结（见 §10）。实现仍需 SPEC 单独批准。
 
 ## 1. 背景与问题
 
@@ -122,10 +124,11 @@ node scripts/audit-loop.mjs [--stage M0..M9] [--only id1,id2] [--json] [--out do
 - **风险**：标准文档与旧 `docs/` 产生第二份真源。缓解：STANDARDS 只做"索引 + 裁决（冲突时谁优先）"，原文仍留在 docs。
 - **依赖**：CHG-001 的 `portability.mjs`（路径/哈希口径）与四道门禁的跳过语义。
 
-## 10. 未决问题（需主人拍板，逐条给选项）
+## 10. 决策已定（2026-11-25 主人拍板，本节冻结范围）
 
-1. **默认入口**：`npm run check` 是否改成 `audit-loop` 的包装（保留直跑能力）？还是新增 `npm run audit:loop` 并存？
-2. **STANDARDS 与 docs 关系**：只做索引（推荐，低风险），还是逐步把 40+ docs 合并进 STANDARDS（高收益高风险）？
-3. **注册表来源**：从 `package.json` 的 check 串反解 + `templates/` 扫描自动生成（推荐），还是纯手写？
-4. **是否要求所有新门禁必须声明 `stage`**（并用 `check-starter` 强制）？
-5. **Windows 优先**：新增脚本是否统一"Windows 为一等公民"（所有路径经 `portability.mjs`，所有 shell 命令不依赖 bash）？
+1. **默认入口**：**并存**。新增 `npm run audit:loop`；`npm run check` 的 23 条链路**不动**（零回归风险，向后兼容）。
+2. **STANDARDS 与 docs 关系**：**只做索引 + 裁决**。`docs/` 原文不动；新增 `docs/STANDARDS/00-INDEX.md` 回答"我是什么角色→3 跳内该读什么"，并写明冲突裁决顺序（例：`docs/37-DEPLOY-TARGET` 与旧文冲突时以 37 为准）。
+3. **注册表来源**：**自动生成 + 人工补 `stage`**。从 `package.json.scripts.check` 反解 + `templates/check-*.mjs` 扫描生成初版，`stage` 由维护者补齐；未登记的 `templates/check-*.mjs` 一律判红（防漂移）。
+4. **新门禁必须声明 `stage`**：是。`check-starter` 强制：注册表里缺 `stage` 或仓内有未登记门禁即 fail。
+5. **Windows 一等公民**：是。新增脚本的路径一律经 `scripts/lib/portability.mjs`；禁止依赖 bash/`python3`/`/tmp`；所有临时文件落 `os.tmpdir()`；新增门禁必须有 Windows 反例或条件跳过说明。
+

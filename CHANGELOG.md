@@ -1,3 +1,13 @@
+## 1.10.0-rc.70（未发布，2026-11-25，CHG-002：内建审计—测试闭环 + 标准 IO）
+
+- **门禁注册表（唯一声明源）**：新增 `scripts/lib/gates-table.mjs`（21 条门禁的 id/title/script/args/stage/skipWhen/docs 策展表）+ `scripts/build-gates-registry.mjs`（生成 `gates.registry.json`，`--check` 校验幂等）；`check-starter` 断言"注册表 == 策展表"与"脚本存在"，漂移即红。
+- **闭环入口 `scripts/audit-loop.mjs`（契约 v1）**：按注册表逐条**独立**执行（不再一条断链后面全不跑）；`--json` 只输出可 `JSON.parse` 的 JSON；`--only`/`--stage M0..M9`/`--out`（只允许写进项目根）三件套；退出码 `0 无 fail / 1 有 fail / 2 用法或环境错误`；`skip` 必带 `reason`、`fail` 必带 `evidence`（尾部 20 行）；`checks[]` 幂等（时间戳只进 `meta`）。`npm run check` 的 23 条链路**未改动**（并存策略）。
+- **标准索引（只做索引 + 裁决，不复制正文）**：新增 `docs/STANDARDS/00-INDEX.md`（角色→入口→必读→可跳过 + 六条冲突裁决顺序）与 `docs/STANDARDS/20-GATES.md`（由 `scripts/render-gates-doc.mjs` 从注册表生成，`--check` 防手改漂移）。
+- **Agent 接线**：新增 `prompts/AGENT-AUDIT-LOOP.md`（固定动作序列：审计→定位→改→再审计→`npm run check && npm test`→证据登记；明确"skip 不是通过"），并在 `AGENTS.md`「每次开始」加第 5 条指针。
+- **随项目下发**：`init` 下发 `gates.registry.json` 与 `scripts/audit-loop.mjs`，生成项目 `package.json` 增 `audit:loop`（与既有 `check` 并存）。
+- **反例测试**：新增 `test/audit-loop.test.mjs`（6 条：干净绿 / 注入红且 evidence 指向文件 / skip 带 reason / 幂等 / `--only`+`--stage`+未知 id exit 2 / `--out` 越界 exit 2 / 缺注册表 exit 2）。`npm test` 82 → **88/88**。
+- **实测**：生成项目 `npm run audit:loop` = **14 pass / 7 skip / 0 fail（21 条）**，`schemaVersion=1`、`idempotent=true`、`--stage M0` = 13 条；生成项目 `npm run check` 仍 0 红；`npm run check`（脚手架）0 红。
+
 ## 1.10.0-rc.69（未发布，2026-11-25，Windows 真机适配 + 首日检查链修复）
 
 - **跨平台口径（新增 `scripts/lib/portability.mjs`，`templates/lib/` 为逐字节下发副本，`check-starter` 双向断言）**：

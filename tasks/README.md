@@ -5,7 +5,7 @@
 | CHG | 标题 | 状态 | 契约 | 摘要 |
 |---|---|---|---|---|
 | CHG-001 | 脚手架 Windows 可移植性修复与首日检查链恢复 | `draft`（已实现，待评审） | [CHANGE](CHG-001-windows-portability/CHANGE.md) · [SPEC](CHG-001-windows-portability/SPEC.md) · [TRACE](CHG-001-windows-portability/TRACEABILITY.md) | 口径模块 + `.gitattributes` + 四道门禁阶段感知 + 装机/探针链平台化；`npm run check` 265 文件通过、`npm test` 82/82 |
-| CHG-002 | 脚手架内建「审计—测试」闭环与标准 IO | `PRD draft`（**未批准，未实现**） | [PRD](CHG-002-agent-audit-loop/PRD.md) | `audit-loop` 统一入口 + `schemaVersion` 契约 + `gates.registry.json` + `docs/STANDARDS/` 索引 + Agent 接线 |
+| CHG-002 | 脚手架内建「审计—测试」闭环与标准 IO | `已实现，待评审` | [PRD](CHG-002-agent-audit-loop/PRD.md) · [SPEC](CHG-002-agent-audit-loop/SPEC.md) · [TRACE](CHG-002-agent-audit-loop/TRACEABILITY.md) | PRD/SPEC 均于 2026-11-25 批准；已落 `gates.registry.json`（21 条）+ `audit-loop` 契约 v1 + `docs/STANDARDS/` 索引 + Agent 接线 + 6 条反例；`npm test` 88/88，生成项目 `audit:loop` = 14 pass / 7 skip / 0 fail |
 
 ## 状态语义
 

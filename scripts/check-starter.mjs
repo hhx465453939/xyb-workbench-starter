@@ -63,5 +63,17 @@ try {
 } catch (e) {
   errors.push('Missing portability 模块副本：'+e.message)
 }
+/* CHG-002：门禁注册表必须与策展表一致，否则 audit-loop 会按过期集合执行（漂移=静默漏跑）。
+   新增门禁只登记在 scripts/lib/gates-table.mjs 一处，这里做"注册表 == 策展表"的硬断言。 */
+try {
+  const { expectedRegistry, validateGates } = await import('./lib/gates-table.mjs')
+  for (const e of validateGates(root)) errors.push('门禁表：'+e)
+  const onDisk = JSON.parse(await readFile(join(root,'gates.registry.json'),'utf8'))
+  if (JSON.stringify(onDisk) !== JSON.stringify(expectedRegistry())) {
+    errors.push('gates.registry.json 与策展表不一致（改门禁表后请跑 node scripts/build-gates-registry.mjs）')
+  }
+} catch (e) {
+  errors.push('Missing/Invalid gates.registry.json：'+e.message)
+}
 console.log(JSON.stringify({ files:files.length, pass:errors.length===0, errors },null,2))
 if(errors.length)process.exitCode=1

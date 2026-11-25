@@ -104,6 +104,11 @@ async function main() {
   }
   // VERSION 是版本唯一来源（audit 的 version/file 与 version/pkg 都指着它）。
   plan.set('VERSION', '0.1.0\n')
+  // CHG-002：门禁注册表随项目下发 —— audit-loop 只按注册表执行，
+  // 生成项目与脚手架共用同一份 id/script/stage（script 路径两边同名，故可原样复制）。
+  plan.set('gates.registry.json', await readFile(join(starter,'gates.registry.json')))
+  // CHG-002：闭环入口随项目下发（只依赖 scripts/lib/portability.mjs，已在上方下发）
+  plan.set('scripts/audit-loop.mjs', await readFile(join(starter,'scripts/audit-loop.mjs')))
   const manifest = {
     name: cfg.packageName, version: '0.1.0', description: cfg.description, private: true, type: 'module',
     main: './dsh/index.js', exports: { '.': './dsh/index.js', './client': './lib/client.js', './package.json': './package.json', './cordis.patch.yml': './cordis.patch.yml' },
@@ -125,6 +130,8 @@ async function main() {
       'build:version': 'node scripts/build-version.mjs',
       build: 'node scripts/build-client.mjs && node scripts/migrate-public.mjs',
       audit: 'node scripts/check-conformance.mjs .',
+      // CHG-002：闭环入口与 check 并存（不动 23 条链路，零回归风险）
+      'audit:loop': 'node scripts/audit-loop.mjs .',
       'release:check': 'npm run check && npm run test && npm run audit',
       'pack:check': 'npm pack --dry-run',
       // 产物级验收：对**装进去的那一份**起服务并点页签，而不是对源码树。
