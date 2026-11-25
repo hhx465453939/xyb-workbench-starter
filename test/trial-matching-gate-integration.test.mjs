@@ -2,7 +2,11 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
+import { fileURLToPath } from 'node:url'
 import { audit } from '../templates/check-trial-matching.mjs'
+
+/* URL#pathname 在 Windows 上给出 `/E:/...`，交给 node 会解析成 E:\E:\... —— 用 fileURLToPath 取真实路径 */
+const scriptPath = (rel) => fileURLToPath(new URL(rel, import.meta.url))
 
 test('new projects generate and run the trial matching contract by default', () => {
   const init = readFileSync(new URL('../scripts/init.mjs', import.meta.url), 'utf8')
@@ -10,7 +14,7 @@ test('new projects generate and run the trial matching contract by default', () 
   assert.match(init, /node scripts\/check-trial-matching\.mjs \./)
   assert.match(init, /'check-route-prefix\.mjs'/)
   assert.match(init, /node scripts\/check-route-prefix\.mjs/)
-  const output = execFileSync(process.execPath, [new URL('../templates/check-trial-matching.mjs', import.meta.url).pathname, '--self-test'], { encoding: 'utf8' })
+  const output = execFileSync(process.execPath, [scriptPath('../templates/check-trial-matching.mjs'), '--self-test'], { encoding: 'utf8' })
   assert.match(output, /self-test 14\/14/)
 })
 
@@ -33,7 +37,7 @@ test('trial-matching audit rejects trial-match.js missing pct/<2 guard or missin
 })
 
 test('primer L13 only accepts source-order display with a cited rationale', () => {
-  const output = execFileSync(process.execPath, [new URL('../templates/check-primer-links.mjs', import.meta.url).pathname, '--self-test'], { encoding: 'utf8' })
+  const output = execFileSync(process.execPath, [scriptPath('../templates/check-primer-links.mjs'), '--self-test'], { encoding: 'utf8' })
   assert.match(output, /来源支持的 source-order 显式口径/)
   assert.match(output, /source-order 缺少匹配来源/)
   assert.match(output, /self-test：14 条，14 通过/)

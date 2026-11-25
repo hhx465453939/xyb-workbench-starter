@@ -12,15 +12,34 @@
   5. 390 宽不横向溢出
 
 用法：
-  node scripts/serve-artifact.mjs --port 5188 --db /tmp/hn-artifact.db &
+  node scripts/serve-artifact.mjs --port 5188 --db <临时目录>/hn-artifact.db &
   python3 scripts/verify-tabs-on-artifact.py --port 5188
+  （Windows 用 py -3 或 python；--slug 省略时按本项目 package.json 的 name 推导，可用 WB_SLUG 覆盖）
 """
 import argparse
+import json
+import os
 import sys
 
 from playwright.sync_api import sync_playwright
 
 EMPTY_MARKS = ("本页签尚未实现", "尚未实现", "Not implemented")
+
+
+def default_slug():
+    """路由前缀必须来自本项目，不能写死某个工作台的 slug（原实现硬编码 head-neck-workbench）。"""
+    slug = (os.environ.get("WB_SLUG") or "").strip().strip("/")
+    if slug:
+        return slug
+    pkg = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "package.json"
+    )
+    try:
+        with open(pkg, encoding="utf-8") as fh:
+            name = json.load(fh).get("name", "")
+    except OSError:
+        return ""
+    return name.split("/")[-1]
 
 # 映射漏字段的典型症状。它们出现在界面上就说明「渲染成功但内容是错的」，
 # 比整页崩溃更危险——崩溃至少会被发现，垃圾值会被当成真数据读走。
@@ -31,9 +50,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=5188)
     ap.add_argument("--width", type=int, default=1440)
+    ap.add_argument("--slug", default=default_slug())
     args = ap.parse_args()
 
-    url = f"http://127.0.0.1:{args.port}/api/head-neck-workbench/ui/"
+    if not args.slug:
+        print("✗ 推导不出工作台 slug：请传 --slug，或设 WB_SLUG 环境变量。")
+        sys.exit(2)
+
+    url = f"http://127.0.0.1:{args.port}/api/{args.slug}/ui/"
 
     console_errors = []
     failed_requests = []

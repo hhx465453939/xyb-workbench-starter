@@ -1,3 +1,16 @@
+## 1.10.0-rc.69（未发布，2026-11-25，Windows 真机适配 + 首日检查链修复）
+
+- **跨平台口径（新增 `scripts/lib/portability.mjs`，`templates/lib/` 为逐字节下发副本，`check-starter` 双向断言）**：
+  - `within()`：Windows 跨盘时 `path.relative` 返回绝对路径，原实现把 C: 目标判成"在脚手架内"，`init` 直接拒跑；改为 `isAbsolute(rel)` 判否。
+  - `toPosix()`：`init` 的 plan 键原先用 `join()` 产出的反斜杠，回查用 `assets/manifest.json` 这类正斜杠字面量拿到 `undefined`，Windows 上 `Cannot read properties of undefined (reading 'toString')` 崩、一个文件都写不出来。
+  - `sha256Of()` / `normalizeEol()`：文本按 LF 归一化后算哈希、二进制按原始字节；`check-starter`、`check-trial-snapshot`、`check-schema`、`check-schema-words` 全部改用同一口径。
+  - 仓库根新增 `.gitattributes`（`* text=auto eol=lf` + 二进制白名单），`check-starter` 断言它存在且声明了 `eol=lf`。
+- **脚手架自检 `scripts/check-starter.mjs`**：官方快照/资产哈希改走归一化口径；`reference/` 豁免判断先 `toPosix`（Windows 上原先永不生效，凭空多 4 条 Broken local link）；哈希失败信息补上具体文件；`npm run check` 在 Windows 干净 clone 上由 **fail（17 哈希 + 4 断链）→ 通过（265 文件）**。
+- **首日检查链恢复全绿（4 道门禁加阶段感知跳过，`--self-test` 仍在跳过之前生效）**：`check-data-dir` / `check-trial-chain` / `check-patient-create` 在 M0 骨架把"功能尚未实现"判成缺陷；`check-ui-parity` 直接 `ENOENT: prototypes/v0.2/style.css` 崩。跳过条件统一为"功能面完全不存在"，并逐条打印原因；全新 `init` 项目 `npm run check` 由 **4 红 → 0 红**（SKIP 可见）。
+- **装机/产物验收路径可移植**：`verify-desktop-load` / `smoke-activate` 的 `HOME` 改为 `HOME || USERPROFILE` 且 harness 位置按平台分派（Windows 上原先恒 `exit 2`）；`serve-artifact` 找不到装机副本时 **exit 2 并拒绝用源码树冒充产物**（原实现静默回落 = 假绿），默认 `--db` 改 `tmpdir()`；`check-install` 的 Windows 装包命令改为绝对路径 tgz（照抄原先的相对路径会 ENOENT）；`verify-tabs-on-artifact.py` 不再硬编码 `head-neck-workbench` slug（按 `package.json`/`WB_SLUG` 推导）。
+- **测试侧去 POSIX 假设**：`new URL(...).pathname` → `fileURLToPath`、`startsWith(target+'/')` → `+sep`、分隔符无关正则、symlink 无权限时 `t.diagnostic` 跳过。新增 `test/portability.test.mjs`（跨盘/键归一/哈希归一化反例）与 `test/init-portability.test.mjs`（跨盘生成端到端 + 拒绝生成到脚手架内 + 默认检查链不许引用未下发脚本 + 重复 script 键反例）。`npm test` 由 **58/76 → 82/82**。
+- **文档**：`docs/LESSONS.md` 新增 L171（Windows 真机十条）；`docs/VALIDATION.md` 增补 Windows 实测记录与未验证边界；`spec/STARTER-SPEC.md` 增补本版约束。
+
 ## 未发布（2026-11-23，自 BCC/DFSP v0.1.1–v0.1.3 真机修复回流：L170 与四项门禁加固）
 
 - **门禁与默认检查链加固（消除真机装机假绿）**：

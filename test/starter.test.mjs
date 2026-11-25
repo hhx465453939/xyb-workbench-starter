@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdtemp, readFile, writeFile, mkdir, rm, cp, access, symlink } from 'node:fs/promises'
 import { mkdtempSync, mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
-import { join, resolve, dirname } from 'node:path'
+import { join, resolve, dirname, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 import { readOwnership } from '../examples/ownership-adapter.mjs'
@@ -33,7 +33,7 @@ test('generated leftover scanner ignores itself but detects product leftovers',a
  const clean=run(checker,[],p.target);assert.equal(clean.status,0,clean.stderr)
  await mkdir(join(p.target,'src'),{recursive:true})
  await writeFile(join(p.target,'src/fixture.js'),"const title = 'CerviPal'\n") /* leftover-allow：脏样本自测数据 */
- const dirty=run(checker,[],p.target);assert.equal(dirty.status,1,dirty.stderr);assert.match(dirty.stderr,/src\/fixture\.js/)
+ const dirty=run(checker,[],p.target);assert.equal(dirty.status,1,dirty.stderr);assert.match(dirty.stderr,/src[\\/]fixture\.js/)
 })
 test('ships the host-contract gate (businessWidth > 0.7 crashes the target Desktop)',async t=>{
  const p=await fixture(t,config);const r=init(p);assert.equal(r.status,0,r.stderr)
@@ -99,7 +99,14 @@ test('unclear business requirement, unsafe slug/repository, invalid layout rejec
 })
 test('destination conflicts preflight; symlink directory rejected',async t=>{
  const f=await fixture(t);await mkdir(f.target);await writeFile(join(f.target,'README.md'),'keep me');assert.notEqual(init(f).status,0);assert.equal(await readFile(join(f.target,'README.md'),'utf8'),'keep me');await assert.rejects(access(join(f.target,'package.json')))
- const other=await fixture(t);await mkdir(other.target);await mkdir(join(other.dir,'outside'));await symlink(join(other.dir,'outside'),join(other.target,'docs'),'dir');assert.notEqual(init(other).status,0);await assert.rejects(access(join(other.target,'package.json')))
+ const other=await fixture(t);await mkdir(other.target);await mkdir(join(other.dir,'outside'))
+ try { await symlink(join(other.dir,'outside'),join(other.target,'docs'),'dir') }
+ catch(e){
+  /* Windows 默认策略下建目录符号链接要 SeCreateSymbolicLinkPrivilege（未开开发者模式即 EPERM）。
+     这不是初始化器的缺陷，本半条断言如实跳过并写明原因，不写成"通过"。 */
+  t.diagnostic('符号链接用例跳过：本机无创建目录符号链接的权限（'+(e.code||e.message)+'）');return
+ }
+ assert.notEqual(init(other).status,0);await assert.rejects(access(join(other.target,'package.json')))
 })
 test('relocated starter has no dependency on original source paths',async t=>{
  const f=await fixture(t);const copied=join(f.dir,'copied-starter');await cp(root,copied,{recursive:true});const r=init(f,copied);assert.equal(r.status,0,r.stderr);assert.equal(run(join(copied,'scripts/check-workbench-package.mjs'),[f.target],f.dir).status,0)
@@ -183,7 +190,7 @@ test('init hands off existing designer documents before product specification, i
  const result=init(f);assert.equal(result.status,0,result.stderr)
  const handoff=JSON.parse(result.stdout);assert.equal(handoff.stage,'designer-alignment')
  for(const key of ['designerPrompt','cancerPrompt','agentPanePrompt','designerBrief','designSession','prototypeReview','settingsDesign']) {
-  assert.ok(handoff[key].startsWith(f.target+'/'),key)
+  assert.ok(handoff[key].startsWith(f.target+sep),key)
   assert.ok((await readFile(handoff[key],'utf8')).length>100,key)
  }
  assert.ok(handoff.firstQuestion);assert.match(handoff.next,/Agent/);assert.match(handoff.firstQuestion,/右侧/)
@@ -194,7 +201,7 @@ test('init hands off existing designer documents before product specification, i
  assert.match(cancer,/患者与照护者/);assert.match(cancer,/独立 review/)
  const agentPane=await readFile(handoff.agentPanePrompt,'utf8')
  assert.match(agentPane,/右侧/);assert.match(agentPane,/可拖动/);assert.match(agentPane,/隐藏与重开/);assert.match(agentPane,/创建一次/)
- assert.doesNotMatch(cancer,/\/Users\/qinxiaoqiang/)
+ assert.doesNotMatch(cancer,/\/Users\/[A-Za-z0-9._-]+\//) /* 下发件不许带开发者本机绝对路径 */
  await access(join(f.target,'docs/DESIGN-REVIEW.md'))
  for(const name of ['SCHEMA.md','API-CONTRACT.md','UI-DESIGN.md','SETTINGS-DESIGN.md','PARITY.csv','PROTOTYPE-REVIEW.md','17-CLOSED-LOOP-PROJECT-FLOW.md']) await access(join(f.target,'docs',name))
  const lifecycle=await readFile(join(f.target,'docs/17-CLOSED-LOOP-PROJECT-FLOW.md'),'utf8')

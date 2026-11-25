@@ -23,6 +23,7 @@ function packList() {
     cwd: ROOT,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'pipe'],
+    shell: process.platform === 'win32', // Windows 上 npm 是 npm.cmd，不经 shell 直接调会 ENOENT
   })
   const [info] = JSON.parse(out)
   return new Set(info.files.map((f) => f.path))

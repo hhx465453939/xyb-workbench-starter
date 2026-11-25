@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-import { createHash } from 'node:crypto'
 import { readFile, readdir } from 'node:fs/promises'
 import { DatabaseSync } from 'node:sqlite'
 import { dirname, join, resolve } from 'node:path'
 import { isDeepStrictEqual } from 'node:util'
+/* 哈希必须跨平台同口径：Windows 检出 CRLF 时按原始字节算会假红（见 scripts/lib/portability.mjs） */
+import { sha256Of } from './lib/portability.mjs'
 
 const args=process.argv.slice(2), optional=args.includes('--if-present'), selfTest=args.includes('--self-test')
 const positional=args.filter((arg)=>!arg.startsWith('-'))
 const target=resolve(positional[0]||'.'), errors=[]
-const sha256=(bytes)=>createHash('sha256').update(bytes).digest('hex')
 const fields=[
  ['recordId','record_id',false],['mergedSources','merged_sources',true],['sourceId','source_id',false],
  ['title','title',false],['studyType','study_type',false],['sponsor','sponsors',true],
@@ -55,7 +55,7 @@ async function checkSnapshot(dir) {
   try{
    const bytes=await readFile(join(dir,name));bytesByName.set(name,bytes)
    const expected=manifest.files[name]?.sha256
-   if(typeof expected!=='string'||sha256(bytes)!==expected)errors.push(`${dir}: SHA-256 mismatch for ${name}`)
+   if(typeof expected!=='string'||sha256Of(bytes,name)!==expected)errors.push(`${dir}: SHA-256 mismatch for ${name}`)
   }catch(error){errors.push(`${dir}: cannot read ${name}: ${error.message}`)}
  }
  const jsonlName=files.find((name)=>name.endsWith('.jsonl'))
