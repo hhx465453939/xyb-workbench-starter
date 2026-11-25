@@ -1,0 +1,32 @@
+# 仓库内一律 LF，任何平台检出都保持 LF。
+#
+# 为什么这条必须进版本库、而不只是写在文档里：Git for Windows 安装默认
+# core.autocrlf=true，检出时把文本文件转成 CRLF；而 assets/manifest.json 与
+# reference/sources.json 的 sha256 是按 LF 内容算的，于是 Windows 上
+# `npm run check` 会一次性报 17 条哈希不一致（实测 13 条资产 + 4 条官方快照）。
+# 固定 eol=lf 之后，哈希门禁在任何平台的口径都是同一个。
+* text=auto eol=lf
+
+# 二进制：不做换行转换，也不做文本 diff
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.bmp binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tgz binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary
+*.mp4 binary
+*.mp3 binary
+*.sqlite binary
+*.db binary
+*.xlsx binary
+*.docx binary
+*.pptx binary

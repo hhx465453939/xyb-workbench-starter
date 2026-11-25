@@ -3,3 +3,11 @@ node_modules/
 .DS_Store
 project.config.json
 _private/
+
+# 构建与测试临时产物：不进版本库（测试本体在 test/ 下，产物一律写系统临时目录）
+__pycache__/
+*.pyc
+release/
+dist/
+*.log
+.codebase-memory/

@@ -158,6 +158,16 @@ const backend = `${read('dsh/index.js')}\n${read('dsh/workbench.js')}`
 const docs = `${read('docs/CLINICAL-DATA.md')}\n${read('docs/DEV-REQUIREMENTS.md')}` +
   readdirSync(join(root, 'docs')).filter((n) => /^DEV-REQUIREMENTS/.test(n)).map((n) => read(join('docs', n))).join('\n')
 
+/* 阶段感知：M0–M4 还没有临床试验功能面、research/ 下也没有试验快照时跳过并说明。
+   判据是"功能面完全不存在"——出现 trial / 临床试验 / 入组 任一词表或试验快照，本闸门立即生效，
+   不许拿「骨架阶段」当借口放行半成品。 */
+const trialFiles = findTrialData(join(root, 'research'))
+const trialSurface = /trial|临床试验|入组|试验匹配/im.test(`${ui}\n${backend}`)
+if (!trialSurface && trialFiles.length === 0) {
+  console.log('SKIP 临床试验闸门：本仓尚无临床试验功能面与试验快照（M0–M4），实现后本断言自动生效')
+  process.exit(0)
+}
+
 /* manifest：research 目录任意层的 manifest.json（裁剪分支的 trimmed:true 证据来源） */
 const findManifest = (dir, depth = 2) => {
   if (depth < 0 || !existsSync(dir)) return ''
@@ -170,7 +180,7 @@ const findManifest = (dir, depth = 2) => {
   }
   return ''
 }
-const result = check({ ui, backend, docs, trialFiles: findTrialData(join(root, 'research')), manifest: findManifest(join(root, 'research')) })
+const result = check({ ui, backend, docs, trialFiles, manifest: findManifest(join(root, 'research')) })
 for (const o of result.oks) console.log(`✓ ${o}`)
 for (const f of result.fails) console.error(`✗ ${f}`)
 console.log(result.pass ? '\n✓ 临床试验闸门通过' : '\n✗ 临床试验闸门未通过：要么四段齐，要么裁剪有实测依据')

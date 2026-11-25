@@ -17,11 +17,11 @@
  * 幂等：已含 DATA_ROOT_URL 的仓直接跳过（只补缺失的片段）。
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { join, resolve } from 'node:path'
+import { basename, join, resolve } from 'node:path'
 
 const args = process.argv.slice(2)
 const root = resolve(args[0] || '.')
-const slug = (args.includes('--slug') ? args[args.indexOf('--slug') + 1] : null) || root.split('/').pop().replace(/-workbench$/, '')
+const slug = (args.includes('--slug') ? args[args.indexOf('--slug') + 1] : null) || basename(root).replace(/-workbench$/, '')
 const DRY = args.includes('--dry')
 /* 端点名按仓里实际有的来：/root、/settings/workspace、/workspace 都有仓在用；
    硬编码 /root 会在"仓里其实叫 /settings/workspace"时让按钮 404。 */

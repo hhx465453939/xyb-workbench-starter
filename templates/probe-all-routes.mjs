@@ -16,17 +16,29 @@
  *   - 档案差异证据 = 页头档案名变化 + 磁盘数据对账，两套数据不得只差一个 flag；
  *   - 对 render 替换后的 DOM 操作必须重查节点（脱节点 click 不冒泡）。
  */
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { launchChrome, sleep, stopChrome } from './cdp.mjs';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+/* 家族 workspace 的 cdp.mjs（launchChrome/sleep/stopChrome）不随本模板下发：
+   静态 import 缺文件时只会抛一个没有指向性的模块解析错误，使用者看不出缺的是什么。
+   所以先判存在性、明确退出 2；存在再动态 import（file URL 也不能手拼，Windows 上不成立）。 */
+const CDP_MODULE = join(dirname(fileURLToPath(import.meta.url)), 'cdp.mjs');
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+if (!existsSync(CDP_MODULE)) {
+  console.error('未随包提供 templates/cdp.mjs，路由探针暂不可用。');
+  console.error(`  已探测：${CDP_MODULE}`);
+  console.error('  把家族 workspace 的 cdp.mjs 复制到同目录后再跑；缺它的探针不能当通过。');
+  process.exit(2);
+}
+const { launchChrome, sleep, stopChrome } = await import(pathToFileURL(CDP_MODULE).href);
+
 const SHOTS = join(ROOT, 'docs', 'shots', 'm2');
 mkdirSync(join(SHOTS, 'A'), { recursive: true });
 mkdirSync(join(SHOTS, 'B'), { recursive: true });
 const CDP_PORT = Number(process.env.PROBE_M2_CDP_PORT || 9367);
-const URL_APP = `file://${join(ROOT, 'prototypes', 'v0.2', 'index.html')}`;
+const URL_APP = pathToFileURL(join(ROOT, 'prototypes', 'v0.2', 'index.html')).href;
 
 /* ← 换成本项目叶子路由（顶层无子页页 + 每个有子页页的全部叶子） */
 const ROUTES = [

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { readFile, writeFile, readdir, mkdir, lstat, unlink } from 'node:fs/promises'
-import { dirname, resolve, relative, join, sep } from 'node:path'
+import { dirname, resolve, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
+import { within, toPosix } from './lib/portability.mjs'
 
 const starter = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const args = process.argv.slice(2)
@@ -12,10 +13,9 @@ function usage() {
 async function exists(path) {
   try { return await lstat(path) } catch (error) { if (error.code === 'ENOENT') return null; throw error }
 }
-function within(parent, path) {
-  const rel = relative(parent, path)
-  return rel === '' || (!rel.startsWith('..' + sep) && rel !== '..' && !rel.startsWith(sep))
-}
+/* 路径归属判断与键名归一化都走 scripts/lib/portability.mjs：
+   Windows 跨盘时 path.relative 返回绝对路径，本文件早期版本会把 C: 目标判成「在脚手架内」，
+   直接拒绝生成 —— 详见该模块注释与 docs/LESSONS.md L171。 */
 async function main() {
   if (args.includes('--help')) { usage(); return }
   const options = {}
@@ -53,7 +53,9 @@ async function main() {
       if (entry.isSymbolicLink()) throw new Error('Source symlink is not allowed: ' + entry.name)
       const src = join(directory, entry.name), out = join(destination, entry.name)
       if (entry.isDirectory()) await collect(src, out, filter)
-      else plan.set(out.replace(/\.tpl$/, ''), await readFile(src))
+      // 键统一正斜杠：下面有好几处用 'assets/manifest.json' 这类字面量回查 plan，
+      // Windows 的反斜杠键会让回查拿到 undefined（曾导致 init 在 Windows 上直接崩）。
+      else plan.set(toPosix(out.replace(/\.tpl$/, '')), await readFile(src))
     }
   }
   await collect(join(starter, 'project-template'), '')
@@ -69,6 +71,10 @@ async function main() {
   // 激活烟测：宿主 register() 的校验抄进桩件真跑一遍 apply()。静态闸门查「写了什么」，
   // 它查「跑起来会不会炸」——两层都要有。
   plan.set('scripts/smoke-activate.mjs', await readFile(join(starter,'templates/smoke-activate.mjs')))
+  // 跨平台口径随包下发：换行归一化哈希、正斜杠键、跨盘判断都在这里。
+  // templates/ 下 check-trial-snapshot / check-schema / check-schema-words 的哈希门禁 import 它，
+  // 少了这份，生成项目在 Windows 上会把 CRLF 判成「快照被改 / 冻结被改」（假红）。
+  plan.set('scripts/lib/portability.mjs', await readFile(join(starter,'templates/lib/portability.mjs')))
   plan.set('scripts/verify-desktop-load.mjs', await readFile(join(starter,'templates/verify-desktop-load.mjs')))
   // 静态引用完整性：dev 版删了 demo-data.js 却还在页面里引着它 → SPA 兜底把 HTML 当 JS →
   // 整页脚本全废，而页面"看起来能开"（ATTR 踩过一次，PF-ILD 第二次）。
@@ -106,7 +112,6 @@ async function main() {
       check: 'node --check dsh/index.js && node --check lib/client.js && node scripts/check-workbench-package.mjs . && node scripts/check-host-contract.mjs && node scripts/smoke-activate.mjs && node scripts/check-probe-coverage.mjs && node scripts/check-version-literal.mjs && node scripts/check-static-refs.mjs && node scripts/check-choice-limit.mjs && node scripts/check-assertion-strength.mjs && node scripts/check-derivative-leftovers.mjs . && node scripts/check-trial-snapshot.mjs . --if-present && node scripts/check-primer-links.mjs && node scripts/check-agent-pane-contract.mjs . && node scripts/check-data-dir.mjs . && node scripts/check-trial-chain.mjs . && node scripts/check-trial-matching.mjs . && node scripts/check-patient-create.mjs . && node scripts/check-schema-words.mjs . && node scripts/check-placeholder-free.mjs . && node scripts/check-wording.mjs . && node scripts/check-ui-parity.mjs && node scripts/check-route-prefix.mjs',
       'check:version-literal': 'node scripts/check-version-literal.mjs',
       'check:host': 'node scripts/check-host-contract.mjs',
-      'check:version-literal': 'node scripts/check-version-literal.mjs',
       'check:static-refs': 'node scripts/check-static-refs.mjs',
       'check:choice-limit': 'node scripts/check-choice-limit.mjs && node scripts/check-assertion-strength.mjs',
       'check:primer-links': 'node scripts/check-primer-links.mjs',

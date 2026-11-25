@@ -43,9 +43,29 @@ function serve() {
   })
 }
 
+/* 浏览器候选按平台分派：只列 macOS 的 .app 路径，等于在 Windows/Linux 上恒找不到。
+   CHROME_PATH 优先级最高（非常规安装位置不必装进 PATH）；Windows 末位用 Edge 兜底，
+   同是 Chromium 内核，puppeteer-core 的 CDP 协议一样能用。 */
+function chromeCandidates() {
+  const cands = []
+  if (process.env.CHROME_PATH) cands.push(process.env.CHROME_PATH)
+  if (process.platform === 'win32') {
+    const roots = [process.env.ProgramFiles, process.env['ProgramFiles(x86)'], process.env.LOCALAPPDATA].filter(Boolean)
+    for (const base of roots) cands.push(join(base, 'Google', 'Chrome', 'Application', 'chrome.exe'))
+    if (process.env['ProgramFiles(x86)']) cands.push(join(process.env['ProgramFiles(x86)'], 'Microsoft', 'Edge', 'Application', 'msedge.exe'))
+  } else if (process.platform === 'darwin') {
+    cands.push(
+      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      '/Applications/Chromium.app/Contents/MacOS/Chromium'
+    )
+  } else {
+    cands.push('/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser')
+  }
+  return [...new Set(cands)]
+}
+
 function findChrome() {
-  const cands = [process.env.CHROME_PATH, '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/Applications/Chromium.app/Contents/MacOS/Chromium'].filter(Boolean)
-  return cands.find((p) => existsSync(p)) || null
+  return chromeCandidates().find((p) => existsSync(p)) || null
 }
 
 const results = []
@@ -77,13 +97,18 @@ async function injectDataDefect(page) {
 
 async function main() {
   const chrome = findChrome()
-  if (!chrome) { console.log('找不到 Chrome：设置 CHROME_PATH 后重试。跳过等于没有这条闸门。'); process.exit(2) }
+  if (!chrome) {
+    console.error('未找到 Chrome（可用 CHROME_PATH 指定）。已探测：')
+    for (const p of chromeCandidates()) console.error(`  - ${p}`)
+    process.exit(2)
+  }
   let puppeteer
   try {
-    const require = createRequire('/Users/qinxiaoqiang/.workbuddy/binaries/node/workspace/')
+    const require = createRequire(import.meta.url)
     puppeteer = require('puppeteer-core')
-  } catch {
-    console.log('缺少 puppeteer-core（家族 workspace 未装，或本机路径不同）。跳过等于没有这条闸门。')
+  } catch (error) {
+    console.error(`缺少 puppeteer-core（按本仓 node_modules 解析失败）：${error?.message || error}`)
+    console.error('  先 npm i -D puppeteer-core；缺依赖就跑不了这条闸门，不能当通过。')
     process.exit(2)
   }
 

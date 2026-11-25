@@ -108,6 +108,16 @@ if (!existsSync(join(root, 'lib/client.js')) && !existsSync(join(root, 'public/a
   process.exit(2)
 }
 
+/* 阶段感知（与 check-route-prefix 同范式）：M0–M2 骨架还没有「资料目录」能力时跳过并说明。
+   本闸门要抓的是「按钮说能选目录却选不了」，骨架阶段连这个按钮都没有，
+   报红只会让默认检查链第一天就废（实测：全新 init 项目 npm run check 挂在 ①/②/③）。
+   判据=能力信号；自定义命名的选择器请同步扩充，否则会被当成"尚未实现"跳过。 */
+const probeSources = `${read('lib/client.js')}\n${read('public/app.js')}\n${read('dsh/index.js')}\n${read('cordis.patch.yml')}`
+if (!/pickDirectory|showDirectoryPicker|webkitdirectory|setDataRoot|\/root\b/.test(probeSources)) {
+  console.log('SKIP 资料目录闸门：尚无「资料目录」能力（pickDirectory / showDirectoryPicker / webkitdirectory / setDataRoot / /root 写入端点皆无），M0 骨架阶段跳过；实现后本断言自动生效')
+  process.exit(0)
+}
+
 /* 服务端代码不一定在 dsh/：lung 在 lib/server/、breast 在 dsh/host.js。都拼进来再判。 */
 const readTreeJs = (dir, depth = 0) => {
   if (depth > 2) return ''

@@ -12,7 +12,7 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join, resolve, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { tmpdir } from 'node:os'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -124,7 +124,10 @@ if (args.includes('--self-test')) {
   process.exit(0)
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+/* 「是否被直接执行」必须走 pathToFileURL：手拼 `file://${argv[1]}` 在 Windows 上永远对不上
+   （`E:\...` 不是合法的 file URL），直接执行会被当成「被 import」而静默什么都不做。
+   argv[1] 在 --eval / 部分宿主下可能为空，先判空再转。 */
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const dir = args.find(a => !a.startsWith('-')) || process.cwd()
   const themeIdx = args.indexOf('--theme')
   const theme = themeIdx >= 0 ? args[themeIdx + 1] : 'healing-paper'

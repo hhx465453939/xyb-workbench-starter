@@ -6,7 +6,8 @@
  *   3. freeze-contract.md 记录的 sha256 与当前文件一致（不一致=冻结被改）
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
-import { createHash } from 'node:crypto'
+/* 冻结核对口径：Windows 检出的 CRLF/BOM 不应把「账本对不上」判成冻结被改 */
+import { sha256Of } from './lib/portability.mjs'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -24,7 +25,7 @@ const fails = [], oks = []
 let hashLine = ''
 for (const f of readdirSync(dir).filter(x => x.endsWith('.sql'))) {
   const txt = readFileSync(join(dir, f), 'utf8')
-  const hash = createHash('sha256').update(txt).digest('hex')
+  const hash = sha256Of(txt, f)
   if (f === '0001_initial.sql') hashLine = hash
   const cols = [...txt.matchAll(/^\s*([a-z_][a-z0-9_]*)\s+(?:TEXT|INTEGER|REAL|BLOB)/gim)].map(m => m[1])
   const hits = cols.filter(c => BANNED.some(re => re.test(c)))

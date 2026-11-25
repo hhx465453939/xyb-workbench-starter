@@ -25,7 +25,8 @@
  */
 import { DatabaseSync } from 'node:sqlite'
 import { readFileSync, existsSync, readdirSync } from 'node:fs'
-import { createHash } from 'node:crypto'
+/* 冻结核对的哈希要跨平台同口径：按原始字节算会把 Windows 检出的 CRLF 判成「冻结被改」 */
+import { sha256Of } from './lib/portability.mjs'
 import { resolve, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -118,7 +119,7 @@ else {
   const contract = readFileSync(freezePath, 'utf8')
   const missingHash = []
   for (const f of files) {
-    const sha = createHash('sha256').update(readFileSync(join(SCHEMA_DIR, f))).digest('hex')
+    const sha = sha256Of(readFileSync(join(SCHEMA_DIR, f)), f)
     /* 合同表里必须同时出现文件名与该文件的 sha256；少一条即红。
        不解析 markdown 表格：反引号与转义在字符串里最容易写坏（本模板第一版就写坏过一次）。 */
     if (!contract.includes(f)) missingHash.push(`${f}: 合同表里没有记录文件名`)

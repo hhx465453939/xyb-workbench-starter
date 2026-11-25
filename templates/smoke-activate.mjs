@@ -43,11 +43,17 @@ const SELF_TEST = process.argv.includes('--self-test')
 
 /** 默认项目根；可传参指向**已装进去的那一份** */
 function candidates() {
-  const home = process.env.HOME || ''
+  /* Windows 只有 USERPROFILE；harness 位置按平台分派，macOS 语义不变，可用 HN_HARNESS 覆盖 */
+  const home = process.env.HOME || process.env.USERPROFILE || ''
   const name = JSON.parse(readFileSync(join(HERE, '..', 'package.json'), 'utf8')).name || ''
+  const harness = process.env.HN_HARNESS || (process.platform === 'win32'
+    ? join(process.env.APPDATA || join(home, 'AppData', 'Roaming'), 'dsh-desktop', 'harness')
+    : process.platform === 'darwin'
+      ? join(home, 'Library/Application Support/dsh-desktop/harness')
+      : join(process.env.XDG_CONFIG_HOME || join(home, '.config'), 'dsh-desktop', 'harness'))
   return [
     process.argv[2],
-    name && join(home, 'Library/Application Support/dsh-desktop/harness/profiles/web/node_modules', name),
+    name && join(harness, 'profiles/web/node_modules', name),
     join(HERE, '..'),
   ].filter(Boolean)
 }

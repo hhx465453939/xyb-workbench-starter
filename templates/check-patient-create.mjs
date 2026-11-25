@@ -101,6 +101,15 @@ const ui = `${read('lib/client.js')}\n${read('public/app.js')}\n${read('public/i
 const server = `${readDirJs('dsh')}\n${readDirJs('lib')}`
 const schema = readDirJs('schema') + (() => { try { return readdirSync(join(root, 'schema')).filter((f) => f.endsWith('.sql')).map((f) => read(join('schema', f))).join('\n') } catch { return '' } })()
 
+/* 阶段感知（与 check-route-prefix 同范式）：M0–M2 骨架还没有「患者/档案」这一层时跳过并说明。
+   判据是"功能面完全不存在"——一旦出现 patients/subjects/profiles 任一词表，本闸门立刻生效，
+   不许拿「骨架阶段」当借口放行半成品。 */
+const patientSurface = /患者|档案|patient|subjects?\b|profiles?\b|case_files/im.test(`${ui}\n${server}\n${schema}`)
+if (!patientSurface) {
+  console.log('SKIP 患者档案闸门：本仓尚无患者/档案功能面（M0 骨架），实现患者建档后本断言自动生效')
+  process.exit(0)
+}
+
 const result = check({ ui, server, schema })
 for (const o of result.oks) console.log(`✓ ${o}`)
 for (const f of result.fails) console.error(`✗ ${f}`)

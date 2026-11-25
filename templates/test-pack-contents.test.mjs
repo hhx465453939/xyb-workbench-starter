@@ -29,6 +29,7 @@ function packEntries() {
     cwd: root,
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'], // stderr 是 npm 的 warning，别污染 JSON
+    shell: process.platform === 'win32', // Windows 上 npm 是 npm.cmd，不经 shell 直接调会 ENOENT
   })
   return (JSON.parse(out)[0]?.files ?? []).map((f) => f.path)
 }

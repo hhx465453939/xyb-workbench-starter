@@ -31,9 +31,16 @@
 import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 
-const HOME = process.env.HOME || ''
+/* Windows 上只有 USERPROFILE（没有 HOME）：只读 HOME 会让路径退化成相对路径、判据恒假——
+   这就是「verify:desktop 在 Windows 上必然 exit 2」的根因。 */
+const HOME = process.env.HOME || process.env.USERPROFILE || ''
+const APPSUPPORT = process.platform === 'win32'
+  ? join(process.env.APPDATA || join(HOME, 'AppData', 'Roaming'), 'dsh-desktop', 'harness')
+  : process.platform === 'darwin'
+    ? join(HOME, 'Library/Application Support/dsh-desktop/harness')
+    : join(process.env.XDG_CONFIG_HOME || join(HOME, '.config'), 'dsh-desktop', 'harness')
 // 允许覆盖路径：真实运行时用系统默认，测试里指向临时目录（否则这个脚本无法自证）
-const HARNESS = process.env.HN_HARNESS || join(HOME, 'Library/Application Support/dsh-desktop/harness')
+const HARNESS = process.env.HN_HARNESS || APPSUPPORT
 const PROFILE = join(HARNESS, 'profiles/web')
 // 包名与仓库从本项目 package.json 推导（模板下发给任意工作台，不写死某一癌种）
 const selfPkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
@@ -51,7 +58,10 @@ const DATA_DIR = (() => {
   } catch {}
   return join(HARNESS, PKG.split('/').pop())
 })()
-const LOG = process.env.HN_LOG || join(HOME, 'Library/Logs/DSH Desktop/harness.log')
+// macOS 的日志在 ~/Library/Logs；其他平台的宿主日志位置未核实，找不到就如实写「未验证」，可用 HN_LOG 覆盖
+const LOG = process.env.HN_LOG || (process.platform === 'darwin'
+  ? join(HOME, 'Library/Logs/DSH Desktop/harness.log')
+  : join(HARNESS, 'harness.log'))
 const STARTUP = join(HARNESS, '.xdpool/startup.log')
 const STATE = join(HARNESS, 'desktop-workbenches/state.json')
 const INSTALLED = join(PROFILE, 'node_modules', ...PKG.split('/'))
