@@ -1316,4 +1316,18 @@ L1/L3 会拦 clinicaltrials.gov/ 这种裸域名）；③验收必须「双探�
 - **不要顺手改的**：`split('/')` / `includes('/xxx/')` 在**路由、URL、包名、HTML 引用**这些本就是正斜杠语义的字符串上是正确的，**不要**为了"跨平台"把它们改成 `sep`——那是把 bug 修成另一个 bug。
 - **回收自**：本仓 Windows 真机审计与修复（PR：Windows portability + 首日检查链）。
 
+### L172 · 把"检查链"做成可机读闭环时踩到的七个坑（CHG-002）
+
+- **来源**：2026-11-25 本仓实现 `gates.registry.json` + `scripts/audit-loop.mjs` + 标准索引时的实录。目标是把"一行 23 段 `&&` 拼接"变成"人/Agent 都能判断的三态结论"。
+  1. **门禁表必须单一真源**：策展表放 `scripts/lib/gates-table.mjs`，生成器与 `check-starter` 都 import 它。若注册表与策展表各写一份，`audit-loop` 会按**过期集合**执行 —— 表现为"明明有 21 条，只跑了 18 条"，且不报错。断言要写成"注册表 == 策展表"而不是"注册表里字段合法"。
+  2. **`--json` 时 stdout 只许有 JSON**：人读摘要一旦混进 stdout，Agent 侧 `JSON.parse` 直接炸；摘要走"非 `--json` 模式"或写文件。这条要用测试反向验证（`JSON.parse(stdout)` 必须成功）。
+  3. **`skip` 的判定是"退出码 0 + `^SKIP` 行"，不是"把门禁改成 exit 0"**：`audit-loop` 从 SKIP 行提取 `reason`；门禁若静默 exit 0，会被记成 `pass` —— 那是把"没做"伪装成"做了"。
+  4. **幂等的关键是把易变字段挪出 `checks[]`**：`generatedAt`/耗时只进 `meta`；否则同一项目连跑两次 JSON 不同，"结论可复现"就是空话。
+  5. **`--out` 必须做 `within(root)` 校验**：`--out ../x.json` 会写到项目外；用 `portability.within` 判，越界 `exit 2`（这既是安全，也是"报告属于本项目"的口径）。
+  6. **生成物文档要带 `--check`，且相对链接层级不同**：`docs/STANDARDS/20-GATES.md` 里链 `docs/xxx` 要 `../xxx`、链 `prompts/xxx` 要 `../../prompts/xxx`；一律按 `../` 加前缀会产出 `docs/prompts/...` 死链（本项目 `check-starter` 当场就会报 `Broken local link`）。这正是"生成物必须被门禁覆盖"的实证。
+  7. **在脚手架仓里跑 `audit-loop` 会误判成"门禁全坏"**：注册表里的脚本只存在于生成项目（`scripts/check-*.mjs`），脚手架仓对应的是 `templates/`。解法是先判"注册表里有没有任何一个脚本存在"，全都缺就 `exit 2` 并提示"这里不是工作台项目，脚手架自身请用 `npm run check`"，而不是报 21 条 `脚本不存在`。
+- **配套纪律**：`npm run check` 的旧链路**不动**，新入口 `npm run audit:loop` 并存 —— 社区既有习惯与 CI 脚本零回归；测试用**假门禁夹具**（三个 10 行脚本）比拿真门禁当被测对象稳得多，且能在任意平台复现。
+- **回收自**：`tasks/CHG-002-agent-audit-loop/`（PRD + SPEC + TRACEABILITY）。
+
+
 

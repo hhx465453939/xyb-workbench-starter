@@ -29,6 +29,7 @@ node scripts/check-install.mjs    # 打印它认了哪个 app、哪个 Harness�
 2. 先复用对话已明确的需求，每次只问一个必要问题，不用固定问卷。名称未知先问“这个工作台想叫什么名字？”，允许暂定名；名称本身不等于业务需求确认。按已有上下文补问必要的使用者、功能或场景；核心流程不清楚时提出最小流程建议供确认。业务目标和最小范围足够明确且经确认即可开始，不要求填全模板；此前仅只读检查，不从目录名、示例或代码推断意图，不创建业务代码、界面、包文件，不构建、打包或安装。
 3. 每次新建或更新先读取 [DSH 线上最新工作台开发规范](https://dshdesktop.com/workbench/docs/development.md)，按当次包格式、API、运行和自测要求执行。[reference/official/development-2026-10-09.md](reference/official/development-2026-10-09.md) 仅离线备用；无法读取线上版本时明确告知未核对最新规范，不能声称已核对。社区风格与流程见 docs；上级和用户明确要求优先。发现合同与目标 Desktop 不符时记录版本与能力，不猜 API。
 4. 使用主题索引按需阅读；不要重复全读日志、原型压缩脚本、数据库或输出密钥。命令输出默认截断 4000 字节；构建/测试管道启用 pipefail，日志取末尾。
+5. **审计—测试闭环（CHG-002）**：不知道先读什么 → [docs/STANDARDS/00-INDEX.md](docs/STANDARDS/00-INDEX.md)；动手前后各跑一次 `npm run audit:loop`（机读用 `node scripts/audit-loop.mjs . --json`），按 `pass / skip / fail` 三态处理——**skip 不是通过**，交付说明必须写清缺什么；完整动作序列见 [prompts/AGENT-AUDIT-LOOP.md](prompts/AGENT-AUDIT-LOOP.md)，门禁清单与生效阶段见 [docs/STANDARDS/20-GATES.md](docs/STANDARDS/20-GATES.md)。
 
 ## 互动设计
 
